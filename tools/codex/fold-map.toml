@@ -1,0 +1,335 @@
+# Zenodotus -> Codex CLI fold map
+#
+# Maps every agents/*.md and commands/*.md file to where its content lives in the Codex-targeted
+# skills output tree, since Codex has no per-file tool-scoped subagent primitive and its custom
+# prompts mechanism is deprecated in favor of Skills (see FEAT-codex-port.md's DDD notes and the
+# approved plan at ~/.claude/plans/how-to-have-the-crystalline-bird.md).
+#
+# TOML, not YAML: read with Python's stdlib `tomllib` (3.11+, read-only) so the generator needs no
+# external dependency, matching install.sh's existing zero-dependency install-tooling ethos, and
+# matching Codex's own config.toml format.
+#
+# kind = "fold": append the source file's substantive content as a new titled section onto an
+#   existing (or new-in-this-map) skill in the output tree. The source file itself is never copied.
+# kind = "relocate": the source's *behavior* (not literal text) is rewritten directly into a
+#   skill's own body by a human, not mechanically extracted by the generator — currently only zeno.md.
+#
+# role_prefix is derived from the source agent's `tools:` frontmatter (Advisor = no Write/Edit,
+# Owner = has Write/Edit) and is written as the first line of the folded section, since Codex
+# skills carry no tool-grant ACL of their own — see approved plan §2, Class C.
+
+[meta]
+# New skills this fold map requires (created in STORY-codex-orphan-skills) - 9 total.
+# Declared here, before any [[array-of-tables]] section, so it stays a root-level key under TOML's
+# rules rather than silently attaching to whichever [[table]] happened to be open last.
+new_skills = [
+  "skills/zeno-stack/zeno-build-resolver/SKILL.md",
+  "skills/zeno-stack/zeno-comment-analysis/SKILL.md",
+  "skills/zeno-stack/zeno-harness-optimizer/SKILL.md",
+  "skills/zeno-stack/zeno-performance-profiling/SKILL.md",
+  "skills/zeno-stack/zeno-planning/SKILL.md",
+  "skills/zeno-stack/zeno-refactor-cleanup/SKILL.md",
+  "skills/zeno-stack/zeno-cost-report/SKILL.md",
+  "skills/zeno-stack/zeno-model-route/SKILL.md",
+  "skills/zeno-stack/zeno-sessions/SKILL.md",
+]
+
+[[excluded]]
+path = "agents/REGISTRY.md"
+reason = "Governs Claude Code's Task-tool subagent dispatch model, which Codex has no equivalent primitive for. Read by this fold map as input, never ported itself."
+
+[[excluded]]
+path = "agents/_agent-template.md"
+reason = "Authoring template for the Claude-Code-only agent contract shape; not user-facing content."
+
+[[excluded]]
+path = "commands/skill-evals.md"
+reason = "Maintainer-only tooling for the library itself (runs a skill's evals.json suite), not library content."
+
+[[excluded]]
+glob = "skills/**/evals/evals.json"
+reason = "Test fixtures for commands/skill-evals.md's grading harness; travel with it, out of scope."
+
+# ---------------------------------------------------------------------------------------------
+# agents/ -> folded into the domain-owning skill (24 entries, matches agents/REGISTRY.md exactly)
+# ---------------------------------------------------------------------------------------------
+
+[[agents]]
+name = "zeno-a11y-architect"
+tier = "Owner"
+target = "skills/zeno-stack/zeno-accessibility/SKILL.md"
+section_title = "Accessibility architecture review (folded from zeno-a11y-architect)"
+
+[[agents]]
+name = "zeno-atdd-guide"
+tier = "Owner"
+target = "skills/zeno-workflow/zeno-atdd/SKILL.md"
+section_title = "Acceptance-criteria authoring (folded from zeno-atdd-guide)"
+
+[[agents]]
+name = "zeno-bdd-guide"
+tier = "Owner"
+target = "skills/zeno-workflow/zeno-bdd/SKILL.md"
+section_title = "Scenario authoring (folded from zeno-bdd-guide)"
+
+[[agents]]
+name = "zeno-build-error-resolver"
+tier = "Owner"
+target = "skills/zeno-stack/zeno-build-resolver/SKILL.md"   # NEW skill - no existing home
+section_title = "Build/type error resolution (folded from zeno-build-error-resolver)"
+
+[[agents]]
+name = "zeno-comment-analyzer"
+tier = "Advisor"
+target = "skills/zeno-stack/zeno-comment-analysis/SKILL.md"   # NEW skill - no existing home
+section_title = "Comment accuracy/rot audit (folded from zeno-comment-analyzer)"
+
+[[agents]]
+name = "zeno-database-reviewer"
+tier = "Advisor"
+target = "skills/code-standards/database-data-modeling/postgres/SKILL.md"
+section_title = "Query/schema/security review checklist (folded from zeno-database-reviewer)"
+
+[[agents]]
+name = "zeno-ddd-guide"
+tier = "Owner"
+target = "skills/zeno-workflow/zeno-ddd/SKILL.md"
+section_title = "Domain framing guide (folded from zeno-ddd-guide)"
+
+[[agents]]
+name = "zeno-doc-updater"
+tier = "Owner"
+target = "skills/documenting-code/SKILL.md"
+section_title = "Codemap/doc reconciliation (folded from zeno-doc-updater)"
+
+[[agents]]
+name = "zeno-e2e-runner"
+tier = "Owner"
+target = "skills/zeno-stack/zeno-e2e-testing/SKILL.md"
+section_title = "E2E execution + flake management (folded from zeno-e2e-runner)"
+
+[[agents]]
+name = "zeno-fastapi-reviewer"
+tier = "Advisor"
+target = "skills/code-standards/python/frameworks/fastapi.md"
+section_title = "Review checklist (folded from zeno-fastapi-reviewer)"
+
+[[agents]]
+name = "zeno-fdd-guide"
+tier = "Owner"
+target = "skills/zeno-workflow/zeno-fdd/SKILL.md"
+section_title = "Story-list decomposition guide (folded from zeno-fdd-guide)"
+
+[[agents]]
+name = "zeno-harness-optimizer"
+tier = "Owner"
+target = "skills/zeno-stack/zeno-harness-optimizer/SKILL.md"   # NEW skill - no existing home
+section_title = "Harness reliability/cost/throughput tuning (folded from zeno-harness-optimizer)"
+
+[[agents]]
+name = "zeno-performance-optimizer"
+tier = "Owner"
+target = "skills/zeno-stack/zeno-performance-profiling/SKILL.md"   # NEW skill - no existing home
+section_title = "Cross-layer profiling-driven optimization (folded from zeno-performance-optimizer)"
+
+[[agents]]
+name = "zeno-planner"
+tier = "Advisor"
+target = "skills/zeno-stack/zeno-planning/SKILL.md"   # NEW skill - no existing home
+section_title = "File-level implementation planning (folded from zeno-planner)"
+
+[[agents]]
+name = "zeno-pr-test-analyzer"
+tier = "Advisor"
+target = "skills/zeno-stack/zeno-github-ops/SKILL.md"
+section_title = "Post-hoc PR test-coverage review (folded from zeno-pr-test-analyzer)"
+
+[[agents]]
+name = "zeno-python-reviewer"
+tier = "Advisor"
+target = "skills/code-standards/python/SKILL.md"
+section_title = "Review checklist (folded from zeno-python-reviewer)"
+
+[[agents]]
+name = "zeno-react-build-resolver"
+tier = "Owner"
+target = "skills/zeno-stack/zeno-react-patterns/SKILL.md"
+section_title = "React/JSX/bundler build-failure resolution (folded from zeno-react-build-resolver)"
+
+[[agents]]
+name = "zeno-react-reviewer"
+tier = "Advisor"
+target = "skills/zeno-stack/zeno-react-patterns/SKILL.md"
+section_title = "React/JSX review checklist (folded from zeno-react-reviewer)"
+
+[[agents]]
+name = "zeno-refactor-cleaner"
+tier = "Owner"
+target = "skills/zeno-stack/zeno-refactor-cleanup/SKILL.md"   # NEW skill - no existing home
+section_title = "Dead-code/duplication removal (folded from zeno-refactor-cleaner)"
+
+[[agents]]
+name = "zeno-security-reviewer"
+tier = "Advisor"
+target = "skills/zeno-stack/zeno-security-review/SKILL.md"
+section_title = "OWASP/secrets/injection audit (folded from zeno-security-reviewer)"
+
+[[agents]]
+name = "zeno-silent-failure-hunter"
+tier = "Advisor"
+target = "skills/zeno-stack/zeno-error-handling/SKILL.md"
+section_title = "Swallowed-error/bad-fallback detection (folded from zeno-silent-failure-hunter)"
+
+[[agents]]
+name = "zeno-tdd-guide"
+tier = "Owner"
+target = "skills/zeno-workflow/zeno-tdd/SKILL.md"
+section_title = "Test-first enforcement (folded from zeno-tdd-guide)"
+
+[[agents]]
+name = "zeno-type-design-analyzer"
+tier = "Advisor"
+target = "skills/code-standards/software-architecture/SKILL.md"
+section_title = "Type/data-model invariant design review (folded from zeno-type-design-analyzer)"
+
+[[agents]]
+name = "zeno-typescript-reviewer"
+tier = "Advisor"
+target = "skills/code-standards/typescript-code-standards/SKILL.md"
+section_title = "Review checklist (folded from zeno-typescript-reviewer)"
+
+# ---------------------------------------------------------------------------------------------
+# commands/ -> folded into skills, or relocated in place (23 entries)
+# ---------------------------------------------------------------------------------------------
+
+[[commands]]
+name = "build-fix"
+kind = "fold"
+target = "skills/zeno-stack/zeno-build-resolver/SKILL.md"
+section_title = "Invocation (folded from commands/build-fix.md)"
+
+[[commands]]
+name = "checkpoint"
+kind = "fold"
+target = "skills/zeno-verify/SKILL.md"
+section_title = "Checkpoint procedure (folded from commands/checkpoint.md)"
+
+[[commands]]
+name = "cost-report"
+kind = "fold"
+target = "skills/zeno-stack/zeno-cost-report/SKILL.md"   # NEW skill - no existing home
+section_title = "Cost report generation (folded from commands/cost-report.md)"
+
+[[commands]]
+name = "docs-drift"
+kind = "fold"
+target = "skills/documenting-code/SKILL.md"
+section_title = "Drift detection (folded from commands/docs-drift.md)"
+
+[[commands]]
+name = "fastapi-review"
+kind = "fold"
+target = "skills/code-standards/python/frameworks/fastapi.md"
+section_title = "Invocation (folded from commands/fastapi-review.md)"
+
+[[commands]]
+name = "harness-audit"
+kind = "fold"
+target = "skills/zeno-stack/zeno-skill-stocktake/SKILL.md"
+section_title = "Harness scorecard (folded from commands/harness-audit.md)"
+
+[[commands]]
+name = "model-route"
+kind = "fold"
+target = "skills/zeno-stack/zeno-model-route/SKILL.md"   # NEW skill - no existing home
+section_title = "Model-tier recommendation (folded from commands/model-route.md)"
+
+[[commands]]
+name = "pr"
+kind = "fold"
+target = "skills/zeno-stack/zeno-github-ops/SKILL.md"
+section_title = "PR creation procedure (folded from commands/pr.md)"
+
+[[commands]]
+name = "python-review"
+kind = "fold"
+target = "skills/code-standards/python/SKILL.md"
+section_title = "Invocation (folded from commands/python-review.md)"
+
+[[commands]]
+name = "quality-gate"
+kind = "fold"
+target = "skills/zeno-stack/zeno-build-resolver/SKILL.md"
+section_title = "Formatter gate (folded from commands/quality-gate.md)"
+
+[[commands]]
+name = "react-build"
+kind = "fold"
+target = "skills/zeno-stack/zeno-react-patterns/SKILL.md"
+section_title = "Invocation (folded from commands/react-build.md)"
+
+[[commands]]
+name = "react-review"
+kind = "fold"
+target = "skills/zeno-stack/zeno-react-patterns/SKILL.md"
+section_title = "Invocation (folded from commands/react-review.md)"
+
+[[commands]]
+name = "react-test"
+kind = "fold"
+target = "skills/zeno-stack/zeno-react-testing/SKILL.md"
+section_title = "TDD workflow invocation (folded from commands/react-test.md)"
+
+[[commands]]
+name = "refactor-clean"
+kind = "fold"
+target = "skills/zeno-stack/zeno-refactor-cleanup/SKILL.md"
+section_title = "Invocation (folded from commands/refactor-clean.md)"
+
+[[commands]]
+name = "resume-session"
+kind = "fold"
+target = "skills/zeno-stack/zeno-sessions/SKILL.md"   # NEW skill - no existing home
+section_title = "Resume-session procedure (folded from commands/resume-session.md)"
+
+[[commands]]
+name = "save-session"
+kind = "fold"
+target = "skills/zeno-stack/zeno-sessions/SKILL.md"
+section_title = "Save-session procedure (folded from commands/save-session.md)"
+
+[[commands]]
+name = "security-scan"
+kind = "fold"
+target = "skills/zeno-stack/zeno-security-review/SKILL.md"
+section_title = "Scan dispatch (folded from commands/security-scan.md)"
+
+[[commands]]
+name = "sessions"
+kind = "fold"
+target = "skills/zeno-stack/zeno-sessions/SKILL.md"
+section_title = "List/load/alias procedure (folded from commands/sessions.md)"
+
+[[commands]]
+name = "test-coverage"
+kind = "fold"
+target = "skills/zeno-workflow/zeno-tdd/SKILL.md"
+section_title = "Coverage-gap analysis (folded from commands/test-coverage.md)"
+
+[[commands]]
+name = "update-codemaps"
+kind = "fold"
+target = "skills/documenting-code/SKILL.md"
+section_title = "Codemap generation (folded from commands/update-codemaps.md)"
+
+[[commands]]
+name = "update-docs"
+kind = "fold"
+target = "skills/documenting-code/SKILL.md"
+section_title = "Doc sync procedure (folded from commands/update-docs.md)"
+
+[[commands]]
+name = "zeno"
+kind = "relocate"
+target = "skills/zeno/SKILL.md"
+note = "zeno.md's start/resume/status/review argument-dispatch table describes behavior skills/zeno/SKILL.md already owns end-to-end; its content is rewritten directly into that skill's own invocation guidance by a human during STORY-codex-install-and-docs, not mechanically extracted by the generator. Recorded here so the map accounts for all 23 command files, per this Story's ATDD."

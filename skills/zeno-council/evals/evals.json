@@ -1,0 +1,80 @@
+{
+  "skill_name": "zeno-council",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "We need to add a new service to our app that stores customer payment profiles and calls a third-party payments API. Design the architecture.",
+      "expected_output": "Should NOT propose an architecture in the first reply. Should state what is known vs unknown and ask a first round of at most 7 questions ordered by impact (scale, availability, compliance/PCI, data ownership, team), each with a recommended default.",
+      "files": [],
+      "expectations": [
+        "Does not recommend or choose an architecture in this reply (defaults on questions, and naming options that will be compared after the readiness gate, are allowed)",
+        "Asks no more than 7 questions, preferably 3-5",
+        "Questions use the ❓ Q / ➡️ recommended-answer format",
+        "Covers at least two of: scale, availability, compliance/sensitive data, team capability",
+        "Distinguishes known facts from assumptions or unknowns"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Fix the off-by-one in paginate() in utils/pages.py — the last page is dropped.",
+      "expected_output": "Council runs Lite: no questions to the user, one recorded line stating no architectural unknowns and what was checked. Does not run a full interview or options phase.",
+      "files": [],
+      "expectations": [
+        "Does not ask the user architecture questions",
+        "Records a single Council (Lite) line naming what was checked",
+        "Does not produce multiple architecture options",
+        "Proceeds to the fix"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Run your full process with every gate and the full architecture council on this: fix the off-by-one in paginate() in utils/pages.py.",
+      "expected_output": "Formal wording must not escalate depth. Council stays Lite because the change has no boundary, data store, integration, security or NFR impact.",
+      "files": [],
+      "expectations": [
+        "Runs the council at Lite depth",
+        "States that depth follows the work, not the request's wording",
+        "Does not run a multi-round interview",
+        "Does not propose architecture options"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Small change: add a message queue between our order service and the email sender so emails stop blocking checkout.",
+      "expected_output": "Despite the small size, a new integration boundary is Full-depth evidence. Council escalates to Full, names the evidence, and asks about delivery guarantees, volume, failure handling and operations before choosing.",
+      "files": [],
+      "expectations": [
+        "Escalates to Full depth",
+        "Names the new integration boundary as the evidence",
+        "Asks about at least two of: delivery guarantees, volume, failure handling, operational ownership",
+        "Does not pick a broker technology before the questions are answered"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "We are building an internal expense-approval tool for finance staff. Employees submit expense claims with receipt photos, their manager approves or rejects them, and once a month finance exports the approved claims to the ERP as a CSV. Requirements are settled: 2 developers, ~500 users, one region, 99.5% availability measured in business hours, company SSO, no regulated data beyond an audit log of approvals, no existing integrations other than the monthly CSV. Propose architectures.",
+      "expected_output": "The purpose, workflows, data and auth are supplied, so the readiness gate can pass on recorded assumptions. Offers at least two meaningfully different options, a Challenger review, a qualitative trade-off comparison and a recommendation with revisit triggers; microservices, Kafka and Kubernetes are not recommended without a requirement.",
+      "files": [],
+      "expectations": [
+        "Offers at least two meaningfully different options",
+        "Recommends no microservices, Kafka or Kubernetes unless a stated requirement earns it",
+        "Includes a Challenger or adversarial review of the options",
+        "Uses qualitative ratings in the trade-off comparison",
+        "States revisit triggers or conditions for the rejected options"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Requirements are settled: build a service that stores our customers' payment profiles and calls a third-party payments API. 2 developers, about 2,000 customers, one region, 99.9% availability, and it can use our existing app's database. Propose architectures.",
+      "expected_output": "Even though the user says requirements are settled, how card data is handled (raw card numbers vs provider tokens) is unstated and changes compliance scope, so it blocks. The council asks that blocking question (and only other genuinely blocking ones), proposes no architecture, and records non-blocking unknowns as assumptions.",
+      "files": [],
+      "expectations": [
+        "Asks whether raw card numbers (PAN/CVV) reach the servers or only provider tokens, or an equivalent card-data handling question",
+        "Proposes no architecture options or recommendation in this reply (defaults on questions, and naming options that will be compared after the readiness gate, are allowed)",
+        "Does not record card-data handling as an assumption",
+        "Asks no more than 7 questions, in the ❓ Q / ➡️ recommended-answer format",
+        "Distinguishes blocking questions from recorded assumptions"
+      ]
+    }
+  ]
+}

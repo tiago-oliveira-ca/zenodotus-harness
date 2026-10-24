@@ -1,0 +1,12 @@
+{
+  "Stop": [
+    {
+      "hooks": [
+        {
+          "type": "command",
+          "command": "bash \"$HOME/.claude/hooks/zeno-cost-tracker.sh\""
+        }
+      ]
+    }
+  ]
+}

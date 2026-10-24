@@ -1,0 +1,55 @@
+{
+  "skill_name": "operations-standards",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Write the production runbook for 'order-svc', the order-processing service of our 'Cartwheel' e-commerce platform. Context you can use: it's owned by the Fulfillment team (on-call rotation exists with primary/secondary); architecture is described in SAD v3.2 (order-svc consumes from Kafka topic orders.incoming, writes to Postgres, calls the payment gateway); known failure modes are Kafka consumer lag, Postgres connection-pool exhaustion, and payment-gateway timeouts; alerts already defined are OrderQueueAgeHigh, OrderSvcDbPoolSaturated, and PaymentGatewayErrorRateHigh; NFR-012 sets RTO 4h / RPO 15min and an SLO of 99.9% successful order processing. Deployment is via Helm on Kubernetes with a blue/green switch. Make it something a brand-new on-call engineer could follow at 3am.",
+      "expected_output": "A runbook following the ten-section structure: document control with review cadence; service overview and Fulfillment-team ownership; an architecture summary that links SAD v3.2 rather than restating it; dependencies (Kafka, Postgres, payment gateway) with how each fails; monitoring covering all three named alerts with meaning and first action each; standard operating procedures (deploy, scale, restart, secret rotation); incident-response procedures per known failure mode; an explicit escalation path with primary/secondary and time thresholds; rollback/recovery tied to the RTO 4h / RPO 15min from NFR-012; and appendices — every step concrete enough for a stranger to execute.",
+      "files": [],
+      "expectations": [
+        "The runbook contains all ten recommended sections, including Document Control (version, authors, status, review cadence) and Appendices (dashboards, log queries, related ADRs)",
+        "The Architecture Summary links/references SAD v3.2 instead of redefining the topology",
+        "Dependencies & Failure Modes covers Kafka, Postgres, and the payment gateway, stating how each dependency fails",
+        "Every one of the three named alerts (OrderQueueAgeHigh, OrderSvcDbPoolSaturated, PaymentGatewayErrorRateHigh) appears with what it means and a defined first action",
+        "Steps are executable by someone unfamiliar with the system: concrete commands (e.g. kubectl/Helm/systemctl/SQL) with a verification step (e.g. health endpoint or metric to confirm recovery), never 'restart the service' alone",
+        "Standard Operating Procedures cover routine tasks including deploy (blue/green via Helm), scale, restart, and secret rotation",
+        "There is an incident-response procedure for each of the three known failure modes (consumer lag, pool exhaustion, gateway timeouts)",
+        "The escalation path is explicit: primary and secondary on-call named/roled, with a time threshold for escalating further — not 'ping the team'",
+        "Rollback/recovery procedures cite the RTO of 4h and RPO of 15min from NFR-012 rather than inventing ad hoc targets"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Leadership said every service needs a runbook by end of month. I maintain 'geo-tiler', a map-tile rendering service someone else built years ago. I honestly don't know what alerts exist for it, whether it has SLO targets, who's on call for it, or where its architecture is documented — I just know it runs on two VMs and restarting it usually fixes things. Write me the runbook anyway.",
+      "expected_output": "A response that refuses to fabricate the runbook's factual backbone: it walks the skill's Required Inputs (system boundaries/ownership from the SAD, known failure modes and dependencies, SLO/RTO/RPO from the NFR, escalation contacts/on-call rotation, existing monitoring definitions), flags each as missing with a concrete way to obtain it, offers at most a skeleton with explicitly marked gaps, and warns that a runbook built on tribal knowledge ('restarting usually fixes things') fails the readiness test.",
+      "files": [],
+      "expectations": [
+        "The response does not fabricate alerts, SLO/RTO/RPO targets, escalation contacts, or architecture facts; unknowns are marked as explicit gaps/TODOs, not filled in",
+        "It enumerates the skill's Required Inputs as missing: SAD-derived boundaries and ownership, known failure modes and dependencies, SLO/RTO/RPO from the NFR, escalation/on-call contacts, and existing monitoring/alerting definitions",
+        "It refuses to invent SLO/RTO/RPO values ad hoc, stating these must come from the NFR (or be formally set), per the pre-flight checklist",
+        "It flags 'restarting it usually fixes things' as tribal knowledge — the anti-pattern the runbook exists to eliminate — and requires converting it into an executable, verifiable procedure",
+        "It flags that a runbook with no alert inventory cannot satisfy 'every alert maps to a documented first action' and proposes discovering the monitoring config first",
+        "It proposes concrete discovery steps or asks targeted questions (find the SAD or document current topology, query the alerting system, identify the owning team/rotation) before the runbook can be trusted",
+        "Any skeleton offered is explicitly labeled as incomplete/not incident-ready rather than presented as a finished runbook",
+        "It notes the document still needs document control with an owner and review cadence so it doesn't rot after the compliance deadline"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Here's the draft postmortem for last Tuesday's checkout outage plus the runbook snippet we used. Review both and tell me everything that's wrong before we publish:\n\n--- POSTMORTEM: Checkout outage, Tuesday ---\nSummary: Checkout was down for a while on Tuesday afternoon. Root cause: Dave from platform pushed a bad config to the API gateway without checking it; this is the second time Dave has caused an outage and it needs to be addressed in his performance review.\nTimeline: it started sometime after lunch and was fixed by evening.\nWhat went poorly: Dave's change process.\nAction items: (1) be more careful with gateway configs; (2) someone should look into adding config validation someday.\nLessons: none recorded — the gateway architecture docs weren't updated since we fixed the config directly in production.\n\n--- RUNBOOK SNIPPET USED DURING THE INCIDENT ---\nAlert: GatewayErrorRateHigh — (no notes)\nProcedure: if the gateway is acting up, restart it. You'll know it's recovered when things look normal again. There is no rollback step for gateway config; fix forward in prod.",
+      "expected_output": "A review that catches every planted defect: the postmortem names and blames an individual instead of the process that allowed the bad config; the timeline has no timestamps from detection to resolution; the root cause is a person/symptom rather than the failing mechanism and missing safeguards; both action items lack an owner and a due date (and 'be more careful' is not actionable); the architecture-relevant lesson (production config fix, stale gateway docs) was not routed through Change Management; the alert has no meaning or first action documented; the runbook step is not executable ('restart it', 'looks normal') with no verification; and there is no rollback procedure or RTO/RPO tie.",
+      "files": [],
+      "expectations": [
+        "Flags the blame on a named individual ('Dave... performance review') as violating the blameless rule and requires rewriting the root cause around systems/process (no config validation, no review gate, no safe deploy path)",
+        "Flags the root cause as stopping at a person/symptom rather than the actual mechanism plus contributing factors that made the failure possible",
+        "Flags the timeline ('sometime after lunch... by evening') as missing timestamps from detection through resolution, and the summary as missing quantified customer/business impact and duration",
+        "Flags both action items as lacking an owner and a due date ('someone... someday' is a wish, not a commitment), and 'be more careful' as not an actionable system change",
+        "Flags that the lesson implying an architecture/config-management change was fixed silently in production and never routed through Change Management, leaving the gateway docs/SAD stale",
+        "Flags the GatewayErrorRateHigh alert as having no documented meaning or first action",
+        "Flags the runbook procedure as failing the readiness test: 'restart it' with 'you'll know when it looks normal' is not executable by a non-author and has no concrete verification command or success signal",
+        "Flags the absence of a rollback/recovery procedure for gateway config ('fix forward in prod') and the missing tie to any RTO/RPO or SLO target",
+        "Notes the postmortem is missing required structure such as 'What Went Well / What Went Poorly' beyond blaming a person, and contributing factors"
+      ]
+    }
+  ]
+}

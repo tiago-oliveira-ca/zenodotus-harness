@@ -1,0 +1,55 @@
+{
+  "skill_name": "functional-specification-standards",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Write the FRD for the 'Expense Approval Flow' of Ledgerly, our SMB expense-management SaaS. The approved PRD (v1.2) defines: PRD-001 (Must) employees submit an expense with receipt photo and category, Trace: BR-001; PRD-002 (Must) manager approves or rejects with a reason, and approvals over 1,000 EUR require a second approver from finance, Trace: BR-001; PRD-003 (Should) submitter is notified of the decision, Trace: BR-002. Actors: Employee, Manager, Finance Approver. Known constraints from product: max receipt upload 10 MB; decisions must be notified quickly (product wants 'within minutes'). Cover the behavior in full, including what happens when things go wrong (approver leaves the company mid-flow, duplicate submission, oversized upload, rejected-then-resubmitted expense).",
+      "expected_output": "A complete FRD with document control tracing to PRD v1.2, actors, atomic 'The system shall...' functional requirements each carrying an immortal FR-NNN ID with a 'Trace: PRD-NNN' line, declarative Given/When/Then acceptance criteria suffixed [FR-NNN] (one behavior per scenario, paste-ready for story cards), an explicit Error & Edge States section covering the listed failure cases, fit-criterion NFRs (percentile + threshold + window + load condition + breach consequence) for notification latency, and two-way traceability — with no implementation design.",
+      "files": [],
+      "expectations": [
+        "Output includes Document Control declaring upward trace to the PRD, plus an Actors section covering Employee, Manager, and Finance Approver",
+        "Every functional requirement carries an immortal FR-NNN ID and a 'Trace: PRD-001/002/003' line to the supplied PRD IDs — no orphan FRs, no dotted sub-IDs like FR-002.1",
+        "Requirements use 'The system shall...' statements and are atomic — the two-tier approval rule (over 1,000 EUR needs a finance second approver) is its own requirement, not fused into the general approve/reject requirement",
+        "Acceptance criteria are written as Given/When/Then blocks, each suffixed with its [FR-NNN] tag so they paste unchanged into a story card's Scenarios section",
+        "Gherkin is declarative business intent (e.g. 'Given a submitted expense over 1,000 EUR'), never UI clicks or internals (no button names, no service/JWT/API internals)",
+        "Each scenario covers exactly one behavior (1:1 scenario-to-acceptance-criterion), including at least one rejection-path scenario, not only happy paths",
+        "An explicit Error & Edge States section exists and addresses the prompt's failure cases: approver departure mid-flow, duplicate submission, oversized (>10 MB) upload, and resubmission after rejection",
+        "The 'within minutes' notification ask is turned into a fit-criterion NFR with an NFR-NNN ID stating percentile + threshold + measurement window + load condition + breach consequence, not a bare 'P95 <= X' figure",
+        "A Traceability section links up to PRD IDs and down to stories/tests, and the FRD contains no implementation design (no database, framework, or vendor choices)"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "The team lead pinged me: 'We're revamping notifications across the app. Can you get the functional spec written today?' There is no PRD for this revamp, I don't know which user roles are affected, nobody has listed which notification types are in scope, and there are no designs or acceptance expectations yet. Write the FSD.",
+      "expected_output": "A response that does not fabricate a full FSD: it names the skill's missing required inputs (product scope, personas/actors, features and edge cases in scope, acceptance expectations and relevant NFRs, designs/story references), asks targeted questions or produces a clearly gap-marked skeleton, refuses to invent behaviors or upstream PRD-NNN parents (using 'Trace: derived' only for genuinely engineering-imposed items rather than fake parents), and insists that error/edge states and testable acceptance criteria cannot be filled in without the missing inputs.",
+      "files": [],
+      "expectations": [
+        "The response flags missing required inputs by name, covering at least: upstream product scope/PRD, actors or user roles, features/workflows and edge cases in scope, and acceptance expectations or relevant NFRs",
+        "The response asks concrete clarifying questions (which notification types, which roles, what triggers, what does done look like) or marks explicit gaps — it does not deliver a complete-looking spec built on invented behavior",
+        "No fake upstream traceability: the response does not mint 'Trace: PRD-NNN' lines to a PRD that does not exist — it either flags the missing PRD or notes that requirements without a business parent are marked 'Trace: derived', never given a fabricated parent",
+        "Any draft requirements offered are still atomic, uniquely FR-NNN-identified, and in 'The system shall...' form — the standard is not abandoned just because inputs are missing",
+        "The response flags that an Error & Edge States section is mandatory and cannot be completed without knowing the workflows — the section is not silently omitted or padded with invented cases presented as fact",
+        "The response does not silently invent numeric NFR targets — latency/delivery figures are requested or explicitly marked as placeholders needing an owner",
+        "The response keeps implementation design out of scope (no queueing/push-provider/architecture choices)",
+        "The response mentions validating traceability (which upstream need each requirement serves) before the spec can be approved"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Review this excerpt of our draft FRD against your functional-spec standards. Itemize every defect you find and how to fix each:\n\n# FRD — Password Reset\nStatus: draft\n\n## Functional Requirements\n- The system should be fast and easy to use.\n- FR-010: The system shall send a reset email and log the user in automatically after reset and lock the account after repeated failures.\n- FR-010.1: The reset link expires.\n- Users can change their email address.\n\n## Acceptance Criteria\n  GIVEN the AuthService returns a valid reset token from Redis\n  WHEN the user clicks the blue 'Reset now' button on the modal\n  THEN the ResetController updates the password hash\n\n## Non-Functional\n- NFR-001: P95 <= 800ms.",
+      "expected_output": "A structured review that catches every planted defect: the untestable 'fast and easy to use' requirement, FR-010 bundling three behaviors into one non-atomic statement, the forbidden dotted sub-ID FR-010.1, the ID-less untraced 'users can change their email' requirement (also scope creep with no upstream parent), the imperative implementation-coupled Gherkin (Redis/AuthService/blue button/ResetController) that must be rewritten declaratively, the completely missing Error & Edge States section, and the template-fill NFR 'P95 <= 800ms' lacking window, load condition, and breach consequence — each tied to the skill's rules with a concrete rewrite.",
+      "files": [],
+      "expectations": [
+        "The review flags 'The system should be fast and easy to use' as untestable and shows a measurable rewrite (the skill's anti-pattern: attach a numeric threshold such as a P95 target)",
+        "The review flags FR-010 as non-atomic — it bundles send-email, auto-login, and account-lockout — and requires splitting into separate FR-NNN statements that can be traced and tested independently",
+        "The review flags FR-010.1 as a forbidden dotted/positional sub-ID: IDs are immortal and flat, and a requirement needing children is not atomic",
+        "The review flags 'Users can change their email address' as lacking an FR-NNN ID, lacking a Trace line, and being an orphan/scope-creep requirement with no upstream parent (and off-topic for a password-reset spec)",
+        "The review flags the Gherkin as imperative and implementation-coupled — AuthService, Redis, ResetController, and the blue button are internals/UI clicks — and rewrites it as declarative business intent",
+        "The review notes the acceptance criteria carry no [FR-NNN] suffix tags, breaking the paste-through convention into story-card scenarios",
+        "The review flags the missing Error & Edge States section (expired link, reuse of a used link, unknown email, repeated requests) as a mandatory-section omission — the most common senior-review bounce",
+        "The review flags NFR-001 'P95 <= 800ms' as template-fill: a fit criterion needs percentile + threshold + measurement window + load condition + breach consequence, and a Trace line",
+        "Defects are itemized individually with concrete fixes, not summarized in one vague paragraph"
+      ]
+    }
+  ]
+}

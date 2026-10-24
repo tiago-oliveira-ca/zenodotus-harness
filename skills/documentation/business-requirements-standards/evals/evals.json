@@ -1,0 +1,55 @@
+{
+  "skill_name": "business-requirements-standards",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I'm the ops director at ParcelPeak, a regional parcel carrier. 19% of our home deliveries fail on the first attempt (driver arrives, nobody home), and each failed attempt costs us about EUR 4.10 in re-delivery cost plus measurable churn: shippers whose failed-first-attempt rate exceeds 25% renew contracts at half our normal rate. We want an initiative to let recipients pick a delivery window and redirect parcels to pickup lockers before the first attempt. Legal says any recipient messaging must respect the e-privacy consent rules in all three countries we operate in, and finance has ruled out signing any new SMS gateway vendor this fiscal year. Write the full BRD for this initiative.",
+      "expected_output": "A complete BRD with document control, an executive summary that states the failed-delivery problem and cost before any solution, SMART business objectives with baselines (19% failure rate) and deadlines, BR-NNN identified and prioritized business requirements each with an owner, explicit in-scope/out-of-scope lists, the no-new-SMS-vendor constraint recorded as a labeled constraint, dated assumptions, a most-likely-failure-mode entry, metric-gated acceptance criteria, and a downstream traceability section — with no technical design content.",
+      "files": [],
+      "expectations": [
+        "Output includes a Document Control section with version, owner/author, date, and status",
+        "The executive summary states the problem (failed first-attempt deliveries, cost, churn) and why-now before any solution or feature is described — the document justifies the work even with its solution content removed",
+        "Every business objective is SMART: it names a measurable target with a baseline (e.g. the 19% first-attempt failure rate) and a time-bound deadline, not vague verbs like 'improve' or 'optimize'",
+        "Every business requirement carries a unique immortal BR-NNN ID and an explicit priority (e.g. MoSCoW Must/Should) with a named owner",
+        "The Scope section lists both in-scope items and explicit out-of-scope exclusions",
+        "The 'no new SMS gateway vendor this fiscal year' input is recorded explicitly as a labeled constraint, and the e-privacy consent rule appears as a requirement or constraint owned by Legal",
+        "Every assumption is dated at capture",
+        "The document contains a 'most likely way this fails' (or equivalently-named risk) entry, per the skill's review rules",
+        "Acceptance is metric-based, not ship-based: at least one success metric is stated so it can fail (threshold plus consequence), and the BRD carries no upward Trace (it is the root) while the traceability section points downstream to a future PRD"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "My VP just told me: 'Customer support is a mess, we need a project to make the support experience better. Write up the business requirements so we can get budget.' That is literally all I have — no metrics, no idea who the stakeholders are, and no decision yet on what's in or out of scope. Produce the BRD.",
+      "expected_output": "A response that does not fabricate a finished BRD from nothing: it identifies the skill's required inputs that are missing (target outcomes and success metrics, stakeholders and decision-makers, scope boundaries and exclusions, risks/assumptions), asks targeted clarifying questions or delivers a clearly-marked skeleton with explicit gaps/placeholders, refuses to invent baselines or fake numeric targets, and flags that 'make the support experience better' is unmeasurable as stated.",
+      "files": [],
+      "expectations": [
+        "The response explicitly flags that required BRD inputs are missing, naming at least three of the skill's Required Inputs: target outcomes/success metrics, stakeholders and decision-makers, scope boundaries and exclusions, risks/dependencies/assumptions",
+        "The response asks concrete clarifying questions (or marks explicit TODO/placeholder gaps) instead of silently delivering a complete-looking BRD",
+        "No fabricated baseline numbers, percentages, or dates are presented as fact — any illustrative figure is clearly labeled as a placeholder or example to be confirmed",
+        "The vague ask 'make the support experience better' is called out as failing the SMART/measurability test, with at least one example of how to restate it as a measurable, time-bound objective",
+        "The response asks who the sponsor/decision-makers are, or flags that no approval path or requirement owner can be assigned yet",
+        "The response asks for explicit out-of-scope exclusions or warns that missing exclusions lead to uncontrolled scope growth",
+        "The response does not propose technical solutions or architecture (no tool, vendor, or system-design choices) — business intent stays separate from technical design",
+        "Any assumptions the response does record are dated"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Review this excerpt from our draft BRD against your BRD standards and list every defect you find with what to fix:\n\n# BRD — Member Portal Modernization\nStatus: draft\n\n## Objectives\n- Improve member engagement across the portal.\n- The system shall be rebuilt on MongoDB and React to be more user-friendly.\n\n## Requirements\n- Members can do everything they do today, but better.\n- Reduce support calls.\n\n## Scope\nIn scope: the whole member portal.\n\n## Assumptions\n- Most members prefer self-service.\n\n## Acceptance\nThe initiative is accepted when the new portal ships to production.",
+      "expected_output": "A structured review that catches every planted defect: the unfalsifiable 'improve member engagement' objective (no baseline, target, or deadline), the MongoDB/React statement as solution-masquerading-as-requirement, 'user-friendly' and 'better' as vague unmeasurable terms, requirements lacking BR-NNN IDs, owners, and priority, the missing out-of-scope exclusions, the undated assumption, and ship-based rather than metric-based acceptance — each mapped to the skill's anti-pattern names and rules with a concrete fix.",
+      "files": [],
+      "expectations": [
+        "The review flags 'Improve member engagement' as unfalsifiable/not SMART — no baseline, no numeric target, no deadline — and shows a measurable rewrite",
+        "The review flags 'shall be rebuilt on MongoDB and React' as the solution-masquerading-as-requirement anti-pattern (technical design in a BRD) and says to state the business need instead, recording any real constraint explicitly as a constraint",
+        "The review flags 'user-friendly' and/or 'better' as banned vague terms that need a measurable definition",
+        "The review flags that requirements carry no unique BR-NNN IDs, no owners, and no prioritization (e.g. MoSCoW)",
+        "The review flags the missing out-of-scope exclusions ('in scope: the whole member portal' with no Out list) as the missing-exclusions anti-pattern",
+        "The review flags the undated assumption 'Most members prefer self-service' — every assumption must be dated at capture",
+        "The review flags the acceptance criterion as ship-based, not metric-based: 'accepted when the portal ships' can never fail, and acceptance must be gated on live, trending metrics",
+        "The review notes the absence of a 'most likely way this fails' entry and/or missing stakeholder/approval information",
+        "Defects are itemized individually (not summarized as one vague paragraph), each with a concrete fix drawn from the skill's rules or anti-pattern table"
+      ]
+    }
+  ]
+}

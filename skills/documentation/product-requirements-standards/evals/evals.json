@@ -1,0 +1,55 @@
+{
+  "skill_name": "product-requirements-standards",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "We run Verdana, a B2B SaaS for landscaping companies to schedule crews and jobs. Our approved BRD for the 'No-Show Reduction' initiative has two objectives: BR-001 (Must) — cut customer no-show visits from 12% to under 5% of scheduled jobs by Q2 2027, owner: COO; BR-002 (Should) — keep customer opt-out rate from reminder messaging under 3%/month, owner: Legal. We interviewed 11 crew dispatchers in May 2026 and surveyed 240 end customers in June 2026. The product answer is appointment reminders with customer self-reschedule. Marketing also keeps asking for a promotional-messaging blast feature, which we've decided NOT to do this release. Write the PRD.",
+      "expected_output": "A complete PRD with document control tracing to the BRD, a vision/problem statement, evidence-cited personas (dispatcher interviews n=11, customer survey n=240), INVEST-shaped user stories mapped to PRD IDs, a prioritized feature list where every capability carries an immortal PRD-NNN ID plus MoSCoW priority plus Trace: BR-NNN, a Won't row recording the rejected promotional-blast feature with a reason, falsifiable success metrics with owner and cadence traced to BR IDs, explicit non-goals, and release criteria naming which PRD IDs must ship — with no implementation detail.",
+      "files": [],
+      "expectations": [
+        "Output includes Document Control (version, owner, status) and declares upward traceability to the BRD",
+        "A product vision / problem statement section justifies the work before any feature list appears",
+        "Personas cite the supplied evidence (11 dispatcher interviews May 2026, 240-customer survey June 2026) rather than asserting assumed users",
+        "User stories follow the 'As a <persona>, I want <capability>, so that <benefit>' form and each story maps to a PRD-NNN capability",
+        "Every feature carries an immortal PRD-NNN ID, an explicit priority (e.g. MoSCoW), and a 'Trace: BR-001' or 'Trace: BR-002' line to the supplied BRD objectives",
+        "The rejected promotional-messaging blast appears as a 'Won't (this release)' row with a recorded reason, not silently omitted",
+        "Every success metric is falsifiable (numeric threshold that can fail), names an owner and a measurement cadence, and traces to a BR ID",
+        "A Non-Goals section is present and explicit, not an empty placeholder",
+        "Release criteria name which PRD IDs must ship (and which may trail), and the PRD contains no implementation detail, UI copy, or technology choices"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Our CEO came back from a conference and said: 'Every competitor has an AI assistant now. Write the PRD for our AI assistant, I want it next sprint.' We have no BRD for this, nobody has talked to users about it, and we have no idea what it should actually do or for whom. Please write the PRD anyway.",
+      "expected_output": "A response that does not fabricate a finished PRD: it flags the missing required inputs (approved BRD objectives and scope, target users/personas, prioritization constraints), refuses to invent user research or personas without evidence, refuses to attach fake BR-NNN trace parents when no BRD exists, asks targeted clarifying questions about the problem and users, and — if it drafts anything — clearly marks gaps and placeholder assumptions rather than presenting them as decided.",
+      "files": [],
+      "expectations": [
+        "The response flags that the skill's required inputs are missing, naming at least: BRD objectives/approved scope, target users or personas, and prioritization constraints",
+        "The response asks what user or business problem the assistant solves (problem before solution) instead of jumping straight to a feature list",
+        "No fabricated personas or invented research citations — the response either asks for evidence (interviews, usage data) or explicitly labels any persona sketch as an unvalidated assumption to be researched",
+        "The response does not attach fake 'Trace: BR-NNN' parents to a nonexistent BRD — it flags the missing BRD/business objective and asks for it (or proposes creating one first)",
+        "The response warns against an unprioritized wish-list: any capability list it sketches is explicitly prioritized or explicitly marked as unprioritized pending input",
+        "The response asks about non-goals / scope boundaries, or warns that undefined scope for 'an AI assistant' guarantees scope creep",
+        "Success metrics are not invented as decided facts — the response asks what business outcome would make the feature a success, or marks candidate metrics as proposals needing an owner",
+        "The response avoids implementation/technology prescriptions (no model choice, vendor, or architecture)"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Review this excerpt of our draft PRD against your PRD standards. List every defect and how to fix it:\n\n# PRD — Smart Inbox\nStatus: draft\n\n## Target Users\nOur typical user is anyone aged 18-65 who uses email.\n\n## Features\n- Smart categorization of incoming mail. Built on Redis streams with a React front-end, using a 3-column UI layout.\n- Redesign the onboarding experience end to end.\n- Snooze emails.\n- Bulk unsubscribe.\n\n## Success Metrics\n- Increase user engagement.\n\n## Release Criteria\nShip everything above.",
+      "expected_output": "A structured review that catches every planted defect: the evidence-free 'anyone aged 18-65' persona, the Redis/React/3-column implementation detail inside a feature, the unprioritized feature list with no PRD-NNN IDs and no Trace lines, 'Redesign the onboarding experience' as a non-INVEST bundle that should be split, the unfalsifiable owner-less untraced 'increase user engagement' metric, the missing Non-Goals section (and absent Won't rows), and 'ship everything' release criteria that name no IDs — each mapped to the skill's anti-patterns with a concrete fix.",
+      "files": [],
+      "expectations": [
+        "The review flags 'anyone aged 18-65 who uses email' as the personas-without-evidence anti-pattern and requires cited research, interviews, or usage data",
+        "The review flags 'Built on Redis streams with a React front-end, using a 3-column UI layout' as implementation/UI detail that must move downstream (FSD/TRD), keeping the PRD at capability level",
+        "The review flags that no feature carries a PRD-NNN ID or a 'Trace: BR-NNN' line to a BRD objective",
+        "The review flags the feature list as unprioritized (no MoSCoW/Kano/rank) — an unprioritized feature list is not a PRD",
+        "The review flags 'Redesign the onboarding experience end to end' as failing INVEST (not Independent/Small — a bundle) and says to split it into one story/capability per outcome",
+        "The review flags 'Increase user engagement' as unfalsifiable with no owner, no cadence, and no trace to a BRD objective — a vanity metric",
+        "The review flags the missing Non-Goals section (and the absence of recorded 'Won't' rows) as the missing-non-goals anti-pattern that lets scope grow silently",
+        "The review flags 'Ship everything above' as inadequate release criteria — criteria must name which PRD IDs must ship and which may trail",
+        "Defects are itemized individually with concrete fixes, not summarized in one vague paragraph"
+      ]
+    }
+  ]
+}

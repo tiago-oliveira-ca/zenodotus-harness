@@ -1,0 +1,23 @@
+{
+  "skill_name": "rust",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I'm building an Order aggregate in Rust for a small e-commerce backend. It has an OrderId, a list of line items, and a status that goes Draft -> Placed -> Shipped -> Delivered. I need to load orders from Postgres via sqlx and also create brand new orders. How should I model this so invariants are enforced but loading from the DB doesn't fight me? Also want repository trait design for this.",
+      "expected_output": "Should cover: Order as an aggregate root owning LineItem values by ownership (not Arc), a value object or newtype for OrderId, separate `create`/`reconstruct` (or similarly named) constructors solving the reconstitution problem, a runtime enum for status (not typestate, since it round-trips through the DB) with a note on why typestate would be a bad fit here, a Repository trait defined at the consumer with narrow methods, and a separate sqlx FromRow struct mapped via TryFrom rather than deriving FromRow/serde directly on Order.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "should I use Arc<dyn Repository> or generics for my repository traits in a Rust hexagonal architecture project? also some of my repo methods are async and I want to store them as trait objects in my AppState, what's the actual story with async traits and dyn in 2026?",
+      "expected_output": "Should present static vs dynamic dispatch as a genuine tradeoff (not declare one universally correct), recommend generics by default and Arc<dyn Trait> at the composition root for runtime selection, and correctly explain that native async fn in traits is not dyn-compatible, pointing to #[async_trait] and/or dynosaur as the resolution, while flagging that exact crate versions/status should be verified rather than asserted.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "My use case needs to update an Account and also insert a Transaction record atomically in the same DB transaction, using two different repository traits (AccountRepository and TransactionRepository). What's the right way to handle this in Rust without everything turning into a lifetime nightmare?",
+      "expected_output": "Should acknowledge this is a genuinely hard, unsettled area in Rust DDD (not a one-line answer), explain that transaction-inside-repository-method is the default but doesn't cover cross-aggregate atomicity, recommend a closure-based Unit-of-Work as the least-bad option for this specific case, and honestly describe the lifetime/abstraction-leakage tradeoffs rather than presenting it as a clean solved pattern.",
+      "files": []
+    }
+  ]
+}

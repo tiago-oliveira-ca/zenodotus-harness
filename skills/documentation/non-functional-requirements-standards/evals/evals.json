@@ -1,0 +1,56 @@
+{
+  "skill_name": "non-functional-requirements-standards",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Write the dedicated NFR document for Meridian Pay's card-payment ledger service. Context: tier-1 criticality (it posts every card transaction); PCI-DSS applies and our enterprise contracts commit us to a 99.95% monthly availability SLA with service credits on breach; current peak is 1,200 transactions/second on Black-Friday-type events, and sales projects 3x that peak within two years; data classification is 'restricted' (cardholder data); the business has set RTO of 1 hour and RPO of 5 minutes for tier-1 services. Staging load tests run at one-tenth of production traffic. Cover the full quality-attribute spread and make every target verifiable.",
+      "expected_output": "A complete NFR document with document control, purpose/scope, and all six category sections (performance, availability/reliability, security, scalability, compliance, disaster recovery), where every NFR is a measurable numeric or binary target with an assigned verification method (load test, pentest/audit, chaos drill, synthetic monitor), traces to a business driver, the contractual SLA, or PCI-DSS, separates launch targets from the 3x year-2 scaling target, states RTO 1h / RPO 5min explicitly, and calls out the staging-vs-production environment difference.",
+      "files": [],
+      "expectations": [
+        "Output includes Document Control (version, owner, status) plus a Purpose and Scope section naming the ledger service and its tier-1 criticality",
+        "All six categories from the skill's recommended structure are addressed: performance, availability/reliability, security, scalability, compliance, and disaster recovery",
+        "Every NFR states a measurable numeric or binary target \u2014 no bare adjectives like 'fast', 'secure', or 'scalable' without a threshold",
+        "Performance targets state percentile latency and/or throughput against a stated load condition (e.g. at the 1,200 TPS peak), not a context-free number",
+        "The 99.95% monthly availability SLA appears with its measurement method (e.g. external synthetic monitor) and is tied to the contractual service-credit consequence",
+        "Every NFR has an assigned verification method (load test, penetration test/audit, chaos/DR drill, synthetic monitoring, inspection, or analysis)",
+        "Each NFR traces to a business driver, the contractual SLA, or the PCI-DSS regulatory citation \u2014 no rationale-free targets",
+        "Launch targets are separated from the year-2 3x-peak scalability target, and RTO <= 1 hour / RPO <= 5 minutes appear explicitly in the DR section for the tier-1 classification",
+        "The staging-at-one-tenth-traffic difference is handled with environment-specific targets (or an explicit statement of how staging results extrapolate), not one production target applied to all environments"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Our CTO said: 'Customers keep asking about SLAs. Write up our non-functional requirements \u2014 basically the system needs to be reliable, secure, and able to scale.' I can't tell you our traffic numbers, we've never classified system criticality, I don't know if any compliance regime applies to us, and we have no RTO/RPO targets. Produce the NFR document.",
+      "expected_output": "A response that does not fabricate SLA numbers: it names the skill's missing required inputs (business criticality tier, compliance/regulatory regime, expected load and growth, existing SLAs/contractual obligations, RTO/RPO targets and data sensitivity), asks targeted questions to obtain them, flags 'reliable, secure, able to scale' as untestable adjectives, and if it sketches a structure, marks all targets as placeholders requiring business decisions \u2014 never presenting invented uptime, latency, or recovery numbers as commitments.",
+      "files": [],
+      "expectations": [
+        "The response flags the missing required inputs by name, covering at least: business criticality tier, compliance/regulatory regime, expected load/growth and peak patterns, existing SLAs or contractual obligations, and RTO/RPO targets with data sensitivity classification",
+        "The response asks concrete clarifying questions to obtain those inputs rather than silently guessing",
+        "The response explicitly flags 'reliable', 'secure', and 'able to scale' as vague adjectives that are untestable without a measurable threshold, citing what a testable version looks like (e.g. an uptime percentage with a measurement method)",
+        "No invented commitments: any numeric target shown (uptime, latency, RTO/RPO) is clearly labeled as an example or placeholder pending a business decision, not stated as the requirement",
+        "The response explains that RTO/RPO cannot be set without a criticality tier (targets differ per tier) rather than assigning arbitrary recovery numbers",
+        "The response notes each eventual NFR will need an assigned verification method and a trace to a business driver, SLA, or regulation",
+        "The response asks whether a compliance regime (e.g. SOC2, HIPAA, PCI-DSS, GDPR) applies, or flags that the compliance section cannot be written without that answer",
+        "The response still provides forward structure (the six-category skeleton or a list of decisions needed) so the stakeholder can act, rather than only refusing"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Review this excerpt of our draft NFR document against your NFR standards. List every defect and how to fix each one:\n\n# NFRs \u2014 Booking Platform\nStatus: draft\n\n- NFR-01 Performance: the system should feel fast for users.\n- NFR-02 Availability: 99.99% uptime. This same target applies to production, staging, and dev.\n- NFR-03 Security: the system should be highly secure.\n- NFR-04 Scalability: the system should scale well as we grow.\n- NFR-05: API latency P99 under 300ms.\n\nThat's the whole document \u2014 we figured disaster recovery is an ops problem, so we left it out.",
+      "expected_output": "A structured review that catches every planted defect: 'feel fast' and 'highly secure' and 'scale well' as untestable adjectives without numbers, the 99.99% uptime target with no measurement method and wrongly applied uniformly to staging/dev, NFR-05's latency number lacking a load condition and verification method, no NFR having an assigned verification method, no NFR tracing to a business driver, SLA, or regulation, the missing compliance section, and the deliberately omitted disaster-recovery section with no RTO/RPO \u2014 each mapped to the skill's anti-pattern table with a concrete fix.",
+      "files": [],
+      "expectations": [
+        "The review flags NFR-01 'should feel fast' as the adjective-without-a-number anti-pattern and rewrites it with a percentile threshold, load condition, and measurement method",
+        "The review flags NFR-02's uniform target as the one-target-for-all-environments anti-pattern \u2014 production, staging, and dev need environment-specific targets where they differ",
+        "The review flags NFR-02 as also missing a measurement method (e.g. external synthetic monitor) and a measurement window for the 99.99% figure",
+        "The review flags NFR-03 'highly secure' as untestable and rewrites it as a verifiable target (e.g. OWASP ASVS level, pentest finding thresholds)",
+        "The review flags NFR-04 'scale well' as untestable and requires a numeric growth/load target with a scaling behavior threshold",
+        "The review flags NFR-05 as incomplete despite having a number: no load condition (RPS/concurrency), no measurement window, and no verification method attached",
+        "The review flags that no NFR traces to a business driver, contractual SLA, or regulation \u2014 rationale-free targets invite scope negotiation later",
+        "The review flags the missing disaster-recovery section as the missing-DR-targets anti-pattern: RTO/RPO per criticality tier must be specified before launch, not deferred to ops during an incident",
+        "The review flags the missing compliance section (and absent criticality-tier statement), since the skill's pre-flight checklist requires all six categories to be addressed",
+        "The review flags the requirement IDs as violating the house ID grammar \u2014 documentation/references/lifecycle.md mandates zero-padding to three digits (NFR-001, not NFR-01)"
+      ]
+    }
+  ]
+}

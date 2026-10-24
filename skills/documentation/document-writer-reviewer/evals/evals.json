@@ -1,0 +1,56 @@
+{
+  "skill_name": "document-writer-reviewer",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Turn these raw kickoff-meeting notes into a proper delivery document our team can actually review and build from:\n\n'Team wants self-serve password reset for the B2B portal. Users click forgot password, get an email link, link dies after a while, set new password, old sessions get killed. Support says 30% of tickets are password resets, want that way down. Must work for SSO-federated accounts too somehow?? Legal mentioned we can't email the actual password obviously. QA asked how they'd test the expiry. Target next quarter.'\n\nNormalize it into the right document type with proper structure.",
+      "expected_output": "A response that identifies and states the artifact type it chose (an FSD/FRD for the reset flows, or FRD plus noted BRD-level content), normalizes the notes into a clear section hierarchy with document control, converts behaviors into atomic testable 'shall' requirements with IDs and acceptance criteria, replaces vague terms ('a while', 'way down') with measurable placeholders or criteria, separates the business rationale (ticket reduction) from functional behavior, flags the SSO question as an open item, and marks any content invented beyond the notes as [Recommended Enhancement].",
+      "files": [],
+      "expectations": [
+        "The response explicitly identifies the document type it is producing (e.g. FSD/FRD) and states why, per scope and audience",
+        "The output has a clear section hierarchy including document control (version, status, owner/approval expectations)",
+        "Functional behaviors are written as atomic requirement statements with unique IDs — link issuance, expiry, password update, and session invalidation are separate requirements, not one packed sentence",
+        "Mandatory behavior uses 'shall'; recommendations use 'should'",
+        "Vague values are made measurable or explicitly parameterized: 'link dies after a while' becomes a concrete or TBD-marked expiry duration, and 'want that way down' becomes a measurable success target",
+        "The business rationale (30% of support tickets) is kept in a business-context/objectives section, separate from the functional specification itself",
+        "The unresolved SSO-federated-accounts question is surfaced as an explicit open issue or assumption, not silently resolved",
+        "Requirements are testable enough to answer QA's expiry question (acceptance criteria or verification notes present)",
+        "Any content added beyond the supplied notes (e.g. rate limiting, audit logging) is marked as [Recommended Enhancement]"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Someone left this fragment in our docs/ folder with no title and no context. Can you clean it up into something reviewable?\n\n'The migration will move all tenants by Q3. Rollback is manual. Steve knows the DNS steps. If load gets weird we pause. Success = nobody notices. Some tenants have custom SSL certs which is a problem we should figure out. After each batch run the smoke checks.'\n\nWe don't know who wrote it or what it was for.",
+      "expected_output": "A response that infers and states the most plausible artifact type (a migration runbook / transition plan), rather than leaving it ambiguous; normalizes it into structure while preserving the original intent; flags the governance vacuum (no owner, no version, no status, no approval path) explicitly; converts vague content ('load gets weird', 'nobody notices', 'Steve knows the DNS steps') into measurable criteria or explicit gaps; surfaces the custom-SSL risk and unknown authorship as called-out gaps; and marks everything added beyond the fragment as [Recommended Enhancement] instead of silently fabricating procedure detail.",
+      "files": [],
+      "expectations": [
+        "The response infers the artifact type from scope and audience (migration runbook / cutover or transition plan), and explicitly states that inference as a choice",
+        "The governance gap is called out directly: no owner, no version, no status, no approval path — and document control fields are added (with unknowns marked as TBD, not invented)",
+        "'Steve knows the DNS steps' is flagged as an unexecutable single-person dependency; the fix demands the actual documented steps or marks them as a critical missing procedure, rather than inventing DNS steps",
+        "'If load gets weird we pause' is replaced with or flagged for measurable pause criteria (specific metrics/thresholds), not left as vague judgment",
+        "'Success = nobody notices' is converted to measurable success criteria or flagged as unmeasurable as written",
+        "The custom-SSL-cert issue is surfaced as an explicit risk/open item with an owner or resolution step required, not buried in prose",
+        "The manual rollback is flagged as a risk requiring a documented rollback procedure and escalation path",
+        "Content the reviewer adds beyond the fragment (e.g. a smoke-check checklist, batch sequencing table) is marked [Recommended Enhancement]",
+        "The original intent (batched tenant migration with pause/rollback safety) is preserved — the rewrite restructures without changing what the author meant"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Audit this spec before it goes to the architecture review board tomorrow. Give me your findings with severities, worst first, then the fixed version:\n\n# Payments Spec\n\nThe system should be fast and secure.\n\nBecause finance wants to cut chargeback costs by half this year, the service shall use tokenized card storage and also send email receipts and retry failed webhooks up to some reasonable number of times.\n\nScope: TBD\n\nVerify with: curl -X POST https://api.internal.example/payments/selftest\n\n(no other sections exist — no version, no owner, no approval info)",
+      "expected_output": "A severity-classified review using the [CRITICAL]/[MAJOR]/[MINOR]/[Recommended Enhancement] ladder, ordered worst-first: [CRITICAL] undefined scope ('Scope: TBD') and [CRITICAL] missing governance/approval path (no version, owner, status, approval info); [MAJOR] the compound requirement bundling tokenized storage, email receipts, and webhook retries, and [MAJOR] business rationale (chargeback costs) mixed into the technical requirement; [MINOR] vague 'fast and secure' and 'some reasonable number', and [MINOR] missing requirement IDs; plus the embedded curl command flagged as unexecuted — marked TODO-VERIFY: unexecuted (or actually run). Followed by a corrected rewrite with additions marked [Recommended Enhancement].",
+      "files": [],
+      "expectations": [
+        "The undefined scope ('Scope: TBD') is flagged at [CRITICAL] severity as an approval blocker",
+        "The missing governance — no version, no owner/status, no approval path — is flagged at [CRITICAL] severity",
+        "The compound statement bundling tokenized card storage, email receipts, and webhook retries is flagged at [MAJOR] severity and split into one requirement per statement in the rewrite",
+        "The business rationale (finance's chargeback-cost goal) mixed into the technical requirement is flagged (at [MAJOR] or higher) and separated into its own business-context section in the rewrite",
+        "'Fast and secure' is flagged at [MINOR] severity as vague wording and replaced with measurable criteria or named standards (e.g. latency target, PCI DSS reference)",
+        "'Up to some reasonable number of times' is flagged as vague and replaced with a concrete or explicitly-TBD retry count/backoff policy",
+        "The absence of requirement IDs is flagged at [MINOR] severity and the rewrite assigns unique IDs",
+        "The embedded curl command is treated as part of the testable surface: it is either executed with the result reported, or explicitly marked 'TODO-VERIFY: unexecuted' in the delivered document",
+        "Findings are presented worst-first — Critical and Major before Minor — and any content added beyond the original (e.g. a risks section) is marked [Recommended Enhancement]"
+      ]
+    }
+  ]
+}

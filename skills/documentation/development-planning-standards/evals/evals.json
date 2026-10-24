@@ -1,0 +1,54 @@
+{
+  "skill_name": "development-planning-standards",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Our SAD for the 'MediRemind' medication-adherence platform defines a component called the Notification Service (SAD section 4.3, decided in ADR-007 'Use a queue-backed push architecture'). It must satisfy FRD-021 (patients receive a push reminder at each scheduled dose time), FRD-022 (a caregiver is notified if a dose is not confirmed within 30 minutes), and NFR-005 (reminder delivery within 60 seconds of schedule, 99.9% of the time). The team runs 2-week sprints with about 20 points of capacity and already has a standard team-wide Definition of Done. Break this component down into an Epic with sprint-ready Stories and Tasks so we can start pulling work next sprint.",
+      "expected_output": "One Epic titled after the Notification Service component with Architecture Link (SAD 4.3, ADR-007), Business Link, Success Criteria, and a Story list; each Story titled as a behavior with a narrative (or plain behavioral statement for system-to-system Stories), Given/When/Then acceptance criteria testable directly, traceability to this Epic and exactly one of FRD-021/FRD-022/NFR-005, an estimate, dependencies, and a Definition of Ready check; Tasks are concrete implementation steps under Stories with no acceptance criteria of their own.",
+      "files": [],
+      "expectations": [
+        "The Epic is titled after the architecture component/capability (e.g. 'Notification Service'), not an activity like 'Build notification stuff'",
+        "The Epic includes an Architecture Link naming SAD section 4.3 and ADR-007, a Business Link, and explicit Success Criteria",
+        "Every Story traces to exactly one Epic and exactly one requirement ID (FRD-021, FRD-022, or NFR-005) — no orphaned or multi-requirement Stories",
+        "Story titles name behaviors (e.g. 'Send dose reminder push at scheduled time'), not tasks or technologies",
+        "User-facing Stories use the 'As a <actor>, I want <capability>, so that <benefit>' narrative; system-to-system Stories use a plain behavioral statement instead of a forced persona",
+        "Every Story has Given/When/Then (or checklist) acceptance criteria specific enough to write a test from directly — nothing like 'works correctly'",
+        "Every Story carries an estimate and identified dependencies, and each is sized to fit within one 2-week sprint (INVEST Small), with any larger candidate split",
+        "Tasks are concrete technical steps (migration, producer, tests) inside Stories, with estimates but no acceptance criteria of their own",
+        "Definition of Done is referenced as the inherited team standard, not rewritten per Story; each Story is checked against the Definition of Ready before being called sprint-eligible"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "My manager forwarded me one line from a meeting: 'We need offline mode in the mobile app — break this down into stories for the team.' That's genuinely all I have. Can you produce the epic and the sprint-ready story breakdown?",
+      "expected_output": "A response that declines to fabricate a sprint-ready breakdown from a one-liner, and instead walks through the skill's Required Inputs — which SAD component/capability this maps to, which FRD/NFR requirement IDs each Story must satisfy, team capacity and sprint length, and existing DoR/DoD conventions — asking for them or clearly marking any sketch as a provisional draft that fails Definition of Ready until traceability and estimates exist.",
+      "files": [],
+      "expectations": [
+        "The response does not present a fabricated breakdown as sprint-ready; any sketch is explicitly labeled provisional/not Ready",
+        "It asks which SAD component or capability 'offline mode' maps to (or flags that no architecture link exists yet)",
+        "It asks for the FRD/NFR requirement ID(s) involved, and does not invent requirement IDs to fill the traceability field",
+        "It flags that a Story that cannot name its Epic and requirement is scope without a design basis (the orphaned-Story problem)",
+        "It asks for team capacity and sprint length, since Stories cannot be sized to 'fits in one sprint' without them",
+        "It asks whether the team already has Definition of Ready / Definition of Done conventions rather than inventing new ones",
+        "It states explicitly that unestimated, untraceable stories fail the Definition of Ready and must not enter sprint planning",
+        "It notes that 'offline mode' is Epic-sized (too large to implement or estimate as one unit) and would need splitting via named patterns (e.g. workflow steps, happy path vs. edge cases) once inputs exist"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Review this backlog extract for our 'ShopLite' e-commerce build before sprint planning tomorrow and list every problem:\n\nEPIC E-9: Build checkout stuff\n(no success criteria recorded)\n\nSTORY S-31: Update the database\n- Estimate: 3 pts\n- AC: none\n- Epic: E-9\n\nSTORY S-32: Checkout flow\n- As a shopper, I want to check out, so that I can buy things\n- AC: checkout works correctly end to end\n- Estimate: 21 pts (team velocity is 18/sprint; we figure it'll span 2-3 sprints, that's fine)\n- Epic: E-9, Requirement: FRD-104\n- DoD for this story: we agreed to skip code review and tests on this one to hit the date\n\nSTORY S-33: Send order confirmation email\n- AC: Given a completed order, when payment settles, then a confirmation email with order number and line items is sent within 2 minutes\n- Estimate: 3 pts\n- Epic: (none) Requirement: (none)",
+      "expected_output": "A review that catches every planted defect: E-9 titled as an activity with no success criteria; S-31 is a Task disguised as a Story (no acceptance criteria, no independent value); S-32's acceptance criterion 'works correctly' is untestable, it is oversized at 21 points vs 18 velocity and must be split by a named pattern, and its per-Story weakened Definition of Done is illegitimate; S-33 is orphaned with no Epic or requirement link — each with the fix the skill prescribes.",
+      "files": [],
+      "expectations": [
+        "Flags Epic E-9's title 'Build checkout stuff' as an activity, not a component/capability, and its missing success criteria (the epic-that-never-closes anti-pattern)",
+        "Flags S-31 'Update the database' as a Task disguised as a Story — no acceptance criteria, not independently valuable — to be reframed around a behavior or demoted to a Task inside a real Story",
+        "Flags S-32's acceptance criterion 'checkout works correctly end to end' as untestable and demands criteria specific enough to write a test from",
+        "Flags S-32 as oversized (21 pts against 18/sprint velocity, spanning multiple sprints) and rejects 'it'll span 2-3 sprints' — it fails INVEST Small and must be split",
+        "Recommends splitting S-32 along at least one named pattern from the skill (workflow steps, business rules, CRUD, happy path vs. edge cases, or cross-cutting concerns)",
+        "Flags S-32's per-Story Definition of Done ('skip code review and tests') as redefining the standing team DoD — the quality bar is team-wide, not negotiated per Story",
+        "Flags S-33 as an orphaned Story with no Epic and no FRD/NFR requirement link, despite having good acceptance criteria",
+        "Concludes with a Definition of Ready verdict: none of these Stories is sprint-eligible as written"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "skill_name": "python/frameworks/django-rest-framework",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Write a DRF ViewSet for a BlogPost model that has a title, body, author (FK to User), category (FK to Category), tags (M2M), is_published, created_at, updated_at. The ViewSet should: only allow owners to edit/delete their posts, return different serializers for list vs detail views, prevent N+1 queries, and let admins see all posts while regular users only see their own.",
+      "expected_output": "A ModelViewSet with: explicit field allowlists (not __all__), get_queryset() scoped to request.user with select_related/prefetch_related, get_serializer_class() returning different serializers per action, IsOwnerOrReadOnly or similar permission class, perform_create() setting author=request.user, and proper use of read_only_fields",
+      "files": [],
+      "assertions": [
+        "Serializer uses explicit fields allowlist (not '__all__')",
+        "get_queryset() calls select_related for ForeignKey relations (author, category)",
+        "get_queryset() calls prefetch_related for ManyToMany (tags)",
+        "get_queryset() filters by request.user for non-staff users",
+        "get_serializer_class() returns different serializers for list vs retrieve/create/update",
+        "perform_create() injects author from request.user",
+        "A custom permission class (or IsOwnerOrReadOnly) is used",
+        "read_only_fields includes 'author', 'created_at', 'updated_at' or they are excluded from write serializer"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Review this DRF code and fix all the problems you find:\n\n```python\nclass UserSerializer(serializers.ModelSerializer):\n    class Meta:\n        model = User\n        fields = '__all__'\n\nclass UserViewSet(viewsets.ModelViewSet):\n    queryset = User.objects.all()\n    serializer_class = UserSerializer\n    permission_classes = []\n\n    def list(self, request):\n        users = User.objects.all()\n        serializer = UserSerializer(users, many=True)\n        return Response(serializer.data)\n\n    def create(self, request):\n        serializer = UserSerializer(data=request.data)\n        if not serializer.is_valid():\n            return Response(serializer.errors, status=400)\n        serializer.save()\n        return Response(serializer.data)\n```",
+      "expected_output": "Fixed code that: replaces __all__ with explicit fields list, adds IsAuthenticated permission, removes the redundant list() and create() overrides (or uses perform_create), uses raise_exception=True instead of manual if not is_valid(), and optionally scopes queryset to request.user",
+      "files": [],
+      "assertions": [
+        "fields = '__all__' is replaced with an explicit fields list",
+        "permission_classes is set to [IsAuthenticated] or similar (not empty)",
+        "serializer.is_valid(raise_exception=True) is used instead of the if/not pattern",
+        "The redundant list() and create() overrides are removed or significantly simplified",
+        "The response uses correct HTTP status codes (201 for created)"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "I'm building an e-commerce API. Show me how to structure the orders app with a service layer. The order creation flow needs to: validate cart items, decrement inventory, create the Order and OrderItem records in an atomic transaction, and send a confirmation email asynchronously after the transaction commits. Use DRF best practices.",
+      "expected_output": "Code showing: a services.py with a create_order function using @transaction.atomic, OrderItem creation inside the transaction, transaction.on_commit() for the async email task, a clean ViewSet that delegates to the service in perform_create(), and input serializer (can be plain Serializer, not ModelSerializer) for validation",
+      "files": [],
+      "assertions": [
+        "A services.py module is created with a create_order function (or similar)",
+        "The service function uses @transaction.atomic or 'with transaction.atomic():'",
+        "transaction.on_commit() is used for the async email/notification task",
+        "The ViewSet's perform_create() calls the service function",
+        "The service function does not import HttpRequest or DRF Response",
+        "Inventory decrement happens inside the atomic transaction"
+      ]
+    }
+  ]
+}

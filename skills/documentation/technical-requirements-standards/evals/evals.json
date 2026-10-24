@@ -1,0 +1,54 @@
+{
+  "skill_name": "technical-requirements-standards",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Our logistics startup is building 'ParcelPoint', a network of smart parcel lockers. The approved PRD (PRD-PP-2.1) covers: couriers open lockers via a mobile app over BLE, recipients get one-time pickup codes by SMS, lockers report door/occupancy telemetry to a cloud API every 30 seconds, and the business requires integration with two carrier systems (DHL and PostNL) over REST. Compliance requires GDPR handling of recipient phone numbers. Write the Technical Requirements Document for the locker cloud API and device firmware interface, ready for the engineering team to build and test against.",
+      "expected_output": "A TRD following the skill's recommended structure (Document Control, Purpose and Scope, System Overview, Assumptions/Dependencies/Constraints, Specific Requirements, Interfaces and Data Requirements, Verification and Traceability, Approval and Change Control), with uniquely identified atomic 'shall' requirements, each traceable upward to PRD-PP-2.1 items and each assigned a verification method (test, analysis, demonstration, or inspection).",
+      "files": [],
+      "expectations": [
+        "Document includes the recommended structure sections: Document Control, Purpose and Scope, System Overview, Assumptions/Dependencies/Constraints, Specific Requirements, Interfaces and Data Requirements, Verification and Traceability, and Approval and Change Control",
+        "Every mandatory requirement uses 'shall' phrasing",
+        "Every requirement carries a unique identifier (e.g. TR-NNN), with no duplicates",
+        "Requirements are atomic: no single requirement bundles two independently verifiable behaviors (e.g. authentication and logging are separate IDs)",
+        "Quantitative, measurable criteria are used instead of vague adjectives (e.g. telemetry interval, code expiry, response-time bounds) — no bare 'fast', 'reliable', or 'secure'",
+        "Each requirement (or a traceability table covering all of them) records upward traceability to a PRD-PP-2.1 source item",
+        "Each requirement is assigned a verification method drawn from test, analysis, demonstration, or inspection",
+        "Interface and data requirements (BLE courier interface, DHL/PostNL REST integrations, SMS delivery, telemetry payloads) appear in a dedicated section rather than being hidden in prose",
+        "GDPR handling of recipient phone numbers appears as an explicit constraint or requirement, not an unstated assumption"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Write me a TRD for our new in-app notifications thing. It needs to be fast and super reliable, and it should integrate with everything we have. We haven't finished the PRD yet and the mobile team hasn't decided on their push provider. Just make it complete so we can baseline it this week.",
+      "expected_output": "A response that refuses to fake completeness: it identifies the missing required inputs (source PRD/BRD, interface and data expectations, platform constraints, verification expectations), either asks for them or drafts a clearly scoped-down partial TRD with explicit TBD placeholders and an assumptions register, converts vague adjectives into placeholder measurable targets marked as unconfirmed, and pushes back on baselining before the requirements are stable.",
+      "files": [],
+      "expectations": [
+        "Response explicitly flags that source business/product requirements (the unfinished PRD) are a missing required input, rather than silently inventing product intent",
+        "Response flags the undecided push provider as an open interface/dependency question instead of picking a provider and stating it as a requirement",
+        "Vague terms 'fast' and 'reliable' are not carried into requirements as-is; they are either queried back or replaced with explicitly-marked placeholder measurable targets (TBD/unconfirmed), not fabricated as false precision",
+        "'Integrate with everything' is challenged or decomposed into a concrete named-interface list with gaps marked, not restated verbatim as a requirement",
+        "Any draft produced records its assumptions, dependencies, and constraints explicitly in a dedicated section",
+        "Response pushes back on baselining this week, citing that requirements are baselined only after review confirms scope is stable (interfaces/dependencies still unknown)",
+        "Traceability placeholders are honest: no fake references to PRD IDs that do not exist yet",
+        "If quality targets (latency, availability) are discussed, the response notes that dedicated quality-attribute targets belong in an NFR document"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "A contractor left us this TRD fragment for our ParcelPoint locker API. Review it against proper technical-requirements standards, list every problem, and rewrite it correctly:\n\n# Technical Requirements — ParcelPoint Locker API\n\nTR-001: The system shall be fast and easy to use.\nTR-002: The system shall use Redis for caching locker availability.\nTR-003: The system shall authenticate courier devices and log every access attempt to the audit store.\nTR-003: The locker door actuator timeout is 5 seconds.\nThe API returns JSON.\n\nThat's the whole document.",
+      "expected_output": "A review that catches all planted defects — the vague unverifiable TR-001, the Redis design-choice-as-requirement in TR-002, the compound TR-003, the duplicated TR-003 identifier, the unidentified non-'shall' statement about JSON, and the total absence of traceability, verification methods, and document control — followed by a corrected rewrite with atomic, uniquely identified, measurable, traceable requirements.",
+      "files": [],
+      "expectations": [
+        "TR-001 is flagged as a vague, unverifiable quality adjective and rewritten with measurable criteria (e.g. a P95 latency bound), or moved toward an NFR with a concrete target",
+        "TR-002 is flagged as a design choice stated as a requirement; the rewrite states the underlying need (e.g. availability-lookup latency) and only keeps Redis if the technology itself is justified as a genuine constraint",
+        "TR-003 (authenticate + log) is flagged as a compound requirement and split into separate, independently verifiable requirements with their own IDs",
+        "The duplicate TR-003 identifier is caught and the numbering is repaired so every requirement has a unique ID",
+        "'The API returns JSON' is flagged as an unidentified, non-mandatory-phrased statement and rewritten as a proper 'shall' requirement with its own ID in the interfaces/data section",
+        "The absence of upward traceability is called out, and the rewrite adds a traceability link or column per requirement (to BRD/PRD sources, marked TBD if the source is unknown)",
+        "The absence of verification methods is called out, and the rewrite assigns test, analysis, demonstration, or inspection to each requirement",
+        "The review notes the missing document skeleton (Document Control, Purpose and Scope, Assumptions/Constraints, Approval and Change Control) and the rewrite supplies it"
+      ]
+    }
+  ]
+}

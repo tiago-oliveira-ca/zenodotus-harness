@@ -1,0 +1,89 @@
+{
+  "skill_name": "software-architecture-progression",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I'm starting a new SaaS platform for managing freelance contracts — invoicing, time tracking, and client management. The team is 3 developers. How should I architect this from day one?",
+      "expected_output": "Should recommend starting at Stage 1 (modular monolith) with clear module boundaries for the three domains (invoicing, time tracking, client management). Should NOT recommend microservices. Should suggest applying Stage 2/3 as the team defines their domain language. Should explain why a monolith is the right starting point for a small team.",
+      "files": [],
+      "assertions": [
+        {
+          "text": "Recommends a modular monolith as the starting point (not microservices)",
+          "type": "boolean"
+        },
+        {
+          "text": "Identifies at least 2 of the 3 stated business domains (invoicing, time tracking, client management) as candidate module/context boundaries",
+          "type": "boolean"
+        },
+        {
+          "text": "Does NOT recommend jumping to microservices from day one",
+          "type": "boolean"
+        },
+        {
+          "text": "Explains the team-size or operational cost reason for staying at the monolith stage",
+          "type": "boolean"
+        },
+        {
+          "text": "Mentions bounded contexts or DDD as a natural next step (Stage 2) rather than an immediate requirement",
+          "type": "boolean"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "We have a Django monolith that's been running for 3 years. Orders, inventory, notifications, and billing are all in one Django app with shared models. The notifications team wants to split their service out. Should we do it? How?",
+      "expected_output": "Should check Stage 4 gate conditions — specifically whether notifications genuinely needs independent deployment or has a different scaling profile. Should warn against extracting a module with messy internal boundaries (apply Stage 3 first). Should recommend the transactional outbox + event pattern before extraction. Should NOT just say 'yes, split it' without checking the gates.",
+      "files": [],
+      "assertions": [
+        {
+          "text": "Does NOT unconditionally endorse extraction — raises questions or gate conditions first",
+          "type": "boolean"
+        },
+        {
+          "text": "Identifies the shared-models problem as a prerequisite to fix before extraction",
+          "type": "boolean"
+        },
+        {
+          "text": "Recommends applying internal boundaries (clean architecture / hexagonal) inside the notifications module before extracting it",
+          "type": "boolean"
+        },
+        {
+          "text": "Mentions events or async integration as a prerequisite or step in the extraction plan",
+          "type": "boolean"
+        },
+        {
+          "text": "Mentions the transactional outbox or dual-write problem in the context of event publishing",
+          "type": "boolean"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "I'm designing an e-commerce platform and keep reading that microservices are best practice. We're a startup with 5 engineers and launching in 4 months. Should I go with microservices from the start?",
+      "expected_output": "Should clearly recommend against microservices at this stage. Should explain the Stage 5 gate conditions and why none of them are met for a startup (no scaling evidence, small team, launch pressure). Should recommend a modular monolith (Stage 1) with optional Stage 2/3 applied. Should name the 'stage inflation' trap.",
+      "files": [],
+      "assertions": [
+        {
+          "text": "Clearly recommends against microservices for this context",
+          "type": "boolean"
+        },
+        {
+          "text": "Cites at least one specific gate condition that is not met (e.g., no proven scaling need, team too small, no independent deployment need)",
+          "type": "boolean"
+        },
+        {
+          "text": "Recommends a modular monolith as the starting architecture",
+          "type": "boolean"
+        },
+        {
+          "text": "Names the 'best practice' framing as a trap or misconception (premature complexity, stage inflation, or similar)",
+          "type": "boolean"
+        },
+        {
+          "text": "Provides a concrete path forward (what to do instead of microservices)",
+          "type": "boolean"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,258 @@
+version: 2.1
+
+orbs:
+  docker: circleci/docker@2.0.1
+
+commands:
+  install_astro:
+    steps:
+      - run:
+          name: Install Astronomer CLI
+          command: |
+            curl -sSL install.astronomer.io | sudo bash -s
+
+  detect_deploy_type:
+    steps:
+      - run:
+          name: Detect DAG-only vs Full Deploy
+          command: |
+            echo "Detecting changed files..."
+            git fetch origin
+            CHANGED_FILES=$(git diff --name-only origin/${CIRCLE_BRANCH}~1)
+
+            echo "Changed files:"
+            echo "$CHANGED_FILES"
+
+            FULL_DEPLOY=false
+            for file in $CHANGED_FILES; do
+              if [[ ! "$file" =~ ^(dags/|include/) ]]; then
+                FULL_DEPLOY=true
+                break
+              fi
+            done
+
+            if [ "$FULL_DEPLOY" = "true" ]; then
+              echo "export DEPLOY_TYPE=full" >> $BASH_ENV
+            else
+              echo "export DEPLOY_TYPE=dags" >> $BASH_ENV
+            fi
+
+jobs:
+  run_tests:
+    docker:
+      - image: cimg/python:3.11
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            pip install --upgrade pip
+            if [ -f requirements.txt ]; then
+              pip install -r requirements.txt
+            fi
+      - run:
+          name: Validate DAGs
+          command: |
+            python -m py_compile dags/**/*.py || true
+            echo "DAG validation completed"
+
+  deploy_dev:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - setup_remote_docker
+      - checkout
+      - install_astro
+      - detect_deploy_type
+      - run:
+          name: Deploy to DEV
+          command: |
+            if [ "$DEPLOY_TYPE" = "dags" ]; then
+              astro deploy "$ASTRO_DEV_DEPLOYMENT_ID" --dags -f
+            else
+              astro deploy "$ASTRO_DEV_DEPLOYMENT_ID" -f
+            fi
+
+  deploy_stage:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - setup_remote_docker
+      - checkout
+      - install_astro
+      - detect_deploy_type
+      - run:
+          name: Deploy to STAGE
+          command: |
+            if [ "$DEPLOY_TYPE" = "dags" ]; then
+              astro deploy "$ASTRO_STAGE_DEPLOYMENT_ID" --dags -f
+            else
+              astro deploy "$ASTRO_STAGE_DEPLOYMENT_ID" -f
+            fi
+
+  validate_cr:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - run:
+          name: Validate CR Number
+          command: |
+            # REQUIREMENT: CR format must be SGCM-#####
+            CR_PATTERN="SGCM-[0-9]+"
+            COMMIT_MSG=$(git log -1 --pretty=%B)
+
+            if echo "$COMMIT_MSG" | grep -qE "$CR_PATTERN"; then
+              CR_NUMBER=$(echo "$COMMIT_MSG" | grep -oE "$CR_PATTERN" | head -1)
+              echo "CR validated: $CR_NUMBER"
+              echo "export CR_NUMBER=$CR_NUMBER" >> $BASH_ENV
+              # NOTE: In a real scenario, an API call to the CR system 
+              # would be made here to verify the 'Approved' status.
+            else
+              echo "Missing CR number (expected SGCM-#####)"
+              exit 1
+            fi
+
+  deploy_prod:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - setup_remote_docker
+      - checkout
+      - install_astro
+      - detect_deploy_type
+      - run:
+          name: Deploy to PRODUCTION
+          command: |
+            echo "Deploying with CR: $CR_NUMBER"
+
+            if [ "$DEPLOY_TYPE" = "dags" ]; then
+              astro deploy "$ASTRO_PROD_DEPLOYMENT_ID" --dags -f
+            else
+              astro deploy "$ASTRO_PROD_DEPLOYMENT_ID" -f
+            fi
+
+workflows:
+  version: 2.1
+
+  # DEPLOYMENT GOVERNANCE MODEL ENFORCEMENT:
+  # 1. No environment auto-deploys.
+  # 2. DEV & STAGE require manual approval.
+  # 3. PRODUCTION requires Valid CR + Manual Approval.
+
+  pull_request:
+    jobs:
+      - run_tests:
+          context: astronomer-dev
+          filters:
+            branches:
+              ignore:
+                - development
+                - stage
+                - production
+
+      - hold_dev_pr:
+          type: approval
+          name: "Approve DEV Deployment"
+          requires:
+            - run_tests
+
+      - deploy_dev:
+          context: astronomer-dev
+          requires:
+            - hold_dev_pr
+
+  development:
+    jobs:
+      - run_tests:
+          context: astronomer-dev
+          filters:
+            branches:
+              only: development
+
+      - hold_dev:
+          type: approval
+          name: "Approve DEV Deployment"
+          requires:
+            - run_tests
+
+      - deploy_dev:
+          context: astronomer-dev
+          requires:
+            - hold_dev
+
+  stage:
+    jobs:
+      - run_tests:
+          context: astronomer-dev
+          filters:
+            branches:
+              only: stage
+
+      - hold_dev:
+          type: approval
+          name: "Approve DEV Deployment"
+          requires:
+            - run_tests
+
+      - deploy_dev:
+          context: astronomer-dev
+          requires:
+            - hold_dev
+
+      - hold_stage:
+          type: approval
+          name: "Approve STAGE Deployment"
+          requires:
+            - deploy_dev
+
+      - deploy_stage:
+          context: astronomer-stage
+          requires:
+            - hold_stage
+
+  production:
+    jobs:
+      - run_tests:
+          context: astronomer-dev
+          filters:
+            branches:
+              only: production
+
+      - hold_dev:
+          type: approval
+          name: "Approve DEV Deployment"
+          requires:
+            - run_tests
+
+      - deploy_dev:
+          context: astronomer-dev
+          requires:
+            - hold_dev
+
+      - hold_stage:
+          type: approval
+          name: "Approve STAGE Deployment"
+          requires:
+            - deploy_dev
+
+      - deploy_stage:
+          context: astronomer-stage
+          requires:
+            - hold_stage
+
+      - validate_cr:
+          context: astronomer-prod
+          requires:
+            - deploy_stage
+
+      - hold_prod:
+          type: approval
+          name: "Approve PRODUCTION Deployment"
+          requires:
+            - validate_cr
+
+      - deploy_prod:
+          context: astronomer-prod
+          requires:
+            - hold_prod

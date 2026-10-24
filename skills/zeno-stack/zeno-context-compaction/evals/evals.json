@@ -1,0 +1,67 @@
+{
+  "skill_name": "zeno-context-compaction",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Draft the instruction text I should pass to /compact. Context: we are on branch feat/billing-retry (PR #214 open), implementing Story STORY-billing-retry whose card is .zeno/docs/stories/STORY-billing-retry.md. The user approved exponential backoff but forbade touching the invoices table. Test tests/test_retry.py::test_gives_up fails with 'AssertionError: expected 3 calls, got 5'. Next: fix the retry counter.",
+      "expected_output": "",
+      "files": [],
+      "expectations": [
+        "Output contains instructions that sort content into keep, compress and drop",
+        "Output keeps branch feat/billing-retry, PR #214 and the card path verbatim",
+        "Output keeps the user's prohibition on touching the invoices table as a constraint",
+        "Output keeps the exact failing test id and error message verbatim",
+        "Output ends with a concrete next step about the retry counter"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Summarize this session for handoff. We spent an hour exploring three caching options and chose Redis, rejecting in-process LRU because of multi-instance drift. The decision is recorded in ADR-007. The user said: do NOT run the migration in prod without my sign-off. Branch fix/cache, 2 unpushed commits, tree dirty with src/cache.py edited.",
+      "expected_output": "",
+      "files": [],
+      "expectations": [
+        "Summary points to ADR-007 instead of re-copying the whole exploration",
+        "Summary states the decision and the rejected option with its reason",
+        "Summary keeps the no-prod-migration-without-sign-off constraint as authorization state",
+        "Summary states branch fix/cache, two unpushed commits and the dirty src/cache.py",
+        "Summary uses a goal / state / decisions / open / constraints / next-step shape"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "I want to put a 'Compact Instructions' section in my CLAUDE.md so Claude's automatic compaction follows it. Will that work?",
+      "expected_output": "",
+      "files": [],
+      "expectations": [
+        "Says it is not documented that a CLAUDE.md section steers the summarizer",
+        "States that CLAUDE.md itself is re-injected after compaction",
+        "Recommends passing the rubric through /compact with instructions, or recording state in a .zeno card",
+        "Does not claim the section will work"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Context is getting long. Keep only the last 20 messages and drop everything else, that is the simplest compaction. Do that.",
+      "expected_output": "",
+      "files": [],
+      "expectations": [
+        "Declines to rely on recency alone and says recency is not a retention rule",
+        "Says older constraints or approvals must still be kept",
+        "Proposes ranking by priority: instructions, goal and next step, decisions, exact values",
+        "Offers the Task-State shape instead"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Compact these notes: 'We looked at the config file earlier and the PR we opened last week had the error about the timeout. The commit with the fix is the one from Tuesday.' Nothing else is known.",
+      "expected_output": "",
+      "files": [],
+      "expectations": [
+        "Does not invent a path, number or hash",
+        "Flags that the config file, PR and commit are not identified and need exact values",
+        "Lists them as open or unverified items",
+        "Fills Task-State lines with none where nothing is known"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,96 @@
+@startuml zeno-architecture
+title Zeno — architecture overview (how the pieces fit together)
+skinparam componentFontSize 13
+skinparam packageFontSize 14
+skinparam noteFontSize 12
+skinparam defaultTextAlignment left
+skinparam linetype ortho
+left to right direction
+
+package "zeno spine" #E8F0FE {
+  component "zeno\n(the loop)" as spine
+}
+
+package "Gate 1 — Scope" #E8F0FE {
+  component "zeno-council\n(Lite / Full architecture\nquestioning)" as council
+  component "zeno-insight\n(design + sizing +\nEpic->Features)" as insight
+  council --> insight : card log
+  component "zeno-ddd\n(domain framing)" as ddd
+  insight --> ddd : Feature-tier work
+}
+
+package "Gate 2 — Route" #FEF6E0 {
+  component ".zeno/ folder\n(project.md + cards)" as project
+  component "zeno-fdd\n(Story list)" as fdd
+  component "zeno-atdd" as atdd
+  component "zeno-bdd" as bdd
+  component "Task breakdown\n(Gate 2, direct)" as taskbreak
+  fdd --> atdd : per Story, looped
+  atdd --> bdd
+  bdd --> taskbreak
+}
+
+package "Gate 3 — Execution" #E6F4EA {
+  component "zeno-workflow\n(dispatcher)" as workflow
+  component "zeno-tdd\n(only stage here now)" as tdd
+  component "zeno-debug\n(escape hatch)" as debug
+  workflow --> tdd
+}
+
+package "Gate 4 — Review" #FCE8E6 {
+  component "zeno-verify" as verify
+}
+
+package "Specialist registry" #F3E8FD {
+  component "agents/REGISTRY.md" as registry
+  component "24 zeno-<name> agents\n(Advisor / Owner tier)" as agents
+  registry --> agents
+}
+
+package "Stack & standards coverage" #EDEDED {
+  component "code-standards\n(how code is written)" as codestandards
+  component "zeno-stack\n(48 domain leaves)" as stack
+}
+
+spine --> council : Gate 1, step 0
+spine --> project : Gate 2
+spine --> workflow : Gate 3
+spine --> verify : Gate 4
+
+insight --> registry : select specialist(s)\n(minimum sufficient)
+verify --> registry : independent pass\n(Advisor-tier match)
+
+insight ..> project : write Scope,\nEpic Features, DDD fields
+fdd ..> project : write Story list
+taskbreak ..> project : write Task list,\nlog decisions
+verify ..> project : record Proof,\nflip Status -> closed
+
+tdd ..> codestandards : how the code\nshould be written
+tdd ..> stack : stack-specific depth\n(React, Postgres, Docker, ...)
+
+note bottom of registry
+  No Authority tier: the human is
+  always the sole merge/PR/keep
+  decision at Review. Specialists
+  recommend (Advisor) or execute
+  within a bounded domain (Owner);
+  none can approve their own work.
+end note
+
+note bottom of project
+  Fixed layout only: project.md +
+  Epic/Feature/Story cards under
+  docs/. No ad hoc files, no
+  second .zeno/-like structure.
+  Kanban WIP limit: 1.
+end note
+
+note bottom of tdd
+  DDD/FDD/ATDD/BDD all moved out
+  of Gate 3 — planning is fully
+  done by the time Execution
+  opens. TDD is Gate 3's only
+  stage now.
+end note
+
+@enduml

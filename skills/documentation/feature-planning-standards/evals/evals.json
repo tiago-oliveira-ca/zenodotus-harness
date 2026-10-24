@@ -1,0 +1,54 @@
+{
+  "skill_name": "feature-planning-standards",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "We're building 'PawShift', a marketplace app that connects pet owners with vetted local pet sitters. The founder has agreed on the product scope: owners can search sitters by location and availability, view sitter profiles with reviews, book and pay for a sitting, message the sitter, and get photo updates during the sitting; sitters can manage their calendar, set rates, accept/decline requests, and get paid out weekly. We have a team of 4 engineers, 1 designer, and me (PM), working in 2-week Scrum sprints, targeting a beta in about 4 months. Create the full Feature List and Development Plan for this: catalogue the features properly, prioritize them with MoSCoW, and build the development plan around the list so we know what ships in what order.",
+      "expected_output": "A structured Feature List (grouped Subject Area -> Feature Set -> Feature, each feature with a stable ID, outcome-oriented name, user story, testable acceptance criteria, MoSCoW priority, effort estimate, dependencies, owner, status, target release, and success metric) plus a Development Plan covering all ten components (scope/objectives, methodology, team/roles, work breakdown, timeline/milestones, resourcing, technical approach with NFRs, risks, dependencies, QA/release strategy), with feature IDs threading list to plan and Must-have capped near 60% of effort.",
+      "files": [],
+      "expectations": [
+        "Every feature is named as an outcome using the '<action> the <result> for/of/to a(n) <object>' template (e.g. 'Book a sitting for a pet owner'), not as an implementation step",
+        "Features are organized in the three-tier hierarchy: Subject Area -> Feature Set -> Feature",
+        "Every feature carries a stable ID plus the table fields: description, user story, acceptance criteria, priority, effort estimate, dependencies, owner, status, target release, and success metric",
+        "Acceptance criteria are specific and measurable (e.g. Given/When/Then or a concrete threshold), not vague restatements of the user story",
+        "Every feature has a success metric that measures the outcome, not just 'shipped'",
+        "Prioritization uses MoSCoW explicitly and 'Must-have' does not exceed roughly 60% of total effort (all four buckets appear, including Won't)",
+        "Features are sized within the granularity rule: ~1-3 days typical, nothing over ~2 weeks (larger candidates are split)",
+        "The Development Plan includes all ten components, including risks & mitigations and non-functional requirements/technical approach, not just timeline and tasks",
+        "The document assigns an owner and a review cadence (per sprint or release) so the artifact stays living"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Here's a brain-dump from our last stakeholder meeting for our internal analytics tool: 'dark mode, CSV export, faster dashboards, Slack alerts, SSO, some kind of AI summary thing, mobile support, fix the date picker'. Score all of these with RICE and give me the final ranked feature list with the RICE numbers so I can show leadership the priorities tomorrow.",
+      "expected_output": "A response that reshapes the raw items into properly named, sized features but explicitly flags that RICE cannot be honestly computed without reach/usage data, impact estimates against a shared goal metric, confidence sources, and effort estimates from the team — asking for those inputs or clearly labeling any illustrative numbers as assumptions, and offering Value vs. Effort as the low-data first pass rather than presenting fabricated RICE scores as fact.",
+      "files": [],
+      "expectations": [
+        "The response does not present a definitive RICE ranking built on invented data; any illustrative scores are explicitly labeled as assumptions/placeholders to be validated",
+        "It identifies the specific missing inputs RICE needs: reach/usage data, an agreed impact/goal metric, a basis for confidence, and effort estimates from the team",
+        "It flags that a Value vs. Effort 2x2 (or MoSCoW) is the appropriate fast first pass when usage data is unavailable, per the framework-selection table",
+        "It renames the raw items as outcome-oriented features using the naming template ('faster dashboards' and 'fix the date picker' are reframed, not copied verbatim)",
+        "It flags oversized/vague items (e.g. 'mobile support', 'AI summary thing') as needing splitting or definition before they can be sized within the ~2-week granularity rule",
+        "It notes that features are not ready to prioritize without acceptance criteria and a success metric each",
+        "It flags that a feature list produced by one person from a brain-dump needs engineering/QA input before the estimates and ranking are trustworthy",
+        "It asks concrete clarifying questions (or lists required inputs) rather than silently proceeding"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Please review this excerpt from our Q3 planning doc for 'FleetTrack', our vehicle telematics product, and tell me everything wrong with it before I circulate it:\n\n--- Q3 ROADMAP ---\nJuly: F-101 Add geofence_check() polling loop to tracker daemon (3 pts), F-102 Live map clustering (5 pts), F-103 Driver scorecard v2 (8 pts)\nAugust: F-104 Rewrite the ingestion pipeline (Must), F-105 Fuel report export (Must)\nSeptember: F-106 Alerts overhaul (Must)\n\n--- FEATURE LIST (extract) ---\nF-101 | Add geofence_check() polling loop to tracker daemon | Must | 2 days | AC: as a fleet manager I want geofence checks so that I get geofence checks | Metric: —\nF-104 | Rewrite the ingestion pipeline | Must | 6 weeks | AC: pipeline works correctly | Metric: —\nF-105 | Fuel report export | Must | 3 days | AC: manager can export a fuel report as CSV with per-vehicle totals | Metric: —\nF-106 | Alerts overhaul | Must | 2 weeks | AC: alerts are much better and faster | Metric: —\n\nNotes: doc finalized by PM; no further reviews planned until Q4.",
+      "expected_output": "A review that catches every planted defect: sprint-level feature detail dumped into the roadmap instead of themes; F-101 named as an implementation step; F-104 oversized at 6 weeks and needing a split; 100% Must-have violating the ~60% cap; F-101's acceptance criteria restating the user story and F-104/F-106's being vague/untestable; no success metrics on any feature; and the single-author, no-review-cadence note — each with the concrete fix from the skill.",
+      "files": [],
+      "expectations": [
+        "Flags that the roadmap contains feature-level/sprint-level detail (IDs, points, months) and should stay thematic, with detail moved to the release plan or feature list",
+        "Flags F-101 as named after an implementation step ('Add geofence_check() polling loop...') and proposes an outcome-oriented rename per the naming template",
+        "Flags F-104 as oversized (6 weeks, over the ~2-week ceiling) and says it must be split",
+        "Flags that every listed feature is 'Must', violating the ~60% Must-have effort cap — nothing has actually been prioritized",
+        "Flags F-101's acceptance criteria as merely restating the user story, and F-104's ('pipeline works correctly') and/or F-106's ('much better and faster') as vague and untestable, demanding specific measurable criteria",
+        "Flags that no feature has a success metric, so none is actually ready to prioritize",
+        "Flags the 'finalized by PM, no further reviews until Q4' note: single-author document plus no owner/review cadence means it will go stale",
+        "Each finding comes with a concrete fix, not just a defect label"
+      ]
+    }
+  ]
+}

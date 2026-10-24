@@ -1,0 +1,54 @@
+{
+  "skill_name": "developer-handoff-standards",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I'm the product designer on 'Lumen', a subscription budgeting app. I've finished the redesign of our payment-method screen in Figma: a card list, an 'Add payment method' form (card number, expiry, CVC with inline validation), a primary 'Save card' button, and a confirmation toast. It ships on web (desktop + mobile breakpoints) next sprint under ticket LUM-482, and two frontend engineers are implementing it. Prepare the complete developer handoff package for this screen: everything they need — files, tokens, states, assets, accessibility — so they never have to guess.",
+      "expected_output": "A complete handoff package: organized source-file structure, breakpoint-specific guidance for desktop and mobile, design tokens in [category]-[variant]-[state] form with matching CSS variables and a DTCG JSON export, exported assets, a full component-state matrix (default/hover/focus/active/disabled plus loading for the async save, error for validation, success for the toast), accessibility notes (semantics, focus order, contrast, labels), a link to LUM-482, and a workflow that includes an implementation walkthrough and design QA before release.",
+      "files": [],
+      "expectations": [
+        "All required artifacts are present: organized source design files, responsive/breakpoint guidance, design tokens, exported assets, interaction states, accessibility notes, and a reference to ticket LUM-482",
+        "Design tokens follow the [category]-[variant]-[state] naming structure with matching CSS variable forms (e.g. color-primary-500 / --color-primary-500)",
+        "Token names are semantic for intent (e.g. color-error-default), not raw values (not color-red-500), and are stated to be identical in Figma and code",
+        "Tokens are exported (or specified for export) as JSON in the Design Tokens Community Group format for automated import",
+        "The 'Save card' button and form fields document all five always-required states: default, hover, keyboard focus (with visible focus ring), active/pressed, and disabled",
+        "Conditional states are covered because they apply here: loading (async save), error (inline validation with label/color/icon), and success (confirmation toast); empty state is addressed for the card list",
+        "Accessibility notes cover semantics, focus behavior, contrast, input labels, and alt text where applicable — as part of the package, not deferred",
+        "Both mobile and desktop behavior are addressed with breakpoint-specific mocks or guidance",
+        "The handoff plan includes a walkthrough with the implementing engineers, a channel for follow-up questions, and design QA before release"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Our agency designer left last week. All we have is a single flat Figma page called 'Dashboard v7 FINAL' with the desktop mockups — no styles library, no named layers, nothing else — and the client wants us to 'just send the devs whatever they need' by Friday. Put together the dev handoff from this.",
+      "expected_output": "A response that inventories what a complete handoff requires against what actually exists, and explicitly flags the gaps — no design tokens, no responsive/mobile mocks, no documented interaction states, no exported assets, no accessibility notes, no ticket/scope references, and no engineer involvement to date — proposing a remediation plan and asking targeted questions rather than fabricating token values, breakpoints, or states the design never defined.",
+      "files": [],
+      "expectations": [
+        "The response does not fabricate token values, breakpoints, or component states that the file does not define; gaps are flagged, not silently filled",
+        "It flags the absence of design tokens for typography, color, spacing, and motion, and proposes deriving/confirming them rather than inventing them",
+        "It flags that only desktop mocks exist — responsive guidance or mobile/breakpoint mocks are a required artifact and currently missing",
+        "It flags that interaction states (hover, focus, active, disabled, loading, empty, error) are undocumented and each interactive component needs them before handoff",
+        "It flags missing accessibility notes (semantics, focus, contrast, labels, alt text) as a required artifact, not a follow-up task",
+        "It flags that no tickets/stories/implementation scope are referenced and asks what the engineering scope is",
+        "It flags that engineers were never involved pre-freeze and calls for a feasibility/component-reuse review with them before treating the design as final",
+        "It asks concrete clarifying questions (or lists required inputs and owners) instead of delivering a package that pretends to be complete"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Review this handoff note our designer posted before going on leave, and list every problem with it as a handoff:\n\n--- HANDOFF: Settings redesign ---\nFigma: [link] (design is final and frozen — we didn't loop in the engineers, but it's pixel-perfect so it should be fine)\nTokens: main blue is 'Brand/Blue/Primary' in Figma; in code please use --color-blue-500. Error text is 'color-red-500'.\nButton spec: default and hover states are in the file. That should cover it.\nAccessibility: we'll do an a11y pass after launch if there's time.\nProcess: this is the final drop — I'm out for 3 weeks, any questions can wait until I'm back. No design QA needed since the mockups are exact.",
+      "expected_output": "A review that catches every planted defect: mismatched token naming between Figma and code plus value-based instead of semantic names; button states missing keyboard focus, active, and disabled (and any loading/error states); accessibility deferred to post-launch instead of shipped as a required artifact; design frozen with zero engineer involvement or feasibility review; handoff treated as a one-time drop with no support channel or update notifications; and design QA skipped — each mapped to the skill's fix.",
+      "files": [],
+      "expectations": [
+        "Flags the Figma-vs-code token name mismatch ('Brand/Blue/Primary' vs '--color-blue-500') — names must be identical in design tool and code",
+        "Flags 'color-red-500' and '--color-blue-500' as value-based names and requires semantic intent names (e.g. color-error-default, color-primary-500)",
+        "Flags the button spec as incomplete: keyboard focus (with visible focus ring), active/pressed, and disabled states are always required beyond default and hover",
+        "Flags 'a11y pass after launch if there's time' — accessibility notes are a required handoff artifact, not an afterthought",
+        "Flags that the design was frozen without engineer involvement or a pre-handoff feasibility/component-reuse review",
+        "Flags the 'final drop, questions wait 3 weeks' stance as the one-time-drop anti-pattern — handoff requires async implementation support, a designated follow-up contact, and explicit update notifications if specs change",
+        "Flags 'no design QA needed' — design QA before release is a required workflow step regardless of mockup fidelity",
+        "Each finding is paired with the concrete corrective action from the skill, not just a complaint"
+      ]
+    }
+  ]
+}

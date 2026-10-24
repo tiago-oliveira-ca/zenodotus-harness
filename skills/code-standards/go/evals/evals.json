@@ -1,0 +1,23 @@
+{
+  "skill_name": "go",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I'm starting a new Go service for order management at my company. We'll have an Order bounded context and an Inventory bounded context. Should I structure this as domain/application/infrastructure folders at the top level, or something else? Also where should my OrderRepository interface live?",
+      "expected_output": "Should recommend bounded-context-first, layer-second folder structure (internal/order/..., internal/inventory/...) and explicitly warn against a top-level domain/application/infrastructure tree. Should present interface placement (domain package vs next to the sole consumer) as a real judgment call with criteria, not a single rule, and should warn against an interfaces-dumping-ground package.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "How do I model an Account aggregate in Go with a Balance value object, load it from Postgres with pgx, and make sure nobody can just construct an invalid Balance by accident? I keep seeing that Go can't really prevent the zero-value case, is that true?",
+      "expected_output": "Should confirm the zero-value trap is real and unavoidable in Go (not oversell newtype guarantees), give unexported-field + constructor pattern for the value object, address reconstitution (separate Reconstitute constructor or snapshot pattern, presented as a choice) so loading from Postgres doesn't re-run creation invariants, and keep db tags off the domain type via a separate persistence record + mapper.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "my use case needs to save an order and publish an OrderPlaced event, and right now if the publish fails after the DB commit we just lose the event silently. also i'm passing my *sql.Tx around via context.Context which feels sketchy. is there a better way to do transactions in go without a huge unit of work abstraction?",
+      "expected_output": "Should identify the outbox pattern as the correctness fix for at-least-once event delivery (vs. direct publish), flag the context.Value-for-transactions approach honestly as a real but debated tradeoff rather than presenting it as clean, and should NOT claim there is a single settled consensus answer for Go transaction/UoW design.",
+      "files": []
+    }
+  ]
+}

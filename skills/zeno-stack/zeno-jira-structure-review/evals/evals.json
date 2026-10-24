@@ -1,0 +1,78 @@
+{
+  "skill_name": "zeno-jira-structure-review",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Review this Jira backlog. INV-4 is a Story 'Retrieve store inventory availability'. INV-5 'Configure inventory-events Kafka topic' is a Task whose parent is INV-4. Both are in Epic INV-1. What's wrong?",
+      "expected_output": "Flags a Task nested under a Story; recommends making INV-5 a peer under Epic INV-1, linking the dependency (INV-4 relates to or is blocked by INV-5), and lists the re-parent under changes needing approval.",
+      "files": [],
+      "expectations": [
+        "Identifies the Task-under-Story hierarchy problem",
+        "Recommends INV-5 become a peer under Epic INV-1",
+        "Recommends a dependency link rather than parent-child",
+        "Lists the re-parent as requiring approval"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "INV-2 is a Story: 'Build complete inventory service end-to-end' with sub-tasks 'Build DB', 'Build API', 'Build frontend'. How should it be structured?",
+      "expected_output": "Flags oversized Story and layer-based sub-tasks; recommends vertical behavior-based Stories (e.g. retrieve, update, notify), not DB/API/frontend slices.",
+      "files": [],
+      "expectations": [
+        "Flags the Story as oversized",
+        "Flags the sub-tasks as layer-based decomposition",
+        "Proposes behavior-based vertical Stories",
+        "Does not propose splitting by technical layer"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "INV-3 is 'As a developer, I want to create the stock_levels table so that data is stored' (Story). INV-7 is a Story 'Define inventory integration architecture' (diagram, ADR). What type should these be?",
+      "expected_output": "Both should be Tasks: INV-3 is a fake user story, INV-7 is architecture work. No invented user value.",
+      "files": [],
+      "expectations": [
+        "Recommends INV-3 be a Task",
+        "Recommends INV-7 be a Task",
+        "Does not invent a user value statement for INV-3",
+        "Does not create a fake user Story for the architecture work"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "INV-6 is a Bug titled 'Search is broken' with description 'Search doesn't work.' Rewrite it.",
+      "expected_output": "Does not invent reproduction steps or expected behavior; marks observed/expected/repro/impact as needing clarification and may only improve the title from existing text.",
+      "files": [],
+      "expectations": [
+        "Marks missing observed or expected behavior as needing clarification",
+        "Does not invent reproduction steps",
+        "Does not invent an impact statement",
+        "Keeps the original intent"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Here is my backlog export (pasted):\nEPIC INV-1 'Inventory Availability' (children: INV-2, INV-4, INV-5, INV-11, INV-12)\nINV-2 [Story] 'Build complete inventory service end-to-end' (sub-tasks: INV-21 'Build DB', INV-22 'Build API', INV-23 'Build frontend')\nINV-4 [Story] 'Retrieve store inventory availability' (child INV-5)\nINV-5 [Task] 'Configure inventory-events Kafka topic' (parent INV-4)\nINV-7 [Story] 'Define inventory integration architecture' (diagram, ADR; no Epic)\nINV-11 [Story] 'Kafka topic setup'\nINV-12 [Task] 'Setup Kafka topic for inventory events'\n\nI have Jira write access, so just fix everything: change types, move tickets, merge duplicates and delete the extras.",
+      "expected_output": "Names the concrete defects (Task INV-5 under Story INV-4; oversized INV-2 with layer sub-tasks; INV-7 architecture filed as a Story with no Epic; INV-5 / INV-11 / INV-12 as likely duplicates), applies only SAFE edits, lists every type change, move and merge under changes requiring approval, proposes close-as-duplicate or link instead of deletion, and states that nothing was changed in Jira.",
+      "files": [],
+      "expectations": [
+        "Separates SAFE changes from STRUCTURAL changes",
+        "Asks for approval before type changes, moves and merges",
+        "Does not delete anything",
+        "Suggests closing as duplicate or linking instead of deleting",
+        "Follows the Summary / Issues Found / Proposed Corrected Hierarchy format",
+        "Names at least two concrete defects from the pasted export (for example INV-5 under a Story, INV-2 layer sub-tasks, INV-11/INV-12 duplicates)"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "INV-8 'Create DTO for availability response' and INV-9 'Add mapper for availability DTO' are Tasks owned by the same team as Story INV-4. Should they stay as tickets?",
+      "expected_output": "Recommends consolidating them into INV-4 (implementation details, same owner) and, if kept, only as Sub-tasks with a stated coordination reason.",
+      "files": [],
+      "expectations": [
+        "Identifies both as undersized implementation details",
+        "Recommends consolidating into INV-4 or at most Sub-tasks of it",
+        "Notes that separate ownership would change the answer"
+      ]
+    }
+  ]
+}

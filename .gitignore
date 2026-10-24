@@ -1,0 +1,9 @@
+.DS_Store
+*.bak-*
+.idea/
+.claude-flow/
+skills/.claude/
+/.claude/
+.ruff_cache/
+.zeno/
+__pycache__/

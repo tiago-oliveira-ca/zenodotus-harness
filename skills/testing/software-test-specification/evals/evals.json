@@ -1,0 +1,53 @@
+{
+  "skill_name": "software-test-specification",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "We just finished designing the user authentication module for our SaaS app (login, logout, password reset, and session expiry). The product manager wants a complete Software Test Specification for it before we start QA. Create the STS including: a Test Design Specification listing features and test approach, a Test Case Specification with at least 6 test cases (covering happy path, error cases, and a security case), a Requirements Traceability Matrix mapping requirement IDs to those test cases, and exit criteria for this module.",
+      "expected_output": "A structured STS document containing: (1) TDS with feature list and approach for auth module, (2) TCS table with ≥6 test cases each having ID, objective with req ID, preconditions, steps, expected result, and priority, (3) RTM table linking req IDs to TC IDs, (4) exit criteria section with specific quantitative targets. All following IEEE 829 / ISO 29119 structure.",
+      "files": [],
+      "expectations": [
+        "Output includes a Test Design Specification (TDS) section",
+        "Output includes a Test Case Specification (TCS) with at least 6 test cases",
+        "Each test case has a unique ID (e.g. TC-XXX-NNN format or similar)",
+        "Each test case includes preconditions, steps, and expected result",
+        "Each test case references a requirement ID",
+        "Output includes a Requirements Traceability Matrix (RTM) table",
+        "Output includes explicit exit criteria with at least one quantitative threshold",
+        "At least one test case is security-focused (OWASP, brute-force, session, etc.)"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I have a checkout feature in my e-commerce app. I need to write the test procedure specification (TPS) for it. The checkout involves: selecting items, entering shipping address, choosing payment (credit card or PayPal), order confirmation. I also need to know how to set up the test data and test environment for this — what data do I need, what environment config should I document?",
+      "expected_output": "A Test Procedure Specification covering the checkout flow with setup steps, procedure steps per scenario, and post-conditions. Plus a test data section (valid/invalid card data, edge-case addresses, PayPal sandbox setup) and an environment requirements section (browser versions, payment gateway mock/sandbox, DB seed requirements).",
+      "files": [],
+      "expectations": [
+        "Output includes a Test Procedure Specification (TPS) section",
+        "Procedure has explicit setup/pre-steps before execution steps",
+        "Procedure steps reference test case IDs",
+        "Output includes a test data requirements section",
+        "Test data section covers both valid and invalid/edge-case inputs",
+        "Output includes an environment requirements section",
+        "Environment section specifies software versions or configuration details",
+        "Sensitive data handling (PII/card data) is mentioned (masking, sandbox, anonymization)"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Our team is building a new REST API for a healthcare patient portal. We need to incorporate non-functional testing into our STS — specifically accessibility (the portal has a web UI), security (it handles PHI), and performance. We also want to define our CI/CD test integration strategy. How should we structure all of this in the STS? Give me the actual content/sections to add.",
+      "expected_output": "Concrete STS sections for: (1) Accessibility test cases referencing WCAG 2.2 AA, (2) Security test cases referencing OWASP Top 10 and PHI/HIPAA data handling, (3) Performance test plan with load profiles and response time thresholds, (4) CI/CD integration section describing how tests hook into the pipeline, which tests run on PR vs. nightly, and how results map back to the STS.",
+      "files": [],
+      "expectations": [
+        "Output includes an accessibility testing section referencing WCAG or Section 508",
+        "Output includes security test cases referencing OWASP",
+        "Security section addresses PHI/HIPAA data handling (masking, encryption, etc.)",
+        "Output includes a performance test section with load profiles or response time targets",
+        "Performance section mentions at least one load testing tool (JMeter, k6, Locust, etc.)",
+        "Output includes a CI/CD integration section",
+        "CI/CD section distinguishes between PR-level tests and nightly/scheduled tests",
+        "Output mentions how automated test results map back to STS test case IDs or RTM"
+      ]
+    }
+  ]
+}

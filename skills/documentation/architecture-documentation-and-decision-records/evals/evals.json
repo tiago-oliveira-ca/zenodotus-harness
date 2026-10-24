@@ -1,0 +1,55 @@
+{
+  "skill_name": "architecture-documentation-and-decision-records",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Our team runs 'Harbormaster', a container-shipping booking platform. We just spent two design meetings choosing an event backbone for order events between the booking service and the billing/notifications services. We evaluated Kafka (ops-heavy but replayable), AWS SNS+SQS (managed, no replay), and NATS JetStream (light, less team familiarity). We chose SNS+SQS because we're a 4-person team already on AWS and can't staff Kafka operations; the deciders were me (staff eng) and our CTO. This supersedes nothing. Write the ADR, including what file it should live in.",
+      "expected_output": "A single complete ADR following the skill's template: a decision-stating title (e.g. 'ADR-0001: Use AWS SNS+SQS for order event distribution'), a filename like 0001-use-sns-sqs-for-order-events.md under docs/decisions/, Date, Status, Deciders, Context describing the forces, a Considered Options table with pros/cons for all three options, a Decision section tying the choice back to the forces, and Consequences split into positive, negative/trade-offs, and follow-up actions.",
+      "files": [],
+      "expectations": [
+        "The ADR title states the decision itself, not just the topic (e.g. 'Use AWS SNS+SQS for order event distribution', not 'Event backbone')",
+        "A concrete filename is given following the NNNN-slug convention (e.g. 0001-use-sns-sqs-for-order-events.md), stored under docs/decisions/",
+        "The ADR records Date, Status (a valid value — here Proposed or Accepted), and Deciders (staff engineer and CTO)",
+        "A Context section describes the forces at play: small 4-person team, existing AWS footprint, inability to staff Kafka operations",
+        "A Considered Options table lists all three options (Kafka, SNS+SQS, NATS JetStream) with pros and cons for each — including the rejected alternatives and why they lost",
+        "The Decision section names the chosen option and ties the rationale back to the stated context and forces",
+        "The Consequences section includes both positive outcomes and negative trade-offs (e.g. no native replay with SNS+SQS), plus follow-up actions",
+        "The ADR covers exactly one decision — no unrelated choices are bundled in",
+        "The output does not fabricate a Supersedes link, since the prompt states this supersedes nothing"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "End of sprint cleanup: my manager wants 'ADRs for everything we decided this sprint'. Here's the list: (1) we picked PostgreSQL over DynamoDB for the reservations service, (2) we renamed the 'utils' package to 'shared', (3) we fixed the double-charge bug in checkout, (4) we agreed all Python files use snake_case, (5) we switched deployment from EC2 to ECS Fargate. I don't remember the exact pros/cons discussed for Postgres or who signed off. Write all the ADRs.",
+      "expected_output": "A response that applies the Decision Threshold before writing anything: ADRs for the data store choice (1) and the deployment platform change (5) only; the package rename, bug fix, and naming convention are declined as below the ADR threshold with the reasoning stated. For the Postgres ADR, the missing options/pros-cons and deciders are flagged and asked for or marked as gaps rather than invented. Each qualifying decision gets its own separate ADR in template form.",
+      "files": [],
+      "expectations": [
+        "The response filters the list through the decision threshold rather than writing five ADRs: the data store choice (Postgres) and the deployment platform change (ECS Fargate) qualify",
+        "The package rename, the bug fix, and the snake_case naming convention are explicitly declined as ADR material, with the threshold reasoning stated (trivial implementation choices, not architecturally significant)",
+        "The two qualifying decisions are written as two separate ADRs — not bundled into one document",
+        "For the Postgres ADR, the response does not fabricate the pros/cons that the user says they cannot remember: missing considered-options detail is asked for, or marked explicitly as a gap to fill (e.g. TBD/placeholder), never invented as if recalled",
+        "The unknown deciders/sign-off are flagged or left as an explicit placeholder rather than fictional names being supplied",
+        "Each produced ADR follows the template fields: decision-stating title, NNNN-slug filename, Date, Status, Context, Considered Options, Decision, Consequences",
+        "Status is chosen deliberately (e.g. Accepted for decisions already made and in effect), from the valid set Proposed/Accepted/Rejected/Superseded/Deprecated",
+        "Each ADR's Consequences include at least one negative trade-off, not only benefits"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "A teammate wrote this ADR — review it against ADR standards, list every defect, and produce a corrected version. Also: to save time, yesterday I directly edited our already-accepted ADR-0004 (which chose MySQL) to say PostgreSQL instead — was that the right move?\n\n# ADR: Database\n\nStatus: Done\n\nWe will use MongoDB because it is clearly the best choice for modern applications and everyone uses it. We will also deploy the whole platform on Heroku since it's easiest.\n\nThat's the entire file, saved as adr-database.md.",
+      "expected_output": "A review catching every planted defect: topic-only title; invalid 'Done' status; missing Date and Deciders; no Context/decision drivers; no Considered Options (decision presented as a foregone conclusion with 'clearly the best choice'); two bundled decisions (MongoDB and Heroku); no Consequences; non-conventional filename — plus a clear correction on the ADR-0004 question: accepted ADRs are immutable, so the in-place edit must be reverted and a new superseding ADR written. Followed by corrected, split ADRs.",
+      "files": [],
+      "expectations": [
+        "The title 'Database' is flagged as topic-only and rewritten as a decision statement (e.g. 'Use MongoDB as the primary datastore')",
+        "'Status: Done' is flagged as an invalid status, with the valid set (Proposed, Accepted, Rejected, Superseded, Deprecated) named and one applied",
+        "The missing Date and Deciders fields are flagged and added",
+        "The absence of a Context / decision-drivers section is flagged, and the corrected version adds the forces behind the choice (or marks them as required input)",
+        "The foregone-conclusion rationale ('clearly the best choice', 'everyone uses it') is flagged; the correction adds a Considered Options table with at least one rejected alternative and pros/cons for each",
+        "The bundling of two decisions (MongoDB datastore and Heroku deployment platform) is flagged, and the correction splits them into two separate ADRs",
+        "The missing Consequences section is flagged, and the correction records both positive outcomes and negative trade-offs",
+        "The filename 'adr-database.md' is flagged and corrected to the NNNN-slug convention (e.g. 0005-use-mongodb-as-primary-datastore.md) under docs/decisions/",
+        "The in-place edit of accepted ADR-0004 is called out as wrong: accepted ADRs are immutable except for status/supersession updates — the fix is to restore ADR-0004, mark it 'Superseded by ADR-XXXX', and write a new ADR recording the PostgreSQL decision"
+      ]
+    }
+  ]
+}

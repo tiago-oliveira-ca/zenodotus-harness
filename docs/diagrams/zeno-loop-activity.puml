@@ -1,0 +1,127 @@
+@startuml zeno-loop-activity
+title Zeno — the four-gate loop (Scope -> Route -> Execution -> Review)
+skinparam activityFontSize 13
+skinparam noteFontSize 12
+skinparam defaultTextAlignment left
+
+start
+
+partition "Gate 1 — Scope" #E8F0FE {
+  :zeno-council (step 0)\nLite: one card line / Full: question rounds,\nstop for answers, options, debate, recommendation;
+  :zeno-insight\nexplore context, weigh 2-3 approaches;
+  :Size the card\n(ad hoc Story / Feature / Epic);
+  if (Epic-tier work?) then (yes)
+    :Enumerate the Epic's\nFeatures onto its list;
+  else (no)
+  endif
+  if (Feature-tier work?) then (yes)
+    :zeno-workflow/zeno-ddd\nframe domain & architecture\nbefore this gate closes;
+  else (ad hoc Story)
+  endif
+  :Identify domains, select the minimum\nsufficient specialist(s) from agents/REGISTRY.md;
+  :Capture Problem / Approach /\nDone looks like on the card;
+}
+
+partition "Gate 2 — Route" #FEF6E0 {
+  :Check branch before touching anything\n(git branch --show-current, git status);
+  if (on trunk (main/master)\nand task is non-trivial?) then (yes)
+    :Create/switch to a working\nbranch — .zeno/ rides the same diff;
+  else (no)
+  endif
+  :Reconcile project.md's State/Next step\nagainst git log & the working tree;
+  :Confirm the installed zeno skill\ncopy is current;
+  if (./.zeno/project.md exists?) then (no)
+    :create from\nreferences/project-template.md;
+  else (yes)
+  endif
+  :Write Scope onto the sized card;
+  :Refresh project.md's State,\nNext step, Kanban board;
+  if (legacy THREAD.md or old\n.project/core.md layout exists?) then (yes)
+    :Run the matching migration.md\nrecipe to completion;
+  else (no)
+  endif
+  if (Feature-tier work?) then (yes)
+    :zeno-workflow/zeno-fdd\nwrite the full Story list;
+    repeat
+      :zeno-workflow/zeno-atdd\nwrite business acceptance criteria;
+      :zeno-workflow/zeno-bdd\ntranslate to Given/When/Then scenarios;
+      :Task breakdown (Gate 2, direct)\nreal technical design, ends with\na documentation Task;
+    repeat while (more Stories\non the Feature's list?) is (yes)
+    ->no;
+  else (ad hoc Story)
+    :zeno-workflow/zeno-atdd + zeno-bdd\n+ Task breakdown, same as above,\nfor this one Story;
+  endif
+  note right: Gate 2 does not close until\nevery Story is fully planned —\nzero planning left for Gate 3.
+}
+
+partition "Gate 3 — Execution (pure implementation loop)" #E6F4EA {
+  repeat
+    :Pull the next [ ] Task/SubTask\noff an already-planned Story\n(Kanban WIP limit 1);
+    if (this Task is the trailing\ndocumentation Task?) then (yes)
+      :documenting-code / /docs-drift\nabsent-before / present-after proof;
+    else (no)
+      :zeno-workflow/zeno-tdd\nred -> green -> refactor;
+      if (test won't go green\nor something breaks?) then (yes)
+        :zeno-debug\nroot-cause before any fix;
+      else (no)
+      endif
+    endif
+    :commit; log decision to the card;
+  repeat while (more Tasks/SubTasks\nor more Stories in flight?) is (yes)
+  ->no;
+}
+
+partition "Gate 4 — Review" #FCE8E6 {
+  :zeno-verify\nrun the proving command fresh;
+  :Verify goal-backward against the\nclosing card's "Done looks like";
+  :Scan for stubs;\nself-review the diff;
+  if (Advisor-tier specialist match\nin agents/REGISTRY.md?) then (yes)
+    :Get an independent pass\nfrom that specialist;
+  else (no)
+  endif
+  :Confirm each Story's doc Task\nactually ran (Proof-verified) —\nGate 3's delivery, backstopped here;
+  if (doc-worthy change?\n(public API / arch / deps / setup)) then (yes)
+    :documenting-code / /docs-drift\nreconcile system docs;
+  else (no)
+  endif
+  if (Feature/Epic closing AND no full\ndoc set exists — Architecture & Design /\nTechnical & API Specs / User & Admin Guides?) then (yes)
+    :Flag the gap; recommend an Epic\nto build full system documentation\n(human decides — never auto-created);
+  else (no)
+  endif
+  :Record Proof on the card,\nroll up into project.md;
+  :Flip card Status -> done\n(+ project.md, if top-level item closes);
+  :Append a CHANGELOG.md entry;
+  :Present merge / PR / keep\nto the human;
+}
+
+stop
+
+note right
+  Iron Law: every non-trivial task
+  runs all four gates. Only true
+  one-liners (typo, rename,
+  one-line config) skip to Review.
+
+  Every zeno-family skill starts
+  with "zeno-", including all five
+  nested zeno-workflow leaves.
+
+  DDD/FDD/ATDD/BDD are fully done
+  by the time Gate 3 opens — TDD
+  is Gate 3's only stage now.
+
+  Specialists are selected only via
+  agents/REGISTRY.md (minimum
+  sufficient expertise at Scope,
+  independent pass at Review) —
+  never spawned ad hoc.
+
+  One .zeno/ folder per repo,
+  fixed layout: project.md + Epic/
+  Feature/Story cards. Kanban WIP
+  limit: 1 item outside Backlog/
+  Done at a time. No agent fleet,
+  no ad hoc files.
+end note
+
+@enduml

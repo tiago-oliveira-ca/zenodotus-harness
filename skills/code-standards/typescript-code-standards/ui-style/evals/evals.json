@@ -1,0 +1,23 @@
+{
+  "skill_name": "council-ui-style",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "Create the SCSS for a new Angular component called `iam-users-panel` in the platform-monorepo angular-ui app. It should show a list of users with their email and role. Include a search bar at the top, an inline form to invite a new user (name + email fields), and an empty state when there are no users.",
+      "expected_output": "A .scss file using the council-ui design system: .panel wrapper, .panel-header/.panel-title, .inline-search, .embedded-form/.embedded-form-grid, .panel-list/.list-row with hover/active states, .avatar, .row-main/.row-meta/.row-controls layout, .empty state, CSS tokens (--mac-*), no hardcoded colors outside the palette, backdrop-filter on surfaces.",
+      "files": []
+    },
+    {
+      "id": 1,
+      "prompt": "Review this SCSS for an Angular component in the angular-ui app and tell me what's wrong with it from a design system perspective:\n\n```scss\n.container {\n  background: white;\n  border-radius: 8px;\n  padding: 20px;\n  box-shadow: 0 2px 4px #ccc;\n}\n.item {\n  padding: 10px;\n  border: 1px solid #eee;\n  cursor: pointer;\n  &:hover { background: #e0e0e0; }\n}\n.badge { background: green; color: white; padding: 2px 8px; border-radius: 4px; }\n.error-msg { color: red; font-size: 12px; }\n```",
+      "expected_output": "Review identifies: missing backdrop-filter/glassmorphism, wrong border-radius scale (8px vs 10/12/16px tokens), hardcoded #ccc/#eee colors instead of --mac-border/--mac-divider tokens, wrong hover color (should use rgba blue tint), badge missing .status-badge pattern and correct semantic color, error should use #ff3b30 not 'red', box-shadow not using --mac-shadow-* token.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I'm adding a new 'Tenancy' feature to angular-ui with a tenants list page. Write the SCSS for the main page layout: a toolbar row with a search input and a 'New Tenant' button, a grid of tenant cards (each card shows tenant name, plan badge, member count, and status), and a detail panel that slides in from the right. Make it match the existing design.",
+      "expected_output": "SCSS uses: .workspace-header/.workspace-actions pattern for toolbar, .detail-strip or card-grid for tenant cards using .detail-card with glassmorphism, .status-badge for plan/status indicators, .panel for detail panel with backdrop-filter, all colors from palette, --mac-radius-* tokens for radii, --mac-shadow-* for shadows, slide-up animation on card entrance.",
+      "files": []
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "skill_name": "solution-architecture-standards",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Meridian Mutual, a regulated regional insurer, is replacing its on-prem claims-processing monolith ('CLMS') with a cloud-hosted platform on AWS. Known facts: claims intake via web portal and a partner API; document storage moves from a NAS to S3; the fraud-scoring vendor (VerifIQ) is called synchronously today and must become event-driven; NFRs from the approved NFR doc are 99.9% availability, P95 API latency under 400ms, and 7-year claim-record retention for regulatory audit. The architecture board must sign off before any build starts. Write the Solution Architecture Document for this migration.",
+      "expected_output": "A Formal SAD (tier stated explicitly, since stakeholder sign-off is required) covering document control with the approval path, executive summary, requirements and NFRs mapped to architecture choices, distinct current-state (CLMS monolith) and target-state (AWS platform) views, solution design, separate data and integration architecture sections, security architecture, infrastructure/deployment, transition strategy, risks, and references — with C4 context/container diagrams as PlantUML source and ADRs cross-linked rather than argued inline.",
+      "files": [],
+      "expectations": [
+        "The document states its formality tier explicitly as a Formal SAD (not a Blueprint), justified by the required architecture-board sign-off",
+        "Document Control section includes version, date, authors, change history, and a named stakeholder approval path",
+        "The three stated NFRs (99.9% availability, P95 < 400ms, 7-year retention) each appear and are each mapped to a concrete architecture choice that addresses them",
+        "Current (as-is CLMS) and target (to-be AWS) architectures are presented as distinguished views, since this is a migration",
+        "Data architecture and integration architecture are separate sections (Formal SAD governance granularity), covering the NAS-to-S3 move and the VerifIQ sync-to-event-driven change respectively",
+        "A Security Architecture section addresses authentication, authorization, encryption, and trust boundaries at architecture level",
+        "An Implementation/Transition Strategy section covers rollout phasing or migration sequencing and rollback posture",
+        "Diagrams include at least C4 Context and C4 Container views expressed as PlantUML source (diagrams-as-code), not described as external images",
+        "Significant decisions (e.g. event backbone choice for VerifIQ) are referenced as linked ADRs rather than argued with full rationale inline"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I'm the first engineer at a 3-person startup. We're building some kind of marketplace app — mobile first, probably a backend API, maybe payments later. No requirements written down anywhere, no compliance research done, no infra decided. Investors asked to see 'the architecture', so give me a full formal Solution Architecture Document with all sections filled in.",
+      "expected_output": "A response that picks the lightweight Blueprint (SAB) tier and says so — pushing back on producing a fully governed SAD when no approval path or stable requirements exist — that calls out the missing critical inputs (functional requirements, NFRs, integration points, compliance obligations, platform constraints) explicitly instead of guessing, drafts only what is actually known at architecture level, and notes the blueprint should be promoted to a Formal SAD in place if sign-off requirements emerge later.",
+      "files": [],
+      "expectations": [
+        "The response selects the Blueprint (SAB) tier rather than a Formal SAD, and explicitly states and justifies that tier choice",
+        "Missing required inputs are called out explicitly as gaps (functional requirements, NFRs, integration/dependency list, compliance obligations, platform constraints) rather than guessed and presented as fact",
+        "No fabricated specifics: the draft does not assert unverified compliance regimes, invented traffic numbers, or vendor commitments as if they were confirmed",
+        "Sections that cannot be filled honestly are marked as open/TBD with what input is needed, instead of being padded with filler (no documentation theater)",
+        "The draft stays at architecture level: no class-level design, endpoint-by-endpoint contracts, or full schemas",
+        "The response notes that if stakeholder sign-off becomes required, this blueprint evolves into a Formal SAD in place rather than forking a second document",
+        "Any diagram offered is a simple C4 Context (and optionally Container) view as PlantUML source, matching the little that is actually known",
+        "The response recommends storing the artifact in version control near the codebase (e.g. docs/architecture/)"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Please review this excerpt from our team's 'SAD' for the ClaimsBridge migration project and tell me everything wrong with it, then fix it:\n\n# ClaimsBridge Solution Architecture\n\nWe are migrating claims processing to the cloud. The new system will be great and highly scalable.\n\nFor messaging we picked Kafka over RabbitMQ. Kafka is better because it has log compaction, better throughput, replayability, a bigger ecosystem, and our team lead used it at his last job. RabbitMQ routing is more flexible but we don't need that. We also considered Pulsar briefly but nobody knew it.\n\n## API Design\nPOST /claims — creates a claim. Body: {claimantId, policyNo, incidentDate, attachments[]}. Returns 201 with claim UUID.\nGET /claims/{id} — fetch one claim. 404 if missing.\nPATCH /claims/{id}/status — transitions: DRAFT->SUBMITTED->REVIEW->SETTLED. 409 on illegal transition.\nDELETE /claims/{id} — soft delete, sets deletedAt.\n(…14 more endpoints omitted…)\n\nThe architecture diagram is in a Visio file on the shared drive — ask Dave for access.\n\nThat's the entire document so far.",
+      "expected_output": "A review that catches every planted defect: no document control/version/approval path despite being called a SAD; vague unmeasured quality claims ('great and highly scalable') with no NFR section; full inline Kafka-vs-RabbitMQ decision rationale that belongs in a linked ADR; endpoint-by-endpoint API overdetail that belongs in a linked API spec; the migration framed with no current-vs-target architecture views; and a hand-maintained Visio diagram on a shared drive instead of versioned diagrams-as-code — followed by a corrected outline/rewrite.",
+      "files": [],
+      "expectations": [
+        "The missing Document Control (version, authors, change history, stakeholder approval path) is flagged as required for a Formal SAD, and the fix adds it",
+        "'Great and highly scalable' is flagged as vague; the fix demands or drafts an explicit Non-Functional Requirements section with measurable targets mapped to architecture choices",
+        "The inline Kafka-vs-RabbitMQ rationale is flagged as decision rationale that belongs in an ADR; the fix extracts it to a referenced ADR and leaves a cross-link, not the full argument",
+        "The endpoint-by-endpoint API listing is flagged as overdetail (low-level design in an architecture document); the fix links out to an API contract/spec artifact instead of embedding all endpoints",
+        "The absence of distinguished current-state and target-state architecture views is flagged, given the document describes a migration",
+        "The Visio-on-a-shared-drive diagram is flagged as fragmented, hand-maintained storage; the fix requires diagrams-as-code (PlantUML C4 Context/Container) stored in version control alongside the document",
+        "The review notes missing architecture-level coverage areas (security, data, integration, infrastructure/deployment, transition strategy, risks) that the recommended structure requires",
+        "The rewrite or corrected outline keeps architecture-level abstraction throughout and cross-links ADRs, API specs, and diagrams rather than embedding them"
+      ]
+    }
+  ]
+}
