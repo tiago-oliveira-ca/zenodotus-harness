@@ -127,4 +127,4 @@ target:
 ## Phase 2 — Gemini CLI
 
 Zenodotus also plans a Gemini CLI target; it isn't built yet. Nothing in this file changes when
-that lands — see `FEAT-codex-port.md`'s Decisions for the current direction sketch.
+that lands.
