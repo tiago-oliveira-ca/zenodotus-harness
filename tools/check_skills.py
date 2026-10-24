@@ -10,14 +10,14 @@ CEILING = 1024
 bad = []
 for skill in sorted((ROOT / "skills").rglob("SKILL.md")):
     text = skill.read_text(encoding="utf-8")
-    m = re.match(r"---\n(.*?)\n---\n", text, re.S)
+    m = re.match(r"---\n(.*?)\n---\n", text, re.DOTALL)
     rel = skill.relative_to(ROOT)
     if not m:
         bad.append(f"{rel}: no frontmatter")
         continue
     front = m.group(1)
-    name = re.search(r"^name:\s*(\S+)", front, re.M)
-    desc = re.search(r"^description:\s*>?\s*\n?(.*)", front, re.S | re.M)
+    name = re.search(r"^name:\s*(\S+)", front, re.MULTILINE)
+    desc = re.search(r"^description:\s*>?\s*\n?(.*)", front, re.DOTALL | re.MULTILINE)
     if not name or name.group(1) != skill.parent.name:
         bad.append(f"{rel}: name does not match directory")
     if not desc:

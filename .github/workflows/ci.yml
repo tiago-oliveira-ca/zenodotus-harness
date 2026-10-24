@@ -10,22 +10,38 @@ permissions:
 
 jobs:
   checks:
-    runs-on: ubuntu-latest
+    name: checks (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    defaults:
+      run:
+        shell: bash
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: "3.12"
       - name: Shell syntax
-        run: bash -n install.sh install-codex.sh hooks/*.sh hooks/codex/*.sh
+        run: bash -n install.sh install-codex.sh tools/install-common.sh tools/test_install.sh hooks/*.sh hooks/codex/*.sh
       - name: Skill frontmatter lint
-        run: python3 tools/check_skills.py
+        run: python tools/check_skills.py
       - name: Codex generator tests
-        run: python3 -m unittest discover -s tools/codex -p 'test_build_codex.py'
+        run: python -m unittest discover -s tools/codex -p 'test_build_codex.py'
       - name: Codex installer test
         run: bash tools/codex/test_install_codex.sh
-      - name: Install into a scratch home
+      - name: Installer test (both targets, idempotence, hooks)
+        run: bash tools/test_install.sh
+      - name: PowerShell launcher (Windows only)
+        if: runner.os == 'Windows'
+        shell: pwsh
         run: |
-          H="$(mktemp -d)"
-          mkdir -p "$H/.claude"
-          HOME="$H" CLAUDE_HOME="$H/.claude" bash install.sh
+          $env:CLAUDE_HOME = Join-Path $env:RUNNER_TEMP 'claude'
+          $env:CODEX_HOME = Join-Path $env:RUNNER_TEMP 'codex'
+          .\install.ps1 --target all
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          foreach ($f in @("$env:CLAUDE_HOME\CLAUDE.md", "$env:CODEX_HOME\AGENTS.md")) {
+            if (-not (Test-Path $f)) { throw "missing $f" }
+          }

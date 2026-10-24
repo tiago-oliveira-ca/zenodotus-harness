@@ -23,12 +23,20 @@ a large change.
 
 ```sh
 bash -n install.sh install-codex.sh hooks/*.sh hooks/codex/*.sh
+python3 tools/check_skills.py
 python3 -m unittest discover -s tools/codex -p 'test_build_codex.py'
 bash tools/codex/test_install_codex.sh
-python3 tools/check_skills.py
+bash tools/test_install.sh
 ```
 
-The same checks run in CI on every pull request.
+The same checks run in CI on every pull request, on Ubuntu, macOS and Windows. Keep scripts portable:
+no GNU-only flags, no hard-coded `python3`, and LF line endings (`.gitattributes` enforces them).
+
+## Maintainers: repository settings
+
+`tools/github-settings.sh` applies the repository's settings with the `gh` CLI: merge options, read-only workflow
+tokens, SHA-pinned actions only, Dependabot, secret scanning and push protection, private vulnerability reporting,
+and rulesets for `main` and `v*` tags. It is idempotent; run it again after any visibility change.
 
 ## Pull requests
 

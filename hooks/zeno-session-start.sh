@@ -19,12 +19,18 @@ BRANCH="$(git -C "$ROOT" branch --show-current 2>/dev/null)"
 # newlines or control characters, so escaping the double quotes is sufficient and complete.
 # (2026-08-18: PR #42 added those quotes and left this path emitting invalid JSON. The earlier
 # comment asserted the opposite; only the python3 branch had been exercised.) ---
-if ! python3 -c '' >/dev/null 2>&1; then
+# Resolve a working Python 3 (Windows ships a non-working `python3` Store stub, so execute each candidate).
+PY=""
+for _c in python3 python; do
+  if command -v "$_c" >/dev/null 2>&1 && "$_c" -c 'import sys; sys.exit(0 if sys.version_info >= (3, 8) else 1)' >/dev/null 2>&1; then PY="$_c"; break; fi
+done
+
+if [ -z "$PY" ]; then
   printf '{"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"<zeno-loop>%s</zeno-loop>"}}\n' "${BASE//\"/\\\"}"
   exit 0
 fi
 
-BASE="$BASE" PROJECT="$PROJECT" BRANCH="$BRANCH" python3 <<'PY'
+BASE="$BASE" PROJECT="$PROJECT" BRANCH="$BRANCH" "$PY" <<'PY'
 import json, os, re
 
 base = os.environ["BASE"]

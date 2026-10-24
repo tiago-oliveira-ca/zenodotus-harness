@@ -13,7 +13,13 @@
 # malformed rows from hand-rolled bash JSON parsing would corrupt costs.jsonl, which is worse than
 # not logging that session at all).
 
-if ! python3 -c '' >/dev/null 2>&1; then
+# Resolve a working Python 3 (Windows ships a non-working `python3` Store stub, so execute each candidate).
+PY=""
+for _c in python3 python; do
+  if command -v "$_c" >/dev/null 2>&1 && "$_c" -c 'import sys; sys.exit(0 if sys.version_info >= (3, 8) else 1)' >/dev/null 2>&1; then PY="$_c"; break; fi
+done
+
+if [ -z "$PY" ]; then
   exit 0
 fi
 
@@ -23,7 +29,7 @@ fi
 # pattern zeno-session-start.sh already uses for its own inputs.
 HOOK_PAYLOAD="$(cat)"
 
-HOOK_PAYLOAD="$HOOK_PAYLOAD" python3 <<'PY' 2>/dev/null
+HOOK_PAYLOAD="$HOOK_PAYLOAD" "$PY" <<'PY' 2>/dev/null
 import json, os, sys, datetime
 
 def main():

@@ -79,7 +79,7 @@ def prepare_output_directory(candidate: str | os.PathLike[str]) -> pathlib.Path:
     if output_path.exists():
         expected_marker = f"{ROOT}\n"
         try:
-            marker_matches = marker_path.read_text() == expected_marker
+            marker_matches = marker_path.read_text(encoding="utf-8") == expected_marker
         except (OSError, UnicodeError):
             marker_matches = False
         if not output_path.is_dir() or not marker_matches:
@@ -90,7 +90,7 @@ def prepare_output_directory(candidate: str | os.PathLike[str]) -> pathlib.Path:
         shutil.rmtree(output_path)
 
     output_path.mkdir(parents=True)
-    marker_path.write_text(f"{ROOT}\n")
+    marker_path.write_text(f"{ROOT}\n", encoding="utf-8", newline="\n")
     return output_path
 
 
@@ -125,13 +125,13 @@ def copy_skills_tree(src_skills, out_root, globs):
         dest = out_root / rel
         dest.parent.mkdir(parents=True, exist_ok=True)
         try:
-            text = src_file.read_text()
+            text = src_file.read_text(encoding="utf-8")
         except UnicodeDecodeError:
             shutil.copy2(
                 src_file, dest
             )  # binary asset (e.g. an .svg diagram) -- copy verbatim
             continue
-        dest.write_text(apply_class_a(text))
+        dest.write_text(apply_class_a(text), encoding="utf-8", newline="\n")
 
 
 def strip_frontmatter(text):
@@ -158,9 +158,9 @@ def fold_one(
     if not target.exists():
         report["missing_targets"].append(target_rel)
         return
-    body = apply_class_a(strip_frontmatter(src_path.read_text())).strip()
+    body = apply_class_a(strip_frontmatter(src_path.read_text(encoding="utf-8"))).strip()
     section = f"\n\n## {section_title}\n\n{prefix}{body}\n"
-    with open(target, "a") as f:
+    with open(target, "a", encoding="utf-8", newline="\n") as f:
         f.write(section)
     report["folded"].append(source_label)
 

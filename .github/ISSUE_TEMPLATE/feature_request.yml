@@ -1,0 +1,20 @@
+name: Idea or skill request
+description: Suggest a new skill, a change to the loop, or an improvement.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Describe the situation where today's harness falls short.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What would you change?
+  - type: textarea
+    id: overlap
+    attributes:
+      label: Does an existing skill already cover part of this?
+      description: Run `zeno-stack/zeno-find-skills` or search `skills/` first. This library keeps one owner per topic.

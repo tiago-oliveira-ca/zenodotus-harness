@@ -5,6 +5,57 @@ including the de-vendoring passes) is in [docs/changelog-archive.md](docs/change
 hashes quoted in either file refer to the author's earlier private history, which is not part of this
 repository.
 
+## 2026-10-24 — GitHub repository setup for going public
+
+- Added the community files: `CODE_OF_CONDUCT.md`, issue forms (bug report, idea) with a security contact link,
+  a pull request template, `CODEOWNERS`, Dependabot for the pinned GitHub Actions, and a CodeQL workflow
+  (Python and Actions; skipped while the repository is private).
+- New `tools/github-settings.sh` applies the repository settings with `gh` and is safe to re-run: merge options,
+  read-only workflow token, only GitHub-owned actions pinned to SHAs, approval for outside contributors' workflows,
+  Dependabot alerts and updates, secret scanning and push protection, private vulnerability reporting, and rulesets
+  that protect `main` (pull request, passing CI on Ubuntu, macOS and Windows, no force push or deletion) and `v*` tags.
+
+## 2026-10-24 — Cross-platform installer for Claude Code and Codex (macOS, Linux, Windows)
+
+- `install.sh` is now the single entry point: `--target claude|codex|all` (default `claude`, so existing
+  behaviour is unchanged), `--help`, and everything after `--` is passed to `install-codex.sh`.
+- New `install.ps1` for PowerShell: finds Git Bash (skipping the WSL launcher in `System32`) and delegates to
+  `install.sh`, so Windows and Unix cannot drift apart.
+- New `tools/install-common.sh`: OS detection (macOS, Linux, WSL, Git Bash) and a Python finder that executes each
+  candidate (`python3`, `python`, the `py` launcher) instead of trusting `PATH`, which skips the Windows Store
+  stub. Codex requires 3.11+, Claude 3.8+. Missing Python now fails early with per-OS install advice.
+- The hooks resolve Python the same way at run time instead of hard-coding `python3`.
+- `install-codex.sh` writes the hook path in native form on Git Bash (`cygpath -m`).
+- `.gitattributes` forces LF on shell scripts so a Windows checkout cannot break `bash install.sh`.
+- New `tools/test_install.sh` (argument validation, default-target isolation, both targets, idempotence, hooks
+  registered exactly once, hook emits valid JSON). CI runs it on Ubuntu, macOS and Windows, plus the PowerShell
+  launcher on Windows.
+- - Documentation updated throughout: `README.md` rewritten (requirements per OS, install, Windows notes, layout,
+  checks), `USAGE.md`, `AGENTS.md`, `CLAUDE.md` pointer, `CONTRIBUTING.md`, `SECURITY.md`.
+- Security hardening from the review of this change: `install-codex.sh` refuses a `CODEX_HOME` containing
+  `"`, `$`, a backtick, a backslash or a newline (checked in the forward-slash form on Git Bash) before writing
+  anything, since the path is embedded in a hook command run later through a shell; `settings.json` and
+  `hooks.json` are now written atomically (temp file plus rename, file mode preserved); the CI actions are pinned
+  to commit SHAs.
+- Windows CI caught a real bug on its first run: `build_codex.py` read skill files with Python's default encoding
+  (cp1252 on Windows) and crashed on UTF-8 content. Every read and write in the generator and the installers'
+  embedded Python now names `encoding="utf-8"` and writes LF.
+- Windows behaviour is covered by CI only; I could not run Windows locally.
+
+## 2026-10-24 — Security review hardening
+
+A manual security review of the published copy found one injection path and four unpinned or unsafe
+install steps. Fixed:
+
+- Both SessionStart hooks no longer copy `.zeno/project.md` text (Goal, Next step) into the session; a
+  cloned repo could plant instructions there. They now state that a thread exists and point to
+  `/zeno resume`. The branch name is sanitized to `[A-Za-z0-9._/-]` and capped at 100 characters.
+- `graphify` installs a pinned `graphifyy==0.9.95` and no longer falls back to `--break-system-packages`.
+- The CircleCI template no longer pipes a remote script into `sudo bash`; it downloads a pinned release and
+  verifies its checksum.
+- The build-resolver skill and agent use `npm ci` and no longer delete `package-lock.json`.
+- `agent-browser` is pinned to `0.39.2`.
+
 ## 2026-10-23 — Council stops only on blocking unknowns (STORY-council-over-blocking)
 
 The first `/skill-evals` run showed `zeno-council` still ended at a 7-question round on "requirements are

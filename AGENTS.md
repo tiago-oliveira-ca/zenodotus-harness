@@ -8,7 +8,8 @@ not mirrored: `install-codex.sh` runs `tools/codex/build_codex.py` to transform 
 `skills/` tree for Codex and fold `agents/`+`commands/` content into the domain skill that owns it,
 then installs the result into `~/.codex/skills/`. Nothing under `~/.codex/skills/` is itself
 source-controlled — never hand-edit a file there; edit the source in the Zenodotus repo and
-re-run `install-codex.sh`. The folding rules live in
+re-run the installer (`./install.sh --target codex`, or `install-codex.sh` directly). Windows users run
+`install.ps1`, which delegates to Git Bash. The folding rules live in
 `tools/codex/fold-map.toml`.
 
 ## Why Codex looks different from Claude Code here
@@ -113,8 +114,8 @@ target:
    guessed (`config.toml`'s `[[hooks]]` array does not exist as a real Codex mechanism).
    Lands incrementally, per-event: `hooks/codex/zeno-session-start.sh` exists and is registered
    (its SessionStart I/O contract confirmed live against a real Codex CLI install);
-   `zeno-cost-tracker.sh` does not exist yet — its Stop hook contract is unverified; the Stop hook stays parked
-   until its payload can be observed. `install-codex.sh` registers each event only
+   `zeno-cost-tracker.sh` does not exist yet — its Stop hook contract is unverified;
+   the Stop hook stays parked until its payload can be observed. `install-codex.sh` registers each event only
    when its own script is present, rather than wiring a guessed, unverified hook contract.
 4. **No vendored content** — inherited from the shared source; nothing in this repo is third-party.
 5. `<path-to-your-clone>` is the source of truth; `~/.codex` is a **generated**

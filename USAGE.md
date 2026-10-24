@@ -1,14 +1,14 @@
 # Using Zenodotus
 
 A practical operator's guide. For the philosophy and what's in the library, see `README.md`; for
-licensing/provenance, `LICENSE` and `NOTICE.md`; for a dated, commit-referenced history of what changed,
-`CHANGELOG.md`. This document is *how to actually use it day to day*.
+licensing/provenance, `LICENSE` and `NOTICE.md`; for a dated history of what changed, `CHANGELOG.md`; to change the
+library, `CONTRIBUTING.md`. This document is *how to actually use it day to day*.
 
 ---
 
 ## 1. What it is, in one paragraph
 
-Zenodotus is a single, hand-owned Claude Code harness. Its heart is the **zeno loop** — every
+Zenodotus is a single, hand-owned harness for Claude Code and Codex CLI, on macOS, Linux and Windows. Its heart is the **zeno loop** — every
 non-trivial coding task runs **Scope → Route → Execution → Review**, tracked in one repo-root
 `.zeno/` folder — a SAFe/Lean-governed backlog (`project.md` plus Epic/Feature/Story cards). Around
 that sit method skills, a per-language standards library, documentation and graph tooling, and a
@@ -16,20 +16,23 @@ set of dev commands/agents. The ethos is **maximum discipline, fixed machinery**
 command, one folder with a fixed layout — no agent fleets, no ad hoc phase directories.
 
 The **source of truth** is the git repo at `<path-to-your-clone>`
-(`github.com/tiago-oliveira-ca/zenodotus-harness`). The **installed copy** lives in `~/.claude`.
-You edit the repo, then `./install.sh` to sync `~/.claude`.
+(`github.com/tiago-oliveira-ca/zenodotus-harness`). The **installed copies** live in `~/.claude` (Claude Code)
+and `~/.codex` (Codex). You edit the repo, then run `./install.sh` to sync them.
 
 ---
 
 ## 2. Quick start
 
 ```sh
-# install / update the harness into ~/.claude
 cd <path-to-your-clone>
-./install.sh
+./install.sh                    # Claude Code -> ~/.claude (default)
+./install.sh --target codex     # Codex CLI   -> ~/.codex (needs Python 3.11+)
+./install.sh --target all       # both
 ```
-Then **restart Claude Code** (or `/clear`) so the SessionStart hook fires. You'll know it worked
-when a new session behaves as below. That's it — there are no plugins to enable for Zenodotus.
+On Windows use PowerShell: `.\install.ps1 --target all`. It finds Git Bash and runs `install.sh` for you
+(install Git for Windows first; if PowerShell refuses the script, use
+`powershell -ExecutionPolicy Bypass -File .\install.ps1 --target all`). Then **restart Claude Code or Codex** (or `/clear`) so the SessionStart hook
+fires. There are no plugins to enable for Zenodotus. Codex asks once to trust the newly registered hook.
 
 **How a task flows** once it's installed — just describe the work:
 > "Let's add rate-limiting to the login endpoint."
@@ -60,7 +63,8 @@ Four gates, always on. Only genuinely trivial edits (typo, rename, one-line conf
 | `/zeno review` | Jump to Review: exercise the change, record evidence, mark done |
 
 ### `.zeno/` — one folder, fixed layout
-Lives at the **repo root**, committed with the code:
+Lives at the **repo root**. Commit it to keep the backlog with your code, or add `.zeno/` to `.gitignore` to
+keep it local (this repo ignores it):
 
 ```
 .zeno/
@@ -69,12 +73,14 @@ Lives at the **repo root**, committed with the code:
     epics/EPIC-<slug>.md    # optional — epic-sized work only
     features/FEAT-<slug>.md # DDD notes + FDD Story list
     stories/STORY-<slug>.md # ATDD criteria + BDD scenarios + TDD proof
+    tasks/TASK-<slug>.md    # one implementation step each, with its red/green proof
+    archive/                # delivered cards, moved here after the merge is verified
 ```
 
 `project.md` is organized around five principles — **State**, **Goal**, **Decisions**, **Next step**,
 **Proof** — governed as a SAFe/Lean backlog (Scrum + Kanban at team level), with a WIP limit of 1
-item outside Backlog/Done. The SessionStart hook notes that it exists (no file text is injected) and `/zeno resume` reads it, so resume
-is instant.
+item outside Backlog/Done. The SessionStart hook only notes that a thread exists (it injects no text from the
+file, because a cloned repo could plant instructions there); `/zeno resume` reads it, as data, on request.
 
 ---
 
@@ -137,8 +143,9 @@ using a **cheapest-first ladder**: `graphify query`/`path` *if a `graphify-out/`
 exists* → `docs/CODEMAPS/` → structural grep. It's **graph-assisted, never graph-required**; with no
 graph it falls back to grep and costs nothing. See `skills/zeno/references/impact-analysis.md`.
 
-- **`/graphify`** — build a queryable knowledge graph from code/docs/PDFs/etc. (needs the `graphifyy`
-  tool: `uv tool install graphifyy` or `pip install graphifyy`). Then `graphify query "who calls X"`.
+- **`/graphify`** — build a queryable knowledge graph from code/docs/PDFs/etc. It installs the `graphifyy`
+  engine on first use, pinned to a reviewed version (via `uv`, else `pip`; if pip refuses an externally managed
+  Python, install `uv` or `pipx`). Then `graphify query "who calls X"`.
 - **`/update-codemaps`** — token-lean architecture maps to `docs/CODEMAPS/`.
 
 ---
@@ -154,11 +161,13 @@ graph it falls back to grep and costs nothing. See `skills/zeno/references/impac
 - **Test specification docs:** the `testing` dispatcher. (Test *code* is `zeno-workflow/zeno-tdd` +
   `zeno-stack`'s `zeno-python-testing`/`zeno-react-testing`/`zeno-e2e-testing`/`zeno-browser-qa`.)
 - **Stack/domain coverage:** `zeno-stack` — React, Python/FastAPI, Postgres, Redis, Docker, K8s,
-  deployment, accessibility, security review, git/GitHub workflow, Jira backlog structure review, implementation guardrails — one `zeno-<name>` leaf each.
+  deployment, accessibility, security review, git/GitHub workflow, Jira backlog structure review,
+  implementation guardrails (stops new services, destructive migrations and breaking API changes), context
+  compaction (what to keep when you `/compact` or hand off) — 48 `zeno-<name>` leaves, one each.
 - **Diagrams:** `puml-diagrams`. **Architecture staging:** `software-architecture-progression`.
 - **Harness upkeep:** `zeno-stack/zeno-config-gc`, `zeno-stack/zeno-context-budget`,
   `zeno-stack/zeno-skill-stocktake`, `zeno-stack/zeno-skill-comply`, `zeno-stack/zeno-find-skills`.
-- **Dev commands** (22, all zeno-owned original content): `pr`, `quality-gate`, `python-review`,
+- **Dev commands** (23, all zeno-owned original content): `pr`, `quality-gate`, `python-review`,
   `react-review`/`react-build`/`react-test`, `fastapi-review`, `refactor-clean`, `test-coverage`,
   `build-fix`, `security-scan`, `update-docs`/`update-codemaps`, `harness-audit`, `checkpoint`,
   `save-session`/`resume-session`, `sessions`, `cost-report`, `model-route`, …
@@ -178,14 +187,17 @@ Not sure what exists? Run **`zeno-stack/zeno-find-skills`**.
 
 ## 8. Maintaining Zenodotus
 
-**The golden rule:** edit in the repo → `./install.sh` → `git push`. Both machines stay identical.
+**The golden rule:** edit in the repo → `./install.sh` → `git push`. Every machine stays identical.
 
 ```sh
 cd <path-to-your-clone>
-# ...edit skills/agents/commands/CLAUDE.md...
-./install.sh          # sync ~/.claude (backs up the old CLAUDE.md, re-registers the hook)
+# ...edit skills/agents/commands/CLAUDE.md/AGENTS.md...
+./install.sh --target all   # sync ~/.claude and ~/.codex (backs up CLAUDE.md/AGENTS.md, re-registers hooks)
 git add -A && git commit -m "..." && git push
 ```
+Before pushing, run the checks in `CONTRIBUTING.md` (`bash tools/test_install.sh` covers both installers).
+`install.sh` flags: `--target claude|codex|all`, `--help`; anything after `--` goes to `install-codex.sh`.
+Override the destinations with `CLAUDE_HOME` and `CODEX_HOME`.
 After changing skills, **restart the session** — Claude Code caches the skill list at session start,
 so edits (and especially additions/removals) only take effect in a fresh session.
 
@@ -204,11 +216,13 @@ update it when you add or prune. `install.sh` prints the live counts and warns o
 ```sh
 git clone https://github.com/tiago-oliveira-ca/zenodotus-harness.git
 cd Zenodotus
-./install.sh
+./install.sh --target all        # Windows: .\install.ps1 --target all
 ```
-Then restart Claude Code. Optional dependencies (the core loop works without them):
+Then restart Claude Code or Codex. Required: `bash` (Git for Windows on Windows), `git`, and Python 3.8+
+(3.11+ for the Codex target). Optional (the core loop works without them):
 - **Node/npm** — for `npx`-based skills (`ploc`, `madge`, some reviewers).
-- **python3** — for the thread-aware SessionStart hook (it has a bash fallback, so not required).
+- **Python for the hooks** — the SessionStart hook falls back to a static payload without it; the cost tracker
+  does nothing without it.
 - **`graphifyy`** — only if you want `/graphify` graph features.
 - **Plugins/MCP** (context7, semgrep, playwright, obsidian…) are **not** in the repo — reinstall via
   the marketplace and set their `env` vars if you want them.
@@ -221,10 +235,14 @@ Then restart Claude Code. Optional dependencies (the core loop works without the
 |---|---|
 | Edited a skill, no effect | Restart the session — the skill list is cached at session start |
 | Session lists a skill you deleted | Stale session cache — restart; it reads from `~/.claude/skills` fresh |
-| Hook errors at session start | Ensure `bash` works; `python3` is optional (bash fallback exists) |
-| `/graphify` fails | Install the tool: `uv tool install graphifyy` (or `pip install graphifyy`) |
+| Hook errors at session start | Ensure `bash` works; Python is optional for the SessionStart hook (static fallback), required for the cost tracker |
+| `error: Python 3.x or newer is required` | Install Python and put it on `PATH`. On Windows the Microsoft Store `python3` alias does not count; install from python.org |
+| `install.ps1` says Git Bash not found | Install Git for Windows, reopen PowerShell. `System32\bash.exe` is the WSL launcher and is skipped on purpose |
+| `bad interpreter` or `\r` errors on Windows | A Windows checkout converted line endings. Re-clone, or `git add --renormalize .` (`.gitattributes` forces LF) |
+| Codex hook does not fire | Codex asks once to trust a new hook; approve it inside Codex |
+| `/graphify` fails | Install `uv` or `pipx` and retry; the skill installs a pinned `graphifyy` and will not touch the system Python |
 | A `zeno-stack` leaf's external tool is missing | Install Node (`npx`) or the named CLI; these aren't bundled |
-| CLAUDE.md got overwritten | `install.sh` saved a `CLAUDE.md.bak-<timestamp>` in `~/.claude` |
+| CLAUDE.md or AGENTS.md got overwritten | The installers saved `CLAUDE.md.bak-<timestamp>` in `~/.claude`, `AGENTS.md.bak-<timestamp>` in `~/.codex` |
 | Counts look wrong | `ls ~/.claude/skills \| wc -l` and reconcile the `CLAUDE.md` inventory table |
 
 ---

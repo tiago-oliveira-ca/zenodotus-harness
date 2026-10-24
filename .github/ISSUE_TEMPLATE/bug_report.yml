@@ -1,0 +1,42 @@
+name: Bug report
+description: Something in the installer, hooks, skills or generator does not work.
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: The exact command, for example `./install.sh --target codex`.
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options: [macOS, Linux, Windows (Git Bash), Windows (PowerShell via install.ps1), WSL]
+    validations:
+      required: true
+  - type: dropdown
+    id: target
+    attributes:
+      label: Target
+      options: [Claude Code, Codex CLI, Both]
+    validations:
+      required: true
+  - type: input
+    id: versions
+    attributes:
+      label: Python and agent versions
+      description: Output of `python3 --version` (or `python --version`) and the Claude Code or Codex version.
+  - type: textarea
+    id: logs
+    attributes:
+      label: Output
+      description: Paste the installer or hook output. Remove anything private first.
+      render: shell

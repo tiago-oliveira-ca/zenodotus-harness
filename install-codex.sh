@@ -11,7 +11,19 @@
 set -euo pipefail
 
 SRC="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=tools/install-common.sh
+. "$SRC/tools/install-common.sh"
+detect_os
+find_python 11
 DEST="${CODEX_HOME:-$HOME/.codex}"
+# The hook command registered in hooks.json embeds this path inside double quotes and is run later by
+# Codex through a shell, so characters that could break out of the quotes are refused up front.
+# (On Git Bash the check runs on the forward-slash form that is actually written, so Windows paths pass.)
+case "$(to_native_path "$DEST")" in
+  *[\"\$\`\\]*|*$'\n'*|*$'\r'*)
+    echo "error: CODEX_HOME contains a character that is unsafe in a hook command (\" \$ \` \\ or a newline): $DEST" >&2
+    exit 1 ;;
+esac
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 DRY_RUN=0
 OUT_DIR=""
@@ -30,7 +42,7 @@ if [ "$DRY_RUN" = "1" ]; then
     exit 1
   fi
   echo "Zenodotus (Codex, dry-run) → generating into: $OUT_DIR"
-  python3 "$SRC/tools/codex/build_codex.py" --out "$OUT_DIR"
+  "$PY" "$SRC/tools/codex/build_codex.py" --out "$OUT_DIR"
   echo "Dry run only — $DEST was not touched."
   exit 0
 fi
@@ -42,10 +54,10 @@ mkdir -p "$DEST"
 GEN_BASE="$(mktemp -d)"
 GEN_OUT="$GEN_BASE/generated"
 trap 'rm -rf "$GEN_BASE"' EXIT
-python3 "$SRC/tools/codex/build_codex.py" --out "$GEN_OUT"
+"$PY" "$SRC/tools/codex/build_codex.py" --out "$GEN_OUT"
 mkdir -p "$DEST/skills"
 MANAGED_SKILLS="$DEST/.zenodotus-managed-skills"
-python3 - "$GEN_OUT/skills" "$DEST/skills" "$MANAGED_SKILLS" <<'PY'
+"$PY" - "$GEN_OUT/skills" "$DEST/skills" "$MANAGED_SKILLS" <<'PY'
 import os
 from pathlib import Path
 import shutil
@@ -59,7 +71,7 @@ manifest_path = Path(sys.argv[3])
 current = {path.name for path in source_root.iterdir() if path.is_dir()}
 previous = set()
 if manifest_path.exists():
-    previous = {line.strip() for line in manifest_path.read_text().splitlines() if line.strip()}
+    previous = {line.strip() for line in manifest_path.read_text(encoding="utf-8").splitlines() if line.strip()}
 
 managed = previous | current
 for name in managed:
@@ -78,7 +90,8 @@ for name in sorted(managed):
 
 manifest_path.parent.mkdir(parents=True, exist_ok=True)
 with tempfile.NamedTemporaryFile(
-    "w", dir=manifest_path.parent, prefix=f"{manifest_path.name}.", delete=False
+    "w", dir=manifest_path.parent, prefix=f"{manifest_path.name}.", delete=False,
+    encoding="utf-8", newline="\n",
 ) as manifest_file:
     manifest_file.write("".join(f"{name}\n" for name in sorted(current)))
     temporary_manifest = Path(manifest_file.name)
@@ -121,7 +134,8 @@ if [ -d "$HOOKS_SRC_DIR" ] && ls "$HOOKS_SRC_DIR"/*.sh >/dev/null 2>&1; then
     fi
   done
   chmod +x "$DEST"/hooks/*.sh 2>/dev/null || true
-  python3 - "$HOOKS_JSON" "$STAMP" "$DEST" "$HOOKS_SRC_DIR" \
+  HOOKS_DEST_NATIVE="$(to_native_path "$DEST")"
+  "$PY" - "$HOOKS_JSON" "$STAMP" "$HOOKS_DEST_NATIVE" "$HOOKS_SRC_DIR" \
     "SessionStart" "zeno-session-start.sh" \
     "Stop" "zeno-cost-tracker.sh" \
 <<'PY'
@@ -134,7 +148,7 @@ specs = list(zip(sys.argv[5::2], sys.argv[6::2]))  # (event, script)
 data = {}
 if os.path.exists(hooks_path):
     try:
-        data = json.load(open(hooks_path))
+        data = json.load(open(hooks_path, encoding="utf-8"))
     except Exception:
         print(f"  · {hooks_name} unreadable — leaving it alone; register hooks by hand.")
         sys.exit(0)
@@ -181,7 +195,20 @@ for event, script in specs:
 if changed:
     if os.path.exists(hooks_path):
         shutil.copy(hooks_path, hooks_path + f".bak-{stamp}")
-    json.dump(data, open(hooks_path, "w"), indent=2)
+    # Atomic write: a crash mid-write must never leave a truncated hooks file.
+    import tempfile
+    directory = os.path.dirname(os.path.abspath(hooks_path))
+    fd, tmp = tempfile.mkstemp(dir=directory, prefix=".zeno-tmp-")
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8", newline="\n") as out:
+            json.dump(data, out, indent=2)
+        if os.path.exists(hooks_path):
+            shutil.copymode(hooks_path, tmp)
+        os.replace(tmp, hooks_path)
+    except BaseException:
+        if os.path.exists(tmp):
+            os.unlink(tmp)
+        raise
 PY
 else
   echo "  · hooks/codex/*.sh not present yet — skipping hook registration (see STORY-codex-hooks-port; not guessed)"

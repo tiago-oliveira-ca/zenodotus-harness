@@ -12,7 +12,7 @@ acknowledgement within a week; this is a one-person project, so fixes are best e
 
 Zenodotus is configuration, not a service, but it does run code on your machine:
 
-- `install.sh` and `install-codex.sh` copy files into `~/.claude` and `~/.codex` and edit
+- `install.sh`, `install.ps1` and `install-codex.sh` copy files into `~/.claude` and `~/.codex` and edit
   `~/.claude/settings.json` and the Codex hook config.
 - `hooks/*.sh` run on SessionStart and Stop events, and read the repo's `.zeno/project.md`.
 - `tools/codex/build_codex.py` deletes and regenerates an output directory.

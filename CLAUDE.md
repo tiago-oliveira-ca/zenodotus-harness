@@ -7,7 +7,7 @@
 
 This file is the **single arbitration document** for the harness. The skill/agent/command
 library is one hand-owned system, **Zenodotus**: source of truth at
-`<path-to-your-clone>`, installed into `~/.claude` (`install.sh`, copy-only).
+`<path-to-your-clone>`, installed into `~/.claude` (`./install.sh`, copy-only; `--target all` also installs the Codex target; `install.ps1` on Windows).
 Every skill, agent, and command is zeno-owned original content — no vendored or unattributed
 third-party content remains anywhere in the repo, and every de-vendoring pass is fully resolved
 (nothing outstanding; the one sanctioned external dependency is `graphify`'s wrapped `graphifyy`
