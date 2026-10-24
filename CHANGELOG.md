@@ -14,6 +14,8 @@ repository.
   read-only workflow token, only GitHub-owned actions pinned to SHAs, approval for outside contributors' workflows,
   Dependabot alerts and updates, secret scanning and push protection, private vulnerability reporting, and rulesets
   that protect `main` (pull request, passing CI on Ubuntu, macOS and Windows, no force push or deletion) and `v*` tags.
+- The CodeQL workflow can also be started by hand (`workflow_dispatch`), so a baseline scan does not have to wait for
+  the weekly schedule.
 
 ## 2026-10-24 — Cross-platform installer for Claude Code and Codex (macOS, Linux, Windows)
 
