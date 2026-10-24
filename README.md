@@ -65,7 +65,7 @@ self-contained — no external plugin dependency.
   hook that appends each session's usage/cost to `~/.claude/metrics/costs.jsonl` for `/cost-report`.
 
 ```
-Zenodotus/
+zenodotus-harness/
   CLAUDE.md                    # the single-source arbitration document (installs to ~/.claude/CLAUDE.md)
   skills/    <top-level dirs + _skill-template.md — re-derive count with find, don't trust a stale number>
   agents/    <24 — all zeno-<name> (20 removed-and-rewritten + 4 never-vendored guide agents), plus REGISTRY.md + _agent-template.md>
@@ -81,8 +81,8 @@ Zenodotus/
   CHANGELOG.md                 # dated, commit-referenced record of what changed, per delivery
 ```
 
-This directory is the **source of truth / backup**. The live copies run from `~/.claude`
-(copied, not symlinked, so an unmounted external drive never breaks the harness).
+This repository is the **source of truth**. The live copies run from `~/.claude`
+(copied, not symlinked, so the installed harness keeps working if you move or delete your clone).
 
 ## Install / update
 
@@ -112,7 +112,7 @@ document, parallel to `CLAUDE.md`. `./install-codex.sh --dry-run --out <dir>` pr
 generated tree without touching `$CODEX_HOME`. Hook registration is per-event: `SessionStart` is ported and registered
 (`hooks/codex/zeno-session-start.sh`, verified against Codex 0.147.0; needs a one-time in-Codex
 hook-trust approval), while `Stop` remains parked pending Codex usage quota to observe its real
-payload (see `.zeno/docs/stories/STORY-codex-hooks-port.md`). A Gemini CLI
+payload. A Gemini CLI
 target is planned but not yet built.
 
 ## Using it
@@ -131,4 +131,4 @@ SessionStart hook reminds every new session of the loop.
 2. **The thread is one folder, one fixed layout.** If resume is expensive, the system failed.
 3. **Done means observed.** A green typecheck is not proof; exercising the flow is.
 4. **Own structure, own methods.** One self-contained library, no borrowed dependencies.
-5. **Reversible over destructive.** Everything removed was archived first.
+5. **Reversible over destructive.** Removals are recorded in `CHANGELOG.md` and `NOTICE.md`, not silently dropped.

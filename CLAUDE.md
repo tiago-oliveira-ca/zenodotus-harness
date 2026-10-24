@@ -1,5 +1,10 @@
 # Global Claude Code configuration — Zenodotus
 
+> **Reference configuration.** This is the author's own arbitration document, published as a working
+> example. `install.sh` copies it over `~/.claude/CLAUDE.md` (the old file is backed up first). Before
+> installing, adapt the **Plugins** section and the plugin row of the inventory to your own setup; the
+> plugin names and counts below describe the author's machine, not a requirement.
+
 This file is the **single arbitration document** for the harness. The skill/agent/command
 library is one hand-owned system, **Zenodotus**: source of truth at
 `<path-to-your-clone>`, installed into `~/.claude` (`install.sh`, copy-only).
@@ -19,7 +24,7 @@ snapshot path is below in Config maintenance.
 | `~/.claude/agents/` | 24 | + `_agent-template.md` and `REGISTRY.md` (reference files, not agents) |
 | `~/.claude/commands/` | 23 | |
 | `~/.claude/hooks/` | 2 | `zeno-session-start.sh` (SessionStart), `zeno-cost-tracker.sh` (Stop) |
-| plugins | 25 installed; re-derive enabled/disabled via `claude plugin list` | enable state is app-held and drifts — don't trust a hand-typed split |
+| plugins | re-derive via `claude plugin list` | the author runs about 25; enable state is app-held and drifts — don't trust a hand-typed split |
 
 Top-level `skills/` roles: the `zeno` spine + 4 flat method skills (`zeno-council`, `zeno-insight`,
 `zeno-debug`, `zeno-verify`); the `zeno-workflow` and `zeno-stack` dispatchers (nested leaves not counted at top
@@ -136,9 +141,9 @@ lost on update. Routing facts that matter:
   interactive inspection of a live page.
 - **obsidian-second-brain** requires `OBSIDIAN_VAULT_PATH` in the `env` block (see invariant 3).
   Vault: wherever your Obsidian vault lives.
-- **Disabled (7)** — one toggle from returning: `frontend-design` (Zenodotus skill owns the name),
-  `ruflo-core` + `ruflo-swarm`, `andrej-karpathy-skills`, `impeccable`, `rust-analyzer-lsp`,
-  `swift-lsp`.
+- **Disabled locally** — one toggle from returning. The author disables `frontend-design` because the
+  Zenodotus skill owns that name, plus plugins that overlap other lanes. Decide yours the same way:
+  disable any plugin whose skill name collides with a Zenodotus skill (invariant 2).
 
 **Overlap resolutions:** inside the zeno loop `zeno-council` owns architecture questioning and
 recommendation — it wins over the `engineering:architecture` / `engineering:system-design` plugin
