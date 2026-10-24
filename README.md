@@ -9,11 +9,6 @@ always-on loop, **Scope → Route → Execution → Review**, tracked in one fix
 
 > **Maximum discipline, minimum machinery.** One loop, near-zero moving parts.
 
-Zenodotus began as a lean workflow drawing ideas from
-[obra/superpowers](https://github.com/obra/superpowers) (process discipline as skills) and
-[gsd-build/get-shit-done](https://github.com/gsd-build/get-shit-done) (persistent project state). It has
-since become the entire harness, built from original content.
-
 **Where to go next:** [USAGE.md](USAGE.md) for day-to-day use · [CHANGELOG.md](CHANGELOG.md) for what changed ·
 [CONTRIBUTING.md](CONTRIBUTING.md) to change it · [SECURITY.md](SECURITY.md) to report a problem.
 
@@ -136,7 +131,7 @@ tools/test_install.sh      end-to-end installer test (both targets, idempotence)
 tools/check_skills.py      skill frontmatter lint
 tools/github-settings.sh   applies the repository's GitHub settings and rulesets with `gh` (idempotent)
 docs/                      architecture and loop diagrams (PlantUML + SVG), proposals
-README.md  USAGE.md  CHANGELOG.md  CONTRIBUTING.md  SECURITY.md  CODE_OF_CONDUCT.md  LICENSE  NOTICE.md
+README.md  USAGE.md  CHANGELOG.md  CONTRIBUTING.md  SECURITY.md  CODE_OF_CONDUCT.md  LICENSE
 .github/                   CI, CodeQL, Dependabot, CODEOWNERS, issue and pull request templates
 ```
 

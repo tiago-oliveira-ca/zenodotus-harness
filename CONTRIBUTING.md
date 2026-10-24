@@ -6,8 +6,7 @@ a large change.
 
 ## Ground rules
 
-- **Original content only.** Do not paste third-party skills or prompts. If an idea comes from elsewhere,
-  rewrite it and credit it in `NOTICE.md`.
+- **Original content only.** Write skills, agents and commands here; do not paste third-party skills or prompts.
 - **One owner per topic.** Before adding a skill, check whether one already covers it. Point to the owner
   instead of restating its rule.
 - **New skills** follow `skills/_skill-template.md`: the name starts with `zeno-` (for the zeno family) and

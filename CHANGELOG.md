@@ -2,7 +2,7 @@
 
 All notable changes to Zenodotus, newest first. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This repository starts from a single squashed commit,
-so earlier history is not listed; third-party provenance is summarized in [NOTICE.md](NOTICE.md).
+so earlier history is not listed.
 
 ## 2026-10-24
 
@@ -36,7 +36,7 @@ so earlier history is not listed; third-party provenance is summarized in [NOTIC
 - `install-codex.sh` writes the registered hook path in native form on Git Bash.
 - `settings.json` and `hooks.json` are written atomically (temp file plus rename, file mode preserved).
 - CI actions are pinned to commit SHAs.
-- Removed `docs/changelog-archive.md` and the older entries; provenance now lives in `NOTICE.md`.
+- Removed `docs/changelog-archive.md`, `docs/proposals/` and `NOTICE.md`; the older entries are gone with the archive.
 
 ### Fixed
 - Windows: `build_codex.py` read skill files in the console code page (cp1252) and crashed on UTF-8 content, and

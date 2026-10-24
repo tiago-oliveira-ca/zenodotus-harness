@@ -8,13 +8,10 @@
 This file is the **single arbitration document** for the harness. The skill/agent/command
 library is one hand-owned system, **Zenodotus**: source of truth at
 `<path-to-your-clone>`, installed into `~/.claude` (`./install.sh`, copy-only; `--target all` also installs the Codex target; `install.ps1` on Windows).
-Every skill, agent, and command is zeno-owned original content — no vendored or unattributed
-third-party content remains anywhere in the repo, and every de-vendoring pass is fully resolved
-(nothing outstanding; the one sanctioned external dependency is `graphify`'s wrapped `graphifyy`
-PyPI engine, attributed in that skill and NOTICE.md). When two components could handle the same request, the rules here decide —
-not recency, not description-match strength, not which skill "feels" closer. Provenance and the
-decommission history (superpowers/GSD/ECC) are summarized in `NOTICE.md`; the rollback
-snapshot path is below in Config maintenance.
+Every skill, agent, and command is original zeno-owned content; the one external dependency is
+`graphify`'s `graphifyy` PyPI engine, installed at runtime. When two components could handle the same
+request, the rules here decide — not recency, not description-match strength, not which skill "feels"
+closer.
 
 ## Inventory
 
@@ -202,9 +199,8 @@ The harness maintains itself with `zeno-stack`'s meta-skills:
    (`comm -12` the two name sets).
 3. **Enabled ≠ configured.** Marketplace install doesn't run a plugin's `setup.sh` — for each
    enabled plugin, check declared MCP `env` vars are actually set.
-4. **No vendored skills, agents, or commands.** No vendored or unattributed third-party content
-   remains anywhere in the repo (provenance in `NOTICE.md`). No unreviewed bulk file-copy
-   of plugin content in `~/.claude/`, ever.
+4. **No unreviewed bulk file-copy of plugin content into `~/.claude/`, ever.** The library's skills, agents
+   and commands are written here, not imported.
 5. `<path-to-your-clone>` is the **source of truth**; `~/.claude` is the
    installed copy. Real backups are a dated snapshot kept outside the repo — a mirror is not a backup.
 6. The inventory table at the top of this file matches reality.

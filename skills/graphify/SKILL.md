@@ -7,10 +7,9 @@ description: "Use for any question about a codebase, its architecture, file rela
 
 Turn any folder of files into a navigable knowledge graph with community detection, an honest audit trail, and three outputs: interactive HTML, GraphRAG-ready JSON, and a plain-language GRAPH_REPORT.md.
 
-> **Provenance.** This skill is a zeno-owned orchestration wrapper around the external
-> third-party PyPI package `graphifyy` (installed at runtime via uv/pip below) — the one
-> sanctioned external-tool dependency in the skill library, attributed here and in
-> `CHANGELOG.md`. The wrapper (this file and its references/) is zeno-owned; the engine is not.
+> **Dependency.** This skill is a zeno-owned orchestration wrapper around the external PyPI package
+> `graphifyy` (installed at runtime via uv/pip below), the one external-tool dependency in the skill
+> library. The wrapper (this file and its references/) is zeno-owned; the engine is not.
 
 ## Usage
 
@@ -708,4 +707,4 @@ When the user asks to install the post-commit auto-rebuild hook or wire graphify
 - [ ] Cohesion scores are raw numbers, not symbols.
 - [ ] Node count was checked against the visualization threshold, and >5,000 nodes was warned about.
 - [ ] Token cost is stated in the report.
-- [ ] Provenance holds: the external `graphifyy` engine is attributed, not presented as zeno-owned.
+- [ ] The external `graphifyy` engine is described as a dependency, not presented as zeno-owned.

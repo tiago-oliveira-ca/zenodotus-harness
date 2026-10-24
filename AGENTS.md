@@ -117,8 +117,7 @@ target:
    `zeno-cost-tracker.sh` does not exist yet — its Stop hook contract is unverified;
    the Stop hook stays parked until its payload can be observed. `install-codex.sh` registers each event only
    when its own script is present, rather than wiring a guessed, unverified hook contract.
-4. **No vendored content** — inherited from the shared source; nothing in this repo is third-party.
-5. `<path-to-your-clone>` is the source of truth; `~/.codex` is a **generated**
+4. `<path-to-your-clone>` is the source of truth; `~/.codex` is a **generated**
    copy, even less durable than `~/.claude`'s mirrored one, since folded sections exist only in the
    generated output.
 6. This file's structure matches `tools/codex/fold-map.toml` and the `zeno-stack` routing table in
