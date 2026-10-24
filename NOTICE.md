@@ -1,8 +1,7 @@
 # Provenance notice
 
 Zenodotus is original work by its author, released under the MIT License (`LICENSE`). This file records
-third-party provenance. The public repository starts from a single squashed commit; commit hashes quoted in
-`CHANGELOG.md` refer to the author's earlier private history.
+third-party provenance. The public repository starts from a single squashed commit; earlier private history is not included.
 
 ## Inspiration (no text reused)
 

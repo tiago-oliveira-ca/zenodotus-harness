@@ -17,7 +17,8 @@ a large change.
   routing-table row and a matching trigger word in the dispatcher's description.
 - **Evals.** A skill with behavior worth guarding gets `evals/evals.json` in the house shape: `prompt`,
   `expected_output`, `files`, and a list of plain-string `expectations`.
-- **Record the change** with a short entry at the top of `CHANGELOG.md`.
+- **Record the change** in `CHANGELOG.md` under the newest date, in the matching Added / Changed / Fixed / Security
+  group, written for users (no internal ticket IDs).
 
 ## Checks to run
 
