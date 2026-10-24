@@ -21,6 +21,6 @@ in idea from `grill-me`/`grilling` (`github.com/mattpocock/skills`, MIT).
 - **`task-observer`** (CC BY 4.0, Eoghan Henn, `github.com/rebelytics/one-skill-to-rule-them-all`): rewritten
   as original prose, then removed entirely on 2026-08-14.
 
-None of this content is in this repository or its history. The de-vendoring narrative is in `CHANGELOG.md`.
+None of this content is in this repository or its history. The de-vendoring narrative is in `docs/changelog-archive.md`.
 The one sanctioned external dependency is `graphify`'s wrapped `graphifyy` PyPI engine, attributed in that
 skill and in `CHANGELOG.md`.

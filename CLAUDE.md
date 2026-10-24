@@ -11,9 +11,9 @@ library is one hand-owned system, **Zenodotus**: source of truth at
 Every skill, agent, and command is zeno-owned original content — no vendored or unattributed
 third-party content remains anywhere in the repo, and every de-vendoring pass is fully resolved
 (nothing outstanding; the one sanctioned external dependency is `graphify`'s wrapped `graphifyy`
-PyPI engine, attributed in that skill and CHANGELOG.md). When two components could handle the same request, the rules here decide —
+PyPI engine, attributed in that skill and NOTICE.md). When two components could handle the same request, the rules here decide —
 not recency, not description-match strength, not which skill "feels" closer. Provenance and the
-decommission history (superpowers/GSD/ECC) are recorded in `CHANGELOG.md`; the rollback
+decommission history (superpowers/GSD/ECC) are recorded in `docs/changelog-archive.md`; the rollback
 snapshot path is below in Config maintenance.
 
 ## Inventory
@@ -203,7 +203,7 @@ The harness maintains itself with `zeno-stack`'s meta-skills:
 3. **Enabled ≠ configured.** Marketplace install doesn't run a plugin's `setup.sh` — for each
    enabled plugin, check declared MCP `env` vars are actually set.
 4. **No vendored skills, agents, or commands.** No vendored or unattributed third-party content
-   remains anywhere in the repo (provenance in `CHANGELOG.md`). No unreviewed bulk file-copy
+   remains anywhere in the repo (provenance in `NOTICE.md`). No unreviewed bulk file-copy
    of plugin content in `~/.claude/`, ever.
 5. `<path-to-your-clone>` is the **source of truth**; `~/.claude` is the
    installed copy. Real backups are a dated snapshot kept outside the repo — a mirror is not a backup.

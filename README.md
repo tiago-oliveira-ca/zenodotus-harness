@@ -39,7 +39,7 @@ self-contained — no external plugin dependency.
   Docker, K8s, deployment, testing execution, accessibility, security review, git/GitHub workflow, Jira backlog structure review, implementation guardrails,
   and the harness's own self-maintenance meta-skills. One `zeno-<name>` leaf per technology/domain
   — originally vendored (formerly ECC), now fully rewritten as original, zeno-owned content (see
-  `CHANGELOG.md` for what changed).
+  `docs/changelog-archive.md` for what changed).
 - **Other dispatchers** — `code-standards`, `documentation`, `testing` (deeply nested sub-skills).
 - **Standalones not yet folded into a dispatcher** — `puml-diagrams`, `software-architecture-progression`,
   `github-circleci-standards`, `graphify`, and `documenting-code`.
@@ -47,7 +47,7 @@ self-contained — no external plugin dependency.
   it accurate: source-of-truth generation, per-stack docstrings, and a `drift.lock` anchor convention
   that flags docs whose code changed. Wired into the zeno Review gate for doc-worthy changes.
 - **24 agents** (all `zeno-<name>`) — 20 originally vendored (formerly ECC), now fully rewritten as
-  original, zeno-owned content, same as `zeno-stack` (see `CHANGELOG.md`); plus 4 pipeline-stage
+  original, zeno-owned content, same as `zeno-stack` (see `docs/changelog-archive.md`); plus 4 pipeline-stage
   guide agents (`zeno-ddd-guide`/`zeno-fdd-guide`/`zeno-atdd-guide`/`zeno-bdd-guide`, mirroring
   `zeno-tdd-guide`) that were never vendored — registry-selectable specialists for the same
   discipline `zeno-workflow`'s DDD/FDD/ATDD/BDD stages carry inline, for direct invocation or
@@ -57,7 +57,7 @@ self-contained — no external plugin dependency.
   independent pass) rather than invoked ad hoc.
 - **23 commands** (`zeno`, `docs-drift`, `skill-evals` + dev/session tooling) — originally vendored (formerly
   ECC), now fully rewritten as original, zeno-owned content, same as `zeno-stack` and the agents
-  (see `CHANGELOG.md`). One formerly-vendored command, `project-init.md`, was discarded rather
+  (see `docs/changelog-archive.md`). One formerly-vendored command, `project-init.md`, was discarded rather
   than rewritten — its multi-harness installer premise didn't map onto this repo's single-harness
   `install.sh` model.
 - **2 hooks** — `zeno-session-start.sh`, a thread-aware SessionStart bootstrap that keeps the loop

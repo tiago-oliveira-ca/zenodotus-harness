@@ -1,0 +1,31 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Shell syntax
+        run: bash -n install.sh install-codex.sh hooks/*.sh hooks/codex/*.sh
+      - name: Skill frontmatter lint
+        run: python3 tools/check_skills.py
+      - name: Codex generator tests
+        run: python3 -m unittest discover -s tools/codex -p 'test_build_codex.py'
+      - name: Codex installer test
+        run: bash tools/codex/test_install_codex.sh
+      - name: Install into a scratch home
+        run: |
+          H="$(mktemp -d)"
+          mkdir -p "$H/.claude"
+          HOME="$H" CLAUDE_HOME="$H/.claude" bash install.sh
