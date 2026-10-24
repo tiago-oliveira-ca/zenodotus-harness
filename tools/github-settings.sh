@@ -57,8 +57,13 @@ step "private vulnerability reporting" api -X PUT "repos/$REPO/private-vulnerabi
 
 # --- rulesets: create, or update the one with the same name ---
 ruleset() {  # ruleset <name> <json-file>
-  local name="$1" file="$2" id
-  id="$(gh api "repos/$REPO/rulesets" --jq ".[] | select(.name == \"$name\") | .id" 2>/dev/null | head -1)" || true
+  local name="$1" file="$2" id listing
+  id=""
+  # Only trust the listing when the call succeeded: on a plan without rulesets gh prints the error body to
+  # stdout, which must not be mistaken for an id.
+  if listing="$(gh api "repos/$REPO/rulesets" --jq ".[] | select(.name == \"$name\") | .id" 2>/dev/null)"; then
+    id="$(printf '%s\n' "$listing" | head -1)"
+  fi
   if [ -n "$id" ]; then
     api -X PUT "repos/$REPO/rulesets/$id" --input "$file"
   else
