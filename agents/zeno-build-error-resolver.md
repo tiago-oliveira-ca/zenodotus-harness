@@ -98,7 +98,7 @@ to rule out cache/dependency corruption before assuming the error is real:
 rm -rf .next node_modules/.cache && npm run build
 
 # Reinstall dependencies from a clean lockfile state
-rm -rf node_modules package-lock.json && npm install
+rm -rf node_modules && npm ci   # keeps the lockfile's pinned versions; never delete package-lock.json
 
 # Apply ESLint's own auto-fixes
 npx eslint . --fix

@@ -29,7 +29,7 @@ underneath from a semantic element snapshot instead of brittle selectors — a u
 exploratory journey capture, never a different stack:
 
 ```bash
-npm install -g agent-browser && agent-browser install
+npm install -g agent-browser@0.39.2 && agent-browser install   # pinned; bump deliberately after reviewing the release
 
 agent-browser open https://example.com
 agent-browser snapshot -i          # list elements with refs, e.g. [ref=e1]

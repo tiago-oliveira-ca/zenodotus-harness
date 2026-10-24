@@ -73,7 +73,7 @@ Lives at the **repo root**, committed with the code:
 
 `project.md` is organized around five principles — **State**, **Goal**, **Decisions**, **Next step**,
 **Proof** — governed as a SAFe/Lean backlog (Scrum + Kanban at team level), with a WIP limit of 1
-item outside Backlog/Done. The SessionStart hook reads it and surfaces Goal + Next step so resume
+item outside Backlog/Done. The SessionStart hook notes that it exists (no file text is injected) and `/zeno resume` reads it, so resume
 is instant.
 
 ---

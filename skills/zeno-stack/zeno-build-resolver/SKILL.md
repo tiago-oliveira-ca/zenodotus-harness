@@ -66,7 +66,7 @@ the error is real:
 
 ```bash
 rm -rf .next node_modules/.cache && npm run build
-rm -rf node_modules package-lock.json && npm install
+rm -rf node_modules && npm ci   # keeps the lockfile's pinned versions; never delete package-lock.json
 npx eslint . --fix
 ```
 

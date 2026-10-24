@@ -9,7 +9,12 @@ commands:
       - run:
           name: Install Astronomer CLI
           command: |
-            curl -sSL install.astronomer.io | sudo bash -s
+            # Do not pipe a remote script into a root shell. Download a pinned release, verify its
+            # checksum against the publisher's release page, then install it. Replace the placeholders.
+            ASTRO_VERSION="<pinned-version>"
+            curl -sSLo astro.tgz "https://github.com/astronomer/astro-cli/releases/download/v${ASTRO_VERSION}/<asset-name>.tar.gz"
+            echo "<expected-sha256>  astro.tgz" | sha256sum -c -
+            tar -xzf astro.tgz astro && sudo install -m 0755 astro /usr/local/bin/astro
 
   detect_deploy_type:
     steps:
