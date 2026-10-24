@@ -1,9 +1,12 @@
 # Changelog
 
-Recent changes, newest delivery first within each day. Older history (August to early September 2026,
-including the de-vendoring passes) is in [docs/changelog-archive.md](docs/changelog-archive.md). Commit
-hashes quoted in either file refer to the author's earlier private history, which is not part of this
-repository.
+Recent changes, newest delivery first within each day. This repository starts from a single squashed commit;
+commit hashes quoted below refer to the author's earlier private history, which is not part of it.
+
+## 2026-10-24 — Removed the changelog archive
+
+`docs/changelog-archive.md` (the August to early September entries, mostly de-vendoring passes against commits that
+are not in this repository) is removed. `NOTICE.md` keeps the provenance summary.
 
 ## 2026-10-24 — GitHub repository setup for going public
 

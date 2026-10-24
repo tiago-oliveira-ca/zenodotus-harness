@@ -13,7 +13,7 @@ third-party content remains anywhere in the repo, and every de-vendoring pass is
 (nothing outstanding; the one sanctioned external dependency is `graphify`'s wrapped `graphifyy`
 PyPI engine, attributed in that skill and NOTICE.md). When two components could handle the same request, the rules here decide —
 not recency, not description-match strength, not which skill "feels" closer. Provenance and the
-decommission history (superpowers/GSD/ECC) are recorded in `docs/changelog-archive.md`; the rollback
+decommission history (superpowers/GSD/ECC) are summarized in `NOTICE.md`; the rollback
 snapshot path is below in Config maintenance.
 
 ## Inventory
