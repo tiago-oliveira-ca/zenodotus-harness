@@ -1,7 +1,7 @@
 # Using Zenodotus
 
 A practical operator's guide. For the philosophy and what's in the library, see `README.md`; for
-licensing/provenance, `LICENSE` and `NOTICE.md`; for a dated history of what changed, `CHANGELOG.md`; to change the
+licensing, `LICENSE`; for a dated history of what changed, `CHANGELOG.md`; to change the
 library, `CONTRIBUTING.md`. This document is *how to actually use it day to day*.
 
 ---

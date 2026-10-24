@@ -167,11 +167,10 @@ A dispatcher has **no** `## Anti-pattern quick reference` and **no** `## Pre-fli
 
 ---
 
-## 6. No vendored skills — everything is zeno-owned
+## 6. Everything is zeno-owned
 
 The library is single-source (Zenodotus): every skill, agent (24) and command (23) is original
-zeno-owned content, and no vendored content of any kind remains in this repo (provenance and what
-was rewritten: `CHANGELOG.md`). Agent shape rules live in `agents/_agent-template.md` (a separate,
+zeno-owned content, written here rather than imported. Agent shape rules live in `agents/_agent-template.md` (a separate,
 agent-specific template; this file's rules are skills-only).
 `graphify` remains a self-contained standalone skill and is not held to the enforcement-shape
 rules. Plugins are the only remaining third-party

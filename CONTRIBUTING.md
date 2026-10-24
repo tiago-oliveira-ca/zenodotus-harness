@@ -6,8 +6,7 @@ a large change.
 
 ## Ground rules
 
-- **Original content only.** Do not paste third-party skills or prompts. If an idea comes from elsewhere,
-  rewrite it and credit it in `NOTICE.md`.
+- **Original content only.** Write skills, agents and commands here; do not paste third-party skills or prompts.
 - **One owner per topic.** Before adding a skill, check whether one already covers it. Point to the owner
   instead of restating its rule.
 - **New skills** follow `skills/_skill-template.md`: the name starts with `zeno-` (for the zeno family) and
@@ -17,7 +16,8 @@ a large change.
   routing-table row and a matching trigger word in the dispatcher's description.
 - **Evals.** A skill with behavior worth guarding gets `evals/evals.json` in the house shape: `prompt`,
   `expected_output`, `files`, and a list of plain-string `expectations`.
-- **Record the change** with a short entry at the top of `CHANGELOG.md`.
+- **Record the change** in `CHANGELOG.md` under the newest date, in the matching Added / Changed / Fixed / Security
+  group, written for users (no internal ticket IDs).
 
 ## Checks to run
 

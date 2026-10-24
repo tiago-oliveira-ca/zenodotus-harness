@@ -67,9 +67,7 @@ does not exempt a task — simple tasks are where unstated assumptions hide.
    that self-service research **is** the impact-analysis pass (`zeno/references/impact-analysis.md`),
    not a separate later step. Dispatch this non-blockingly and keep asking the round's other
    unblocked questions while it runs; only the questions downstream of that research wait for the
-   next round. *(Frontier/rounds core idea adapted from `grill-me`/`grilling`, mattpocock/skills,
-   MIT; card-persisted tree, registry-first research, and impact-analysis wiring are zeno-native —
-   grill-me has no backlog to persist a tree to.)*
+   next round.
 3. **Check the scope, and size the card.** If the request bundles several independent subsystems,
    stop and split it into separate efforts. A root frontier that already spans several independent,
    unrelated branches (step 2) is itself sizing evidence, not just a subsystem count — treat it as a
@@ -117,7 +115,7 @@ existing skill library for where it applies — `zeno-stack/zeno-find-skills` lo
 extending an existing skill's content over authoring a new one, the same overlap-check already
 required before creating a skill (`_skill-template.md`). Scope each resulting edit to the
 smallest insertion that preserves the target skill's documented shape (leaf body order, one-line
-citation, no vendored-attribution apparatus), and cite the source in that one line.
+citation), and cite the source in that one line.
 
 ## Scope-exit check (before leaving this gate)
 
