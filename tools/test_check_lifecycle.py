@@ -703,6 +703,102 @@ class LifecycleCliTests(unittest.TestCase):
                 self.assertEqual(json.loads(run.stdout)["result"], "pass")
 
 
+class BoardBudgetTests(unittest.TestCase):
+    """The project.md read path stays within its token budgets."""
+
+    def setUp(self) -> None:
+        self.scratch = tempfile.TemporaryDirectory()
+        self.addCleanup(self.scratch.cleanup)
+        self.root = Path(self.scratch.name) / ".zeno"
+        self.root.mkdir()
+
+    def board(self, **override: str) -> Path:
+        """Write a within-budget project.md, replacing named sections."""
+        parts = {
+            "state": "Branch `feat/x`. Active: STORY-a.\n",
+            "kanban": (
+                "| Backlog | Development | Testing | Closed |\n"
+                "|---|---|---|---|\n"
+                "| STORY-b | STORY-a | | 12 → "
+                "`docs/archive/core-history.md` |\n"
+            ),
+            "index": "- [ ] STORY-a → `docs/stories/STORY-a.md`\n",
+            "decisions": "- 2026-11-17 Chose X because Y.\n",
+            "next": "Implement TASK-a.\n",
+            "proof": "- 2026-11-17 STORY-c closed → PR #3\n",
+        }
+        parts.update(override)
+        path = self.root / "project.md"
+        path.write_text(
+            "# Project: sample\n\n"
+            "**Goal:** Ship it.\n**Status:** development\n"
+            "**Updated:** 2026-11-17\n\n"
+            "## State\n<!-- guidance comment\nspanning lines\n-->\n"
+            f"{parts['state']}\n"
+            "### Kanban board  (WIP limit: 1)\n"
+            f"{parts['kanban']}\n"
+            "### Epics / Features\n"
+            f"{parts['index']}\n"
+            f"## Decisions\n{parts['decisions']}\n"
+            f"## Next step\n{parts['next']}\n"
+            f"## Proof\n{parts['proof']}\n"
+            "## Open questions / parked\n\n## Outcome\n",
+            encoding="utf-8",
+        )
+        return path
+
+    def check(self, path: Path, result: str) -> list:
+        """Run the CLI and return finding messages."""
+        run = subprocess.run(
+            [sys.executable, str(CHECKER), str(path), "--json"],
+            capture_output=True,
+            text=True,
+            env=dict(os.environ, PYTHONDONTWRITEBYTECODE="1"),
+            timeout=5,
+            check=False,
+        )
+        expected = {"pass": 0, "fail": 1}[result]
+        self.assertEqual(run.returncode, expected, run.stdout + run.stderr)
+        report = json.loads(run.stdout)
+        self.assertEqual(report["gate"], "board")
+        return [finding["message"] for finding in report["findings"]]
+
+    def test_lean_board_passes(self) -> None:
+        self.assertEqual(self.check(self.board(), "pass"), [])
+
+    def test_each_budget_breach_is_named(self) -> None:
+        many = "".join(f"- 2026-11-{i:02d} entry {i}\n" for i in range(1, 12))
+        cases = {
+            "State": {"state": "line\n" * 6},
+            "Next step": {"next": "step\n" * 4},
+            "Decisions": {"decisions": many},
+            "Proof": {"proof": many},
+            "Epics / Features": {
+                "index": "- [ ] STORY-a\n- [x] STORY-old → archive\n"
+            },
+            "Closed column": {
+                "kanban": (
+                    "| Backlog | Development | Testing | Closed |\n"
+                    "|---|---|---|---|\n"
+                    "| | STORY-a | | STORY-old, TASK-old |\n"
+                )
+            },
+            "size": {"state": "x" * 25_000 + "\n"},
+        }
+        for name, override in cases.items():
+            with self.subTest(budget=name):
+                messages = self.check(self.board(**override), "fail")
+                self.assertTrue(
+                    any(name in message for message in messages), messages
+                )
+
+    def test_entry_continuation_lines_count_once(self) -> None:
+        wrapped = "".join(
+            f"- 2026-11-{i:02d} entry\n  continued\n" for i in range(1, 11)
+        )
+        self.check(self.board(decisions=wrapped), "pass")
+
+
 class SafeCardReadTests(unittest.TestCase):
     """Exercise replacements at the exact moment a card is opened."""
 

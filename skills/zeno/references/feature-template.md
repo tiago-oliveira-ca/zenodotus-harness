@@ -41,10 +41,11 @@ belongs on a Story card (zeno's sizing ladder, burden of proof).>
      Story above is already fully planned by the time Gate 3 starts implementing any of them. -->
 
 ## Decisions
-- <YYYY-MM-DD> <decision + one-line why>   (append-only; newest last)
+- <YYYY-MM-DD> <decision + one-line why>   (append-only; newest last; written here only — parents and project.md link, never restate)
 
 ## Proof
-<!-- Roll up the Feature's Done looks like outcomes and its Stories' evidence. Use the E-id
+<!-- Write once: record the Feature's Done looks like outcomes; cite each Story by card id and
+     E-id (one line each), never copy its evidence. Use the E-id
      record in zeno/references/evidence-contract.md; preserve leaf RED/GREEN details by reference.
      A passing child check does not establish an unrelated Feature-level outcome. -->
 

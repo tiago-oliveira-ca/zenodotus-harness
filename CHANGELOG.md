@@ -4,6 +4,19 @@ All notable changes to Zenodotus, newest first. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This repository starts from a single squashed commit,
 so earlier history is not listed.
 
+## 2026-11-17
+
+### Added
+- A board budget for `.zeno/project.md`. `check_lifecycle.py` now checks a `project.md` path against
+  limits on file size (24 KB), State (5 lines), Next step (3 lines), Decisions and Proof
+  (10 entries each), closed index rows and card ids in the Closed column.
+
+### Changed
+- `project.md` now holds only open items and the next action. Closed rows and older log entries move to
+  `docs/archive/core-history.md` at card close instead of during occasional cleanups. Parent cards
+  and `project.md` cite child evidence by id rather than copying it, and `/zeno resume` reads
+  `project.md`, then the active card, then its parent's Scope. Upfront planning is unchanged.
+
 ## 2026-11-16
 
 ### Added

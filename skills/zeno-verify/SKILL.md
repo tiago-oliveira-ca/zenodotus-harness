@@ -87,8 +87,8 @@ Green tests prove the code does what the tests say — not that you delivered wh
   the Epic if every Feature under it is done. Enumerate the deliverables it implies.
 - **Prove each one** by exercising the real flow end-to-end and observing it — a passing unit test is
   necessary, not sufficient. Record each proof (command + observed result) in that card's **Proof**
-  section, referencing the deliverable it satisfies, then roll a one-line summary up into
-  `.zeno/project.md`'s **Proof** section.
+  section, referencing the deliverable it satisfies, then cite it with one line (item id → PR/commit
+  · card path) in `.zeno/project.md`'s **Proof** section — never copy the evidence upward.
 - A deliverable with no fresh evidence is **not done**, even if the suite is green.
 - Check new/normalized closeout records with `python <zeno-skill>/scripts/check_lifecycle.py
   <card> --gate review --json`; add `--require-review` for the selected item when an Advisor pass
@@ -171,12 +171,13 @@ section in `zeno-stack/zeno-git-workflow` for every commit, push, PR creation an
    `docs/stories/`, `docs/tasks/`, `docs/features/` path reference to the archived card(s) in
    `project.md` to its new `docs/archive/...` path — do not touch references to cards that are still
    open. After rewriting, grep-verify every `docs/` path `project.md` now references actually
-   resolves on disk (zero broken links) before considering this step done. `project.md`'s Kanban
-   board and Epics/Features checklist rows **stay** — still updated to `[x]`/Closed as before, but
-   now pointing at the archive path instead of being deleted. Still condense the rolled-up `Proof`
-   line to a one-liner pointing at the PR/commit; still leave `project.md`'s **Decisions** log
-   untouched — it's institutional memory about *why* a choice was made, independent of any one
-   card, not a record of the delivered item itself. Don't archive before merge (or deploy) is
+   resolves on disk (zero broken links) before considering this step done. The closed item's
+   Kanban and Epics/Features rows **move** to `.zeno/docs/archive/core-history.md` (append-only,
+   archive path included) and the Closed column's count goes up — `project.md` keeps open items
+   only. Condense the `Proof` line to a one-liner pointing at the PR/commit. Never edit a
+   **Decisions** entry; when Decisions or Proof exceed 10 entries, move the oldest verbatim to
+   `core-history.md`. Finish with `python <zeno-skill>/scripts/check_lifecycle.py .zeno/project.md`
+   passing (zeno's *Board budget*). Don't archive before merge (or deploy) is
    actually verified — a card for work still in flight stays in the active `docs/` folders.
 
 ## Documentation check (the check is mandatory; the edit is doc-worthy-gated)
@@ -295,6 +296,6 @@ any other work.
 - [ ] The documentation check ran (always) at the closing item's own scope, not just re-confirmed a Story's own Task: each Story's documentation Task was confirmed actually done (Proof entry present), and separately, if the closing item was doc-worthy at its own scope (API/arch/deps/setup), system docs were reconciled via `documenting-code` / `/docs-drift` (or a `TODO(doc-drift:)` left) — otherwise it correctly found nothing to do.
 - [ ] For a Feature/Epic closing: checked whether a full documentation set (Architecture & Design, Technical & API Specs, User & Admin Guides) exists for the touched component — if not, flagged it (Decisions log + `project.md` Open questions) and recommended an Epic rather than backfilling inline or opening one unasked.
 - [ ] A `CHANGELOG.md` entry was appended for this delivery — unconditionally, not gated on doc-worthiness.
-- [ ] Merge (and deploy, where the repo has one) was verified with a real command (`gh pr view`/`git log`), not assumed from the human's word alone or memory of an earlier action, before the delivered card was archived (`git mv`) into `.zeno/docs/archive/`, not deleted — `project.md`'s Kanban/checklist rows stay, updated to point at the new path, and a broken-link check confirmed every referenced path resolves.
+- [ ] Merge (and deploy, where the repo has one) was verified with a real command (`gh pr view`/`git log`), not assumed from the human's word alone or memory of an earlier action, before the delivered card was archived (`git mv`) into `.zeno/docs/archive/`, not deleted — closed Kanban/index rows moved to `core-history.md`, a broken-link check confirmed every referenced path resolves, and the board check passed.
 - [ ] Outcome summary written and Status updated only for proven work; git state and any remaining authorization decision reported.
 - [ ] `git status --short` inspected; tested content and remaining changes identified; every commit, push, PR creation or merge had explicit user or project authorization.

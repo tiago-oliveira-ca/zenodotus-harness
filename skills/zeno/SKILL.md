@@ -116,8 +116,9 @@ code before this gate closes.
    way to resolve it (re-read now, retrofit in-flight work, or accept the gap) is the human's call.
 4. **Ensure a repo-root `./.zeno/` folder exists** — create `project.md` from
    `references/project-template.md` if absent — then write Gate 1's Scope into the right card and
-   refresh `project.md`'s **Updated** date. Keep **State** and **Next step** live as you work — they
-   make cross-session resume cheap. One `.zeno/` folder per repo, at the root. Follow the project's
+   refresh `project.md`'s **Updated** date. Keep **State** (≤5 lines, overwritten) and **Next step**
+   (≤3 lines) live as you work — they make cross-session resume cheap, and only while they stay
+   small (see *Board budget* below). One `.zeno/` folder per repo, at the root. Follow the project's
    tracking policy for `.zeno/`; respect `.gitignore` and the git authorization boundary.
 5. **Migrate a legacy thread or an old `.project/core.md` layout, if either exists.** If the
    repo's thread predates this layout (a single `THREAD.md` or similar), run
@@ -231,7 +232,8 @@ against the closing card's *Done looks like* — not just a green typecheck. Fol
 run the proving command fresh, prove each deliverable, scan for stubs, self-review the diff, and —
 for a diff in a domain with an Advisor-tier `agents/REGISTRY.md` match — get an independent pass
 from that specialist rather than relying on self-review alone. Record the evidence in that card's **Proof**
-section (rolled up into `project.md`'s Proof section), then write a 2-3 line **Outcome** close-out.
+section (cited by one line in `project.md`'s Proof section), then write a 2-3 line **Outcome**
+close-out, and run the board check (*Board budget*) before presenting the merge choice.
 Before presenting the merge / PR / keep choice, confirm `project.md`'s **State** line names the
 current branch or PR — a grep-able check (branch name or PR number present in `project.md`); a work
 thread that skips a Story card still must touch this line, not just the closing Outcome. A "done"
@@ -288,8 +290,10 @@ pass) — never spawned ad hoc outside the registry.
 Always resolve the repo root with `git rev-parse --show-toplevel` (fallback: `pwd`) and read/write
 `<root>/.zeno/`. Dispatch on the invocation's first token (`/zeno start`, `/zeno resume`, etc.):
 
-On resume, read current State, Goal, Next step and the active card before historical Proof or
-session transcripts. Follow evidence links needed for the next action. Load
+On resume, read in this order and stop once the next action is clear: `project.md` (Goal, State,
+Next step) → the active card → its parent's Scope section only. Never glob or bulk-read `docs/`
+or `docs/archive/`; open a closed card or `core-history.md` only when the next action cites it.
+Follow evidence links needed for the next action. Load
 `zeno-stack/zeno-context-compaction` when reconstructing or handing off a long session. Revisit
 Scope when a material assumption changes or repeated preparation leaves the accepted behavior
 unproven, following `zeno-insight`; reuse existing approval within its scope.
@@ -303,7 +307,9 @@ unproven, following `zeno-insight`; reuse existing approval within its scope.
 
 Write discipline: **append** to each card's Decisions and Proof sections and to `project.md`'s Proof
 section — never rewrite history; **overwrite** only `project.md`'s State, Next step, Status, Updated,
-and Kanban board, and a card's own Status. `start` must not skip Scope, and must not skip Gate 1's
+and Kanban board, and a card's own Status. **Write each fact once:** a decision or piece of evidence
+lives on the card where it happened; parents and `project.md` cite it by card id / E-id in one
+line, never restate it. Moving overflow verbatim to `core-history.md` is relocation, not rewriting. `start` must not skip Scope, and must not skip Gate 1's
 DDD for Feature-sized work or Gate 2's FDD/ATDD/BDD/Task-breakdown before any Gate 3 TDD cycle
 begins. `review` must not flip a card's Status to `closed` without a fresh Proof entry.
 
@@ -334,22 +340,21 @@ immediate action), **Proof** (verification evidence) — with the SAFe/Lean fram
 Definition-of-Ready / INVEST / story-splitting vocabulary is not reinvented here — see the sibling
 skill `documentation/development-planning-standards`.
 
-**Housekeeping for `project.md` itself, periodic, not per-close.** Across many delivery cycles,
-`project.md`'s own State/Decisions narrative can accumulate many stacked, superseded entries and grow
-unwieldy — each one legitimately left intact per the existing convention, but no longer all
-equally relevant to read today. When that happens, the oldest entries can be moved to
-`.zeno/docs/archive/core-history.md`, with a one-line pointer left behind in `project.md` at the
-point they were removed from. This is deliberately **not** a step in `zeno-verify`'s per-card
-finish tail — trimming `project.md` every single cycle would be premature ceremony over a file that's
-usually still small. Do it periodically instead, e.g. via `zeno-stack/zeno-config-gc` or a direct
-user ask, when the file has actually grown large enough to warrant it.
+**Board budget — `project.md` is the read path, not the archive.** Every resume reads it, so it
+holds only what is open and what is next. Budgets: file ≤ 24 KB, State prose ≤ 5 lines, Next step
+≤ 3 lines, Decisions and Proof ≤ 10 entries each, Epics/Features index lists open items only, and
+the Kanban Closed column holds a count, not card ids. `python <zeno-skill>/scripts/check_lifecycle.py
+.zeno/project.md` enforces them. Run it at every close (Gate 4) and whenever Gate 2 writes the file;
+on a failure, move the overflow — closed index rows, oldest Decisions/Proof entries, superseded
+State — verbatim to `.zeno/docs/archive/core-history.md` (append-only, newest last), leaving one
+pointer line. Budgets bound only `project.md`; cards keep full upfront planning and full evidence.
 
 ## Anti-ceremony — what this is NOT
 
 - **Fixed layout, not free-form.** The only files that exist are `project.md` and cards under the
   five `docs/` subfolders (active) or their mirrored home under `docs/archive/` (closed, per
-  `zeno-verify`'s finish tail), plus `docs/archive/core-history.md` for periodic `project.md`
-  housekeeping — all from their canonical templates. No phase directories, no roadmap files, no ad
+  `zeno-verify`'s finish tail), plus `docs/archive/core-history.md` for `project.md`'s
+  board-budget overflow — all from their canonical templates. No phase directories, no roadmap files, no ad
   hoc extra files "to organize" — if it's not one of the five card types (active or archived), it
   doesn't belong in `.zeno/`.
 - **No ad hoc agent fleet — but bounded, registry-driven specialists are sanctioned.** Zeno itself
@@ -363,9 +368,9 @@ user ask, when the file has actually grown large enough to warrant it.
   second `.zeno/`-like structure.
 - **`.zeno/docs/archive/` is the permanent in-repo record.** Once a card's work is merged —
   and deployed, for a repo with a separate deploy step — `zeno-verify`'s finish tail archives it:
-  `git mv`d into `.zeno/docs/archive/{stories,tasks,features}/`, with `project.md`'s path
-  references rewritten to match and its Kanban/checklist rows staying (updated to the archive
-  path, not removed). git log, the merged PR, and `CHANGELOG.md` remain the durable *cross-repo*
+  `git mv`d into `.zeno/docs/archive/{stories,tasks,features}/`, with `project.md`'s open-item
+  references rewritten to match and its closed Kanban/index rows moved to `core-history.md` (see
+  *Board budget*). git log, the merged PR, and `CHANGELOG.md` remain the durable *cross-repo*
   record, but each card's own Proof/Decisions detail now survives *in-repo* too, at the path a
   future reader would actually look, instead of being lost to deletion. A card for work still in
   flight is never archived; only delivered ones.
@@ -390,6 +395,7 @@ user ask, when the file has actually grown large enough to warrant it.
 | Writing product code without the matching `code-standards` leaf loaded | Load the leaf first; run its pre-flight before Review — clean code is gated, not assumed |
 | Editing a widely-called symbol without checking callers | Run impact analysis first (`references/impact-analysis.md`) |
 | Updating `project.md`'s State only at the end | Update State + Decisions as you go |
+| Stacking "Latest:" narratives in State or copying child evidence into parents | Overwrite State (≤5 lines); cite children by id; overflow → `core-history.md` |
 | `project.md`'s State silent on the current branch/PR at Review | Name the branch/PR in State before presenting merge/PR/keep |
 | Claiming "done" from green tests | Review goal-backward per `zeno-verify`; record the evidence |
 | Closing a card with no `CHANGELOG.md` entry | Append one unconditionally — every delivery, not just doc-worthy ones |
@@ -450,6 +456,7 @@ user ask, when the file has actually grown large enough to warrant it.
 - [ ] Gate 1 ran DDD for Feature-tier work (and enumerated Features for Epic-tier work); Gate 2 ran FDD + ATDD + BDD + Task breakdown for every Story before Gate 3 began, each Story's Task list ending in a documentation Task; Gate 3 looped TDD over every Task in order; bugs diagnosed via `zeno-debug`; Proof identifies the tested commit or working-tree snapshot, and every git mutation has explicit authorization.
 - [ ] Product code was written with the matching `code-standards` leaf loaded, and that leaf's own pre-flight checklist was run before Review.
 - [ ] The Kanban board never carried more than 1 item outside Backlog/Closed at once.
+- [ ] `check_lifecycle.py .zeno/project.md` passes (board budget); overflow moved to `core-history.md`, not deleted.
 - [ ] Decisions made this session are appended to the active card's Decisions log.
 - [ ] Changes to shared/public surface had their blast radius checked (impact analysis) and recorded.
 - [ ] Review ran goal-backward per `zeno-verify`; evidence + Outcome recorded on the card and rolled up to `project.md`; merge left to the human.

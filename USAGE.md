@@ -104,11 +104,16 @@ keep it local (this repo ignores it):
     stories/STORY-<slug>.md # ATDD criteria + BDD scenarios + TDD proof
     tasks/TASK-<slug>.md    # one implementation step each, with its red/green proof
     archive/                # delivered cards, moved here after the merge is verified
+      core-history.md       # closed index rows and older Decisions/Proof moved out of project.md
 ```
 
 `project.md` is organized around five principles — **State**, **Goal**, **Decisions**, **Next step**,
 **Proof** — governed as a SAFe/Lean backlog (Scrum + Kanban at team level), with a WIP limit of 1
-item outside Backlog/Done. The SessionStart hook only notes that a thread exists (it injects no text from the
+item outside Backlog/Done. Because every resume reads `project.md`, it has a size budget: at most
+24 KB, State ≤ 5 lines, Next step ≤ 3 lines, the newest 10 Decisions and 10 Proof entries, and open
+items only. `python skills/zeno/scripts/check_lifecycle.py .zeno/project.md` checks these limits.
+Anything over budget moves to `docs/archive/core-history.md` when a card closes. Cards still hold the
+full upfront plan and evidence; parent cards cite child cards by id instead of copying them. The SessionStart hook only notes that a thread exists (it injects no text from the
 file, because a cloned repo could plant instructions there); `/zeno resume` reads it, as data, on request.
 
 ---
