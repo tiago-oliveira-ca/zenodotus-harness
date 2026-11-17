@@ -55,11 +55,11 @@ records that it was chosen deliberately, not by habit.>
      them. -->
 
 ## Decisions
-- <YYYY-MM-DD> <decision + one-line why>   (append-only; newest last)
+- <YYYY-MM-DD> <decision + one-line why>   (append-only; newest last; written here only — parents and project.md link, never restate)
 
 ## Proof
-<!-- Roll up accepted outcomes and child evidence here; detailed RED/GREEN proof remains at
-     Task/SubTask leaves. New closeouts use zeno/references/evidence-contract.md's E-id records
+<!-- Write once: record this Story's own accepted outcomes; cite child evidence by card id and
+     E-id (one line each), never copy it — detailed RED/GREEN proof remains at Task/SubTask leaves. New closeouts use zeno/references/evidence-contract.md's E-id records
      (Claim, Required, Kind, Result, Evidence, Revision, Environment, Owner).
      Required fail/blocked/not_run evidence prevents closure; a required independent review
      must actually complete. Retain earlier records with explicit Supersedes links. -->

@@ -24,11 +24,11 @@ Per zeno's sizing ladder, Epic tier carries the heaviest burden of proof.>
 - [ ] FEAT-<slug> — <one-line goal> → `../features/FEAT-<slug>.md`
 
 ## Decisions
-- <YYYY-MM-DD> <decision + one-line why>   (append-only; newest last)
+- <YYYY-MM-DD> <decision + one-line why>   (append-only; newest last; written here only — parents and project.md link, never restate)
 
 ## Proof
 <!-- Record Epic-level outcomes using zeno/references/evidence-contract.md's E-id format.
-     Reference delivered Features without copying their detailed evidence or weakening the
+     Reference delivered Features by card id (one line each) without copying their detailed evidence or weakening the
      Epic's own Done looks like check. -->
 
 ## Outcome

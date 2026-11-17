@@ -25,7 +25,7 @@ acceptance criteria>
 - <YYYY-MM-DD> <behavior> — RED: <failing behavior> → GREEN: <passing command/result> → REFACTOR: <what, if anything>
 
 ## Decisions
-- <YYYY-MM-DD> <decision + one-line why>   (append-only; newest last)
+- <YYYY-MM-DD> <decision + one-line why>   (append-only; newest last; written here only — parents and project.md link, never restate)
 
 ## Outcome
 <!-- Complete when Status flips to closed. -->

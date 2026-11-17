@@ -719,6 +719,123 @@ def check_card(
     }
 
 
+# project.md is read on every resume, so its size is a budget.
+# Overflow belongs in docs/archive/core-history.md (see zeno/SKILL.md).
+BOARD_BUDGETS = {
+    "bytes": 24_000,
+    "state_lines": 5,
+    "next_step_lines": 3,
+    "log_entries": 10,
+}
+CARD_ID = re.compile(r"\b(?:EPIC|FEAT|STORY|TASK|SUBTASK)-[A-Za-z0-9]")
+
+
+def check_board(path: Path) -> Report:
+    """Return a budget report for one project.md read path."""
+    path = Path(path).absolute()
+    report: Report = {
+        "result": "pass",
+        "scope": SCOPE,
+        "path_safety": PATH_SAFETY,
+        "card": str(path),
+        "gate": "board",
+        "checked_cards": [str(path)],
+        "findings": [],
+    }
+
+    def issue(message: str) -> None:
+        report["findings"].append(
+            {"path": str(path), "result": "fail", "message": message}
+        )
+
+    try:
+        resolved = path.resolve()
+        raw = read_card_text(resolved, resolved.parent)
+    except (OSError, RuntimeError, UnicodeError, ValueError) as error:
+        issue("project.md is unreadable: " + str(error))
+        report["result"] = "fail"
+        return report
+
+    size = len(raw.encode("utf-8"))
+    if size > BOARD_BUDGETS["bytes"]:
+        issue(
+            f"size {size} bytes exceeds {BOARD_BUDGETS['bytes']}; move "
+            "closed history to docs/archive/core-history.md."
+        )
+    chunks = re.split(
+        r"^## ([^\n]+)\s*$", visible_markdown(raw), flags=re.MULTILINE
+    )
+    sections = {
+        chunks[i].strip().lower(): chunks[i + 1]
+        for i in range(1, len(chunks), 2)
+    }
+
+    def lines(text: str) -> List[str]:
+        return [line for line in text.splitlines() if line.strip()]
+
+    state = sections.get("state", "")
+    subsections = re.split(r"^### ([^\n]+)\s*$", state, flags=re.MULTILINE)
+    prose = lines(subsections[0])
+    if len(prose) > BOARD_BUDGETS["state_lines"]:
+        issue(
+            f"State prose has {len(prose)} lines; budget is "
+            f"{BOARD_BUDGETS['state_lines']} (overwrite, don't stack)."
+        )
+    for index in range(1, len(subsections), 2):
+        title = subsections[index].lower()
+        body = subsections[index + 1]
+        if title.startswith("epics / features"):
+            closed = [
+                line
+                for line in body.splitlines()
+                if (match := CHECKBOX.match(line))
+                and match.group(1).strip().lower() == "x"
+            ]
+            if closed:
+                issue(
+                    f"Epics / Features index lists {len(closed)} closed "
+                    "item(s); move them to docs/archive/core-history.md."
+                )
+        if title.startswith("kanban"):
+            rows = [
+                line
+                for line in body.splitlines()
+                if line.strip().startswith("|")
+            ]
+            for row in rows[2:]:
+                cells = [
+                    cell.strip() for cell in row.strip().strip("|").split("|")
+                ]
+                if len(cells) >= 4 and CARD_ID.search(cells[3]):
+                    issue(
+                        "Kanban Closed column lists card ids; keep a count "
+                        "and point at docs/archive/core-history.md."
+                    )
+                    break
+
+    next_step = lines(sections.get("next step", ""))
+    if len(next_step) > BOARD_BUDGETS["next_step_lines"]:
+        issue(
+            f"Next step has {len(next_step)} lines; budget is "
+            f"{BOARD_BUDGETS['next_step_lines']} (one concrete action)."
+        )
+    for name in ("Decisions", "Proof"):
+        entries = [
+            line
+            for line in sections.get(name.lower(), "").splitlines()
+            if re.match(r"^[-*]\s+\S", line)
+        ]
+        if len(entries) > BOARD_BUDGETS["log_entries"]:
+            issue(
+                f"{name} has {len(entries)} entries; keep the newest "
+                f"{BOARD_BUDGETS['log_entries']} and move older ones to "
+                "docs/archive/core-history.md."
+            )
+    if report["findings"]:
+        report["result"] = "fail"
+    return report
+
+
 def main(arguments: Optional[Sequence[str]] = None) -> int:
     """Print an integrity report and return pass/fail/blocked as 0/1/2."""
     parser = argparse.ArgumentParser(description=__doc__)
@@ -742,9 +859,12 @@ def main(arguments: Optional[Sequence[str]] = None) -> int:
         help="require passing review metadata on the selected card",
     )
     options = parser.parse_args(arguments)
-    report = check_card(
-        options.card, options.root, options.gate, options.require_review
-    )
+    if options.card.name == "project.md":
+        report = check_board(options.card)
+    else:
+        report = check_card(
+            options.card, options.root, options.gate, options.require_review
+        )
     if options.json:
         print(json.dumps(report, indent=2))
     else:
