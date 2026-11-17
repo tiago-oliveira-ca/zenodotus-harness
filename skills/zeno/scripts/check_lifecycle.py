@@ -8,10 +8,11 @@ import json
 import os
 import re
 import stat
+from collections.abc import Sequence
 from dataclasses import dataclass
 from datetime import date
 from pathlib import Path
-from typing import Dict, List, Optional, Sequence, Set, Tuple, TypedDict
+from typing import TypedDict
 
 SCOPE = (
     "card integrity only. Factual truth, actual execution, freshness, "
@@ -76,8 +77,8 @@ class Report(TypedDict):
     path_safety: str
     card: str
     gate: str
-    checked_cards: List[str]
-    findings: List[Finding]
+    checked_cards: list[str]
+    findings: list[Finding]
 
 
 @dataclass
@@ -85,16 +86,16 @@ class Card:
     """The visible metadata and sections from a single selected file."""
 
     path: Path
-    kind: Optional[str]
-    metadata: Dict[str, str]
-    sections: Dict[str, str]
+    kind: str | None
+    metadata: dict[str, str]
+    sections: dict[str, str]
 
     @property
     def closed(self) -> bool:
         """Whether this card claims closure."""
         return self.metadata.get("status") == "closed"
 
-    def section(self, name: str) -> Optional[str]:
+    def section(self, name: str) -> str | None:
         """Get a section by its canonical name."""
         return self.sections.get(name.lower())
 
@@ -116,7 +117,7 @@ def visible_markdown(text: str) -> str:
             ):
                 fence = ""
             continue
-        if not comment and (line.startswith("    ") or line.startswith("\t")):
+        if not comment and (line.startswith(("    ", "\t"))):
             continue
         visible = []
         while line:
@@ -140,7 +141,7 @@ def visible_markdown(text: str) -> str:
             fence = marker.group(1)[0]
             fence_length = len(marker.group(1))
             continue
-        if not (line.startswith("    ") or line.startswith("\t")):
+        if not (line.startswith(("    ", "\t"))):
             lines.append(line)
     return "\n".join(lines)
 
@@ -156,11 +157,11 @@ def meaningful(value: str) -> bool:
     if not value or not re.search(r"\w", value):
         return False
     return not re.match(
-        r"^(?:todo|tbd|pending|placeholder|n/a|none)\b", value, re.I
+        r"^(?:todo|tbd|pending|placeholder|n/a|none)\b", value, re.IGNORECASE
     )
 
 
-def fields(text: str) -> Tuple[Dict[str, str], List[str]]:
+def fields(text: str) -> tuple[dict[str, str], list[str]]:
     """Read scalar fields and retain their duplicate names."""
     values = {}
     duplicates = []
@@ -181,7 +182,7 @@ def read_card_text(path: Path, root: Path) -> str:
     flags = (
         os.O_RDONLY | getattr(os, "O_NONBLOCK", 0) | getattr(os, "O_BINARY", 0)
     )
-    snapshots: List[Tuple[Path, os.stat_result]] = []
+    snapshots: list[tuple[Path, os.stat_result]] = []
     if ANCHORED_READ:
         directory_flags = os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
         directory = os.open(path.anchor, directory_flags)
@@ -226,15 +227,15 @@ class Validator:
     """Validate one explicit hierarchy, keeping every read inside its root."""
 
     def __init__(
-        self, root: Path, gate: Optional[str], require_review: bool
+        self, root: Path, gate: str | None, require_review: bool
     ) -> None:
         """Configure the read boundary and selected metadata checks."""
         self.root = root
         self.gate = gate
         self.require_review = require_review
-        self.findings: List[Finding] = []
-        self.cards: Dict[Path, Card] = {}
-        self.active: Set[Path] = set()
+        self.findings: list[Finding] = []
+        self.cards: dict[Path, Card] = {}
+        self.active: set[Path] = set()
 
     def issue(self, path: Path, result: str, message: str) -> None:
         """Preserve failures and blocked requirements in discovery order."""
@@ -242,7 +243,7 @@ class Validator:
             {"path": str(path), "result": result, "message": message}
         )
 
-    def resolve(self, path: Path, declared_by: Path) -> Optional[Path]:
+    def resolve(self, path: Path, declared_by: Path) -> Path | None:
         """Resolve symlinks and refuse paths outside the selected root."""
         try:
             resolved = path.resolve()
@@ -256,7 +257,7 @@ class Validator:
             return None
         return resolved
 
-    def read(self, path: Path) -> Optional[Card]:
+    def read(self, path: Path) -> Card | None:
         """Read one card, surfacing filesystem and decoding failures."""
         try:
             text = visible_markdown(read_card_text(path, self.root))
@@ -408,7 +409,7 @@ class Validator:
 
     def proof(self, card: Card, require_review: bool) -> None:
         """Validate evidence fields, supersession and required states."""
-        records: Dict[str, Dict[str, str]] = {}
+        records: dict[str, dict[str, str]] = {}
         chunks = re.split(
             r"^### ([^\n]+)\s*$",
             card.section("Proof") or "",
@@ -535,7 +536,7 @@ class Validator:
                 "passing review record.",
             )
 
-    def children(self, card: Card) -> List[Tuple[str, Path, str]]:
+    def children(self, card: Card) -> list[tuple[str, Path, str]]:
         """Resolve targets in this card's hierarchy checklist."""
         hierarchy = CHILDREN.get(card.kind or "")
         if hierarchy is None:
@@ -596,9 +597,9 @@ class Validator:
     def visit(
         self,
         path: Path,
-        expected_kind: Optional[str] = None,
+        expected_kind: str | None = None,
         is_root: bool = False,
-    ) -> Optional[Card]:
+    ) -> Card | None:
         """Walk explicit children once and reject active-path cycles."""
         if path in self.active:
             self.issue(path, "fail", "Child links contain a cycle.")
@@ -652,8 +653,8 @@ class Validator:
 
 def check_card(
     path: Path,
-    root: Optional[Path] = None,
-    gate: Optional[str] = None,
+    root: Path | None = None,
+    gate: str | None = None,
     require_review: bool = False,
 ) -> Report:
     """Return a read-only integrity report for a card and explicit children."""
@@ -770,7 +771,7 @@ def check_board(path: Path) -> Report:
         for i in range(1, len(chunks), 2)
     }
 
-    def lines(text: str) -> List[str]:
+    def lines(text: str) -> list[str]:
         return [line for line in text.splitlines() if line.strip()]
 
     state = sections.get("state", "")
@@ -836,7 +837,7 @@ def check_board(path: Path) -> Report:
     return report
 
 
-def main(arguments: Optional[Sequence[str]] = None) -> int:
+def main(arguments: Sequence[str] | None = None) -> int:
     """Print an integrity report and return pass/fail/blocked as 0/1/2."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("card", type=Path, help="explicit card to check")
