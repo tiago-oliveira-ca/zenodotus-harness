@@ -74,6 +74,12 @@ looping the already-planned Task list → **Gate 4**, `zeno-verify` (Review) —
 
 ---
 
+## Git authorization
+
+Zeno commits, pushes, creates PRs and merges only with explicit user or project authorization for
+the particular operation. A verified working-tree handoff is valid. The policy owner is
+`zeno-stack/zeno-git-workflow`'s Authorization section.
+
 ## Lane ownership
 
 **Each lane maps to a Zenodotus skill.** A lane owner wins even if another skill has a

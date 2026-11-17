@@ -4,8 +4,8 @@ description: >
   The evidence gate for the zeno loop's Review step. Never claim work is done, passing, or fixed
   without running the proving command in this same message and reading its real output. Verify
   goal-backward — re-read the Scope's Done looks like and prove each deliverable, not just green
-  tests. Check for stubs, self-review the diff (severity-gated), then present the finish menu and
-  wait for the human. Trigger on: "is it done", "does it work", "verify", "prove it", "confirm",
+  tests. Check for stubs, self-review the diff (severity-gated), then report verified work and its
+  authorization state. Trigger on: "is it done", "does it work", "verify", "prove it", "confirm",
   "it should pass", "Review gate", "mark complete", "ready to commit", "ready to merge", "did the
   tests pass", "is the bug fixed".
 ---
@@ -20,6 +20,19 @@ proving command *in this message*, you cannot say it passes. "Should work," "pro
 "looks done" are not evidence. This governs every completion claim, not just user-facing ones —
 marking an observation-log entry ACTIONED, flipping a card's Status, or noting a PR as merged
 without checking it actually merged are claims this Iron Law covers too.
+
+## Evidence and disputed findings
+
+Load the sibling `zeno` skill's `references/evidence-contract.md` before recording closeout Proof
+or returning a gate result. Use pass/fail/blocked independently of card Status. Required checks
+that did not run and required reviewers that are unavailable keep the gate blocked; attempted
+delegation is not an independent pass.
+
+If specialists disagree, load `zeno/references/arbitration.md`: classify the claim, name its owner,
+compare revision-bound evidence and allow one targeted recheck. Preserve dissent and its
+disposition. A passing broad suite does not dismiss a targeted reproduction of a defect.
+These are sibling-skill paths, resolved from the installed skills root rather than a maintainer's
+checkout. No additional arbiter agent or tool permissions are implied.
 
 ## The gate function (run before any success statement)
 
@@ -77,6 +90,10 @@ Green tests prove the code does what the tests say — not that you delivered wh
   section, referencing the deliverable it satisfies, then roll a one-line summary up into
   `.zeno/project.md`'s **Proof** section.
 - A deliverable with no fresh evidence is **not done**, even if the suite is green.
+- Check new/normalized closeout records with `python <zeno-skill>/scripts/check_lifecycle.py
+  <card> --gate review --json`; add `--require-review` for the selected item when an Advisor pass
+  is required. A pass checks card integrity only. Inspect actual observations, revision and review
+  independence separately; never use the checker as permission to close or integrate.
 - **Trivial edit with no Scope?** A one-liner that skipped Scope has no card and no "Done looks
   like" to read — verify the edit directly (exercise the exact thing you changed) and log a
   one-line proof straight to `.zeno/project.md`'s Proof section.
@@ -106,21 +123,21 @@ an **Advisor-tier** row, invoke that specialist for a fresh read of the diff *in
 self-review, rather than relying on self-review alone for domain-specific correctness. Where the
 registry's only match for the domain is Owner-tier (an execution role — it builds within its
 domain, it doesn't review someone else's diff), self-review remains the check; don't invoke an
-Owner-tier agent as if it were an independent reviewer. This does not change who approves — the
-human is still the sole merge/PR/keep authority below — it means the human's decision is informed
-by an independent opinion where one exists, not just the builder's own account of its work.
+Owner-tier agent as if it were an independent reviewer. Review supplies an independent opinion
+where one exists. Git operations follow the explicit authorization described in the finish tail.
 
 **Spawning it safely.** An Advisor's `Bash` is observation-only by contract (it may run the suite,
 linters, and `git diff`/`log`/`status`; it may not switch branches, stash, commit, or mutate
 files — see `agents/_agent-template.md`). Belt and braces, since a reviewer at this gate runs
-against a branch that usually carries uncommitted work: if `git status --short` isn't clean when
-you spawn it, either commit first (Gate 3's duty, see the finish tail below) or pass
-`isolation: "worktree"` so the review runs on its own copy. A reviewer that stashes or switches
-branches underneath an in-flight change can silently cost the work being reviewed.
+against a branch that often carries uncommitted work, give it a read-only review of the current
+working-tree diff. If isolation is needed, include the actual changed and untracked files in the
+review snapshot; a worktree at HEAD alone omits them. Record the reviewed content snapshot. A
+reviewer must preserve the caller's branch, index and files. Commit only with explicit authorization.
 
-## Finish tail (integration is the human's call)
+## Finish tail
 
-When the goal is proven and the diff is clean, close out — but don't self-merge:
+When the goal is proven, close out and report the actual git state. Follow the Authorization
+section in `zeno-stack/zeno-git-workflow` for every commit, push, PR creation and merge.
 
 1. Run the **full** suite one last time; read the result.
 2. Add a 2-3 line **Outcome** summary to the closing card and flip its Status → `closed`; when the
@@ -129,18 +146,16 @@ When the goal is proven and the diff is clean, close out — but don't self-merg
    to the Kanban board's Closed column.
 3. **Append a `CHANGELOG.md` entry — every delivery, unconditionally.** This is not gated on
    doc-worthiness the way the documentation check below is: even a purely internal delivery gets a
-   dated, PR-referenced entry (what changed, one paragraph), because `.zeno/` cards get pruned
-   after merge and `CHANGELOG.md` is the durable, human-facing record that survives that pruning.
+   dated entry describing the change. Add a PR reference when one exists. `CHANGELOG.md` is the
+   durable, human-facing record alongside the project's tracked or local cards.
    A trivial edit that skipped Scope entirely still gets a one-line entry, the same way it already
    logs straight to `project.md`'s Proof section with no card.
 4. Run the **documentation check** below (system docs — conditional on doc-worthiness, unlike step 3).
-5. **Commit any outstanding work first, then** present the options — **merge locally / push + open
-   PR / keep as-is** — and **wait** for the human to choose. Do not integrate to a main branch
-   without explicit consent. Run `git status --short`: if the tree isn't clean, that is a Gate 3
-   miss to close *before* the menu, not a question for the human. Committing to the working branch
-   is the agent's own duty and never needed permission — what's gated here is **integration**
-   (merging, pushing to trunk, opening a PR). A finish menu presented over uncommitted work asks
-   the human to decide about something that doesn't exist in git yet.
+5. Run `git status --short` and summarize the verified commit or working-tree diff, remaining
+   checks and existing authorization. Perform a git operation only when the user or explicit
+   project instructions authorize that operation and its conditions are met. Otherwise deliver
+   the reviewable result with its current git state. Request a decision only when a further git
+   operation addresses the user's requested outcome. Preserve already granted authorization.
 6. **Verify the merge with a real command before archiving — don't rely on the human's word alone
    or on memory of having run the merge earlier in this session.** Confirm via `gh pr view <n>
    --json state,mergedAt` (or `git log --oneline <base>..<branch>` / checking the merge commit is
@@ -228,9 +243,9 @@ any other work.
 | Reviewing your intent, not the diff | Self-review the actual diff, severity-gated |
 | Calling code clean when no linter/formatter/typechecker ever ran on it | Run the mechanical gates fresh and record their real output in Proof |
 | "You're absolutely right!" reflex | No performative agreement; verify against real code first |
-| Self-merging to main | Present merge/PR/keep and wait for the human |
-| Presenting the finish menu over a dirty tree | `git status --short` first; commit the outstanding work on the working branch (your duty, not the human's), then present |
-| Reading "the human decides" as covering `git commit` | It covers integration only — merge, push to trunk, PR. Uncommitted work has no rollback points and dies with the session |
+| Treating green checks as permission to commit or integrate | Check explicit authorization for the particular git operation |
+| Creating a commit just to clean the tree for handoff | Report the verified working-tree diff and its content snapshot |
+| Inferring merge permission from commit permission | Match each operation to its own authorization and conditions |
 | Relying only on self-review for a domain with an Advisor-tier registry match | Also invoke that specialist from `agents/REGISTRY.md` for an independent pass |
 | Leaving a delivered item's card sitting in `.zeno/` after it's merged and deployed | Archive (git mv into `docs/archive/`, rewrite `project.md`'s references) once integration is confirmed |
 | Marking an observation ACTIONED (or a card archived) without checking the PR actually merged | Verify with a real command (`gh pr view`, `git log`) before the claim, not just memory of having acted |
@@ -281,5 +296,5 @@ any other work.
 - [ ] For a Feature/Epic closing: checked whether a full documentation set (Architecture & Design, Technical & API Specs, User & Admin Guides) exists for the touched component — if not, flagged it (Decisions log + `project.md` Open questions) and recommended an Epic rather than backfilling inline or opening one unasked.
 - [ ] A `CHANGELOG.md` entry was appended for this delivery — unconditionally, not gated on doc-worthiness.
 - [ ] Merge (and deploy, where the repo has one) was verified with a real command (`gh pr view`/`git log`), not assumed from the human's word alone or memory of an earlier action, before the delivered card was archived (`git mv`) into `.zeno/docs/archive/`, not deleted — `project.md`'s Kanban/checklist rows stay, updated to point at the new path, and a broken-link check confirmed every referenced path resolves.
-- [ ] Outcome summary written, Status flipped, and the merge/PR/keep choice left to the human.
-- [ ] `git status --short` run and clean before the menu was presented — all work committed on the working branch (integration, not committing, is what waits for the human).
+- [ ] Outcome summary written and Status updated only for proven work; git state and any remaining authorization decision reported.
+- [ ] `git status --short` inspected; tested content and remaining changes identified; every commit, push, PR creation or merge had explicit user or project authorization.

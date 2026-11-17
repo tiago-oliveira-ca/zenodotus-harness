@@ -5,6 +5,11 @@ argument-hint: "[base-branch] (default: main)"
 
 # /pr
 
+Run the Authorization section of `zeno-stack/zeno-git-workflow` first. An explicit user request
+to run `/pr` supplies authorization for this command's branch push and PR creation. Automatic
+invocation needs explicit project authorization for both operations. Commit and merge each need
+their own grant. When the tree has uncommitted changes, report them before continuing.
+
 **Input**: `$ARGUMENTS` — optional; may contain a base branch name and/or flags (e.g. `--draft`).
 
 **Parsing `$ARGUMENTS`**:
@@ -73,7 +78,7 @@ Bucket the changed files into source, tests, docs, config, migrations.
 
 Check whether this PR traces back to a card on `.zeno/project.md`'s Kanban board: read
 `.zeno/project.md` and find the Epic/Feature/Story/Task/SubTask card (under `.zeno/docs/`) whose
-Stage/Status matches the work this branch closes out.
+Status matches the work this branch closes out.
 
 Link that card's path in the PR body, along with its Proof entry if the card has already closed.
 

@@ -86,6 +86,11 @@ config) skip straight to Review.
 `CLAUDE.md` (Claude Code) and `AGENTS.md` (Codex) are the arbitration documents that decide which skill wins
 when two could handle a request.
 
+When specialists dispute the same claim, Zeno compares revision-bound evidence and uses one targeted
+recheck before escalation through the existing owner. Review reports **pass**, **fail** or **blocked**;
+missing required proof or an unavailable independent reviewer cannot count as approval. The contracts
+live in `skills/zeno/references/arbitration.md` and `evidence-contract.md`.
+
 ## What's in the library
 
 - **The zeno spine and methods** — `zeno`, `zeno-council`, `zeno-insight`, `zeno-workflow` (DDD → FDD → ATDD → BDD →
@@ -114,6 +119,10 @@ Or just start working: the `zeno` skill triggers on build, fix and change reques
 
 `.zeno/` is working memory. Commit it to keep the backlog with your code, or add it to `.gitignore` to keep it
 local (this repository does the latter).
+
+Commits, pushes, PR creation and merges require explicit user or project authorization for each
+operation. Zeno can deliver a verified working-tree diff. A project can explicitly permit automatic
+operations within stated conditions through its own instructions.
 
 ## Repository layout
 
@@ -146,9 +155,25 @@ python3 tools/check_skills.py
 python3 -m unittest discover -s tools/codex -p 'test_build_codex.py'
 bash tools/codex/test_install_codex.sh
 bash tools/test_install.sh
+python3 -m unittest discover -s tools -p 'test_*.py'
 ```
 
 CI runs these on Ubuntu, macOS and Windows.
+
+To check one working card and its linked children, run the validator from the source or installed
+`zeno` skill directory:
+
+```sh
+python3 skills/zeno/scripts/check_lifecycle.py .zeno/docs/stories/STORY-example.md --gate route
+python3 skills/zeno/scripts/check_lifecycle.py .zeno/docs/stories/STORY-example.md --gate review --require-review --json
+```
+
+Select a real card path; legacy/archive cards are not scanned automatically. The checker returns
+pass/fail/blocked (exit 0/1/2) for **card integrity only**. It neither executes evidence commands nor
+establishes truth, freshness, reviewer independence or permission to integrate. Real Review still
+requires observing the work and checking the applicable independent review.
+The report names its path-protection mode. POSIX uses anchored no-follow reads. The portable
+fallback requires a stable local hierarchy and does not support concurrent path replacement.
 
 ## Principles
 

@@ -69,17 +69,16 @@ tdd ..> codestandards : how the code\nshould be written
 tdd ..> stack : stack-specific depth\n(React, Postgres, Docker, ...)
 
 note bottom of registry
-  No Authority tier: the human is
-  always the sole merge/PR/keep
-  decision at Review. Specialists
-  recommend (Advisor) or execute
-  within a bounded domain (Owner);
-  none can approve their own work.
+  Specialists recommend (Advisor)
+  or execute in their domain (Owner).
+  Commit / push / PR / merge each
+  require explicit user or project
+  authorization for that operation.
 end note
 
 note bottom of project
   Fixed layout only: project.md +
-  Epic/Feature/Story cards under
+  Epic/Feature/Story/Task/SubTask cards under
   docs/. No ad hoc files, no
   second .zeno/-like structure.
   Kanban WIP limit: 1.

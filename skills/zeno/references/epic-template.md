@@ -8,6 +8,7 @@ one, this is a Feature; if you can't name two independently-valuable capabilitie
 Per zeno's sizing ladder, Epic tier carries the heaviest burden of proof.>
 **Goal:** <one sentence — the epic's success condition>
 **Status:** backlog | development | testing | closed
+**Owner:** <individual accountable for this Epic>
 **Target PI:** PI-<n>
 **Updated:** <YYYY-MM-DD>
 
@@ -25,6 +26,11 @@ Per zeno's sizing ladder, Epic tier carries the heaviest burden of proof.>
 ## Decisions
 - <YYYY-MM-DD> <decision + one-line why>   (append-only; newest last)
 
+## Proof
+<!-- Record Epic-level outcomes using zeno/references/evidence-contract.md's E-id format.
+     Reference delivered Features without copying their detailed evidence or weakening the
+     Epic's own Done looks like check. -->
+
 ## Outcome
-<!-- Optional — written when Status flips to closed. -->
+<!-- Complete when Status flips to closed. -->
 <what shipped, and any follow-ups left open>

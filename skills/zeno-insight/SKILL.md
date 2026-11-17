@@ -104,6 +104,21 @@ does not exempt a task — simple tasks are where unstated assumptions hide.
    Epic or Feature card sized in step 3 (`docs/epics/EPIC-<slug>.md` or
    `docs/features/FEAT-<slug>.md`, from `zeno/references/epic-template.md` /
    `zeno/references/feature-template.md`), and hand to Execution (or `zeno-workflow`'s `zeno-ddd`/`zeno-fdd` first, for multi-step work).
+   An existing approval that covers this design satisfies sign-off. Read the current card and user
+   instructions before asking again. Ask only for an unresolved decision that changes accepted
+   scope, a binding requirement or authorization.
+
+## Revisit Scope when preparation stops proving progress
+
+If repeated preparation Tasks produce more prerequisites without demonstrating an accepted
+observable behavior, return to the current Scope before expanding the plan. Name the behavior still
+unproven and its evidence gap. Compare proving a smaller end-to-end behavior, deferring optional
+preparation and revising the approach. Record the selected option and its effect on "Done looks like".
+Architecture choices return to `zeno-council`. A disputed prerequisite uses the sibling `zeno`
+skill's `references/arbitration.md` to establish its rule class and owner.
+
+Continue authorized investigation and execution under the existing approval. Obtain the human's
+decision when an option changes accepted scope or authorization. Keep the four gates and WIP limit 1.
 
 ## Applying external research to the skill library
 
@@ -112,10 +127,10 @@ request, step 1 ("explore the context") means two things, not one: read the sour
 the concrete, falsifiable technique (not a paraphrase), *and* run a fit-search across the
 existing skill library for where it applies — `zeno-stack/zeno-find-skills` locally,
 `zeno-stack/zeno-skill-scout` for external prior art — before drafting anything new. Default to
-extending an existing skill's content over authoring a new one, the same overlap-check already
-required before creating a skill (`_skill-template.md`). Scope each resulting edit to the
+extending an existing skill's content over authoring a new one. Scope each resulting edit to the
 smallest insertion that preserves the target skill's documented shape (leaf body order, one-line
-citation), and cite the source in that one line.
+citation), and cite the source in that one line. Runtime references must resolve within the owning
+skill or a sibling installed skill. Keep repository-only authoring checks in maintainer guidance.
 
 ## Scope-exit check (before leaving this gate)
 
@@ -151,6 +166,8 @@ citation), and cite the source in that one line.
 | One giant design wall, take-it-or-leave-it | Section-by-section, approval checkpoint on each |
 | Designing several subsystems at once | Decompose; hand large single efforts to `zeno-workflow`'s `zeno-ddd`/`zeno-fdd` |
 | Sliding from design into writing code | Stop at approved design; capture Scope, then Execution |
+| Requesting approval again for an already-authorized design | Reuse the recorded approval within its scope |
+| Adding preparation Tasks while the accepted behavior stays unproven | Return to Scope and compare a smaller proof, deferral or revised approach |
 | Dropping a decision raised in the dialogue | Every decision → Decisions log (resolved or `[deferred]`) |
 | Invoking every agent whose domain sounds relevant | Select the minimum sufficient specialist(s) from `agents/REGISTRY.md` |
 | Grinding through 6+ rounds on a Story-tier card | A long frontier is sizing evidence — revisit step 3, consider Feature tier |
@@ -162,7 +179,8 @@ citation), and cite the source in that one line.
 |---|---|
 | "This is too simple to need a design" | Simple tasks hide the assumptions; a one-paragraph design still closes the gate |
 | "I'll design as I code, it's faster" | Design-as-you-code is how scope creeps and rework lands; sign off first |
-| "The user clearly wants me to just start" | Approval is one message; a wrong build is an afternoon |
+| "The user clearly wants me to just start" | Check the recorded authorization and resolve any remaining design decision before implementation |
+| "One more preparation Task will make the plan ready" | Repeated preparation without accepted behavior needs a Scope decision before further expansion |
 | "I'll remember that open question" | Unwritten decisions vanish on compaction; log it |
 | "I don't need to check the registry, I know which agent fits" | Check `agents/REGISTRY.md` anyway — it's the record of what's minimum-sufficient, not a formality |
 | "This paper's finding needs a new skill" | Fit-search existing skills first; extend one over authoring a new skill by default |
@@ -183,6 +201,7 @@ citation), and cite the source in that one line.
 - You're about to ask a question whose prerequisite is still an unsettled, unopened branch.
 - A round just closed and its questions/resolutions aren't on the card yet.
 - A frontier question touches shared/public surface and you haven't run impact analysis on it.
+- Preparation keeps expanding while no accepted observable behavior has been demonstrated.
 
 ## Pre-flight checklist — run before delivering any insight session
 
@@ -195,6 +214,8 @@ citation), and cite the source in that one line.
 - [ ] Domains identified and the minimum sufficient specialist(s) selected from `agents/REGISTRY.md` (or none, if the work needs none).
 - [ ] 2-3 approaches offered with trade-offs and a clear recommendation.
 - [ ] Design presented in sections, each approved; explicit sign-off obtained before code.
+- [ ] Existing approval was reused within its scope, and any new approval request addresses a material unresolved decision.
+- [ ] Repeated preparation without accepted behavior returned to Scope and compared the options before expanding the plan.
 - [ ] Approach checked against the goal; the frontier is empty — every branch visited, each resolved or `[deferred]` in the log.
 - [ ] Card tier sized correctly (ad hoc Story / Feature / Epic) before Scope was written.
 - [ ] Approved design distilled to Problem / Approach / Done looks like on the sized card.

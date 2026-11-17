@@ -53,6 +53,12 @@ and its five pipeline-stage leaves, `zeno-debug`, `zeno-verify`) and the `code-s
 bodies themselves — that content ports verbatim (Class A path/terminology substitution only:
 `~/.claude`→`~/.codex`, `.claude/`→`.codex/`, "Claude Code"→"Codex").
 
+## Git authorization
+
+Zeno commits, pushes, creates PRs and merges only with explicit user or project authorization for
+the particular operation. A verified working-tree handoff is valid. The policy owner is
+`zeno-stack/zeno-git-workflow`'s Authorization section.
+
 ## Lane ownership
 
 Same lanes as the Claude Code target, with one substitution: where `CLAUDE.md` names

@@ -7,6 +7,7 @@ records that it was chosen deliberately, not by habit.>
 **Implements:** FR-<NNN>[, NFR-<NNN>]   <!-- optional — only when a requirements doc chain exists -->
 **Goal:** <one sentence — the story's success condition>
 **Status:** backlog | development | testing | closed
+**Owner:** <individual accountable for this Story>
 <!-- development spans ATDD, BDD, and Task breakdown — all three run in Gate 2, planning this
      Story fully before Gate 3 opens. Which one is active is read off this card's own section
      content (empty Acceptance criteria → ATDD; that filled but Scenarios empty → BDD; Scenarios
@@ -18,6 +19,11 @@ records that it was chosen deliberately, not by habit.>
 
 <!-- Definition of Ready / INVEST / story-splitting — see
      skills/documentation/development-planning-standards/SKILL.md rather than redefining here. -->
+
+## Scope
+- **Problem:** <the need or observed defect>
+- **Approach:** <the approved approach and its boundary>
+- **Done looks like:** <observable outcomes that close this Story>
 
 ## Acceptance criteria (ATDD)
 - <plain-language business pass/fail condition>
@@ -42,7 +48,7 @@ records that it was chosen deliberately, not by habit.>
      rather than a TDD cycle. -->
 - [ ] TASK-<slug> — <one-line goal> → `../tasks/TASK-<slug>.md`
 - [ ] TASK-<slug> — <one-line goal> → `../tasks/TASK-<slug>.md`
-- [ ] TASK-update-docs — create/update documentation for this Story's changes → `../tasks/TASK-update-docs.md`
+- [ ] TASK-update-docs [documentation] — create/update documentation for this Story's changes → `../tasks/TASK-update-docs.md`
 <!-- [ ] not started · [~] in progress · [x] done — WIP limit: 1 [~] at a time -->
 <!-- These markers track Gate 3 implementation progress, not Gate 2 planning progress — every
      Task above already has full technical content by the time Gate 3 starts touching any of
@@ -51,6 +57,13 @@ records that it was chosen deliberately, not by habit.>
 ## Decisions
 - <YYYY-MM-DD> <decision + one-line why>   (append-only; newest last)
 
+## Proof
+<!-- Roll up accepted outcomes and child evidence here; detailed RED/GREEN proof remains at
+     Task/SubTask leaves. New closeouts use zeno/references/evidence-contract.md's E-id records
+     (Claim, Required, Kind, Result, Evidence, Revision, Environment, Owner).
+     Required fail/blocked/not_run evidence prevents closure; a required independent review
+     must actually complete. Retain earlier records with explicit Supersedes links. -->
+
 ## Outcome
-<!-- Optional — written when Status flips to closed. -->
+<!-- Complete when Status flips to closed. -->
 <what shipped, and any follow-ups left open>
