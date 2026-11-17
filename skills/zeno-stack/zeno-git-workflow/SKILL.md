@@ -16,6 +16,27 @@ description: >
 Choosing and enforcing a git workflow — branching, commits, merges, and releases — so
 history stays legible and collaboration doesn't degrade into conflict archaeology.
 
+## Authorization
+
+Before each commit, push, PR creation or merge, identify explicit user authorization or explicit
+project instructions permitting that operation in the current project. Record the source and any
+conditions in the active card's Decisions. A project may explicitly enable automatic operations
+within named boundaries. More restrictive current user instructions take precedence.
+Apply each grant within the requested outcome; unrelated repository operations need their own scope.
+
+Authorization is operation-specific. Permission to commit covers commits within its stated scope.
+Push, PR creation and merge each need authorization covering that operation. An implementation
+request, a passing suite, a workflow example or a tool's approval setting supplies no such grant.
+An explicit `/pr` request authorizes its documented branch push and PR creation. Merge still needs
+its own grant. A checkpoint request defaults to recording HEAD, working-tree state and verification
+in Proof. Use a commit or stash method when that method has explicit authorization.
+
+Without the relevant grant, finish the authorized implementation and verification, preserve the
+working-tree diff, and report its tested content snapshot and git status. This is a valid handoff.
+Ask for further authorization only when that operation is needed for the requested outcome.
+
+The command examples below apply within the operation's authorized scope.
+
 ## Branching Strategies
 
 | Strategy | Team size | Release cadence | Best for |

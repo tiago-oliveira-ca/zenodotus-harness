@@ -13,14 +13,16 @@ risky change, between implementation and refactor, or ahead of opening a PR.
 
 1. Run the project's own test/lint command first (per the `zeno-verify` skill's
    run-the-proving-command discipline), so the checkpoint is only recorded from a clean state.
-2. Record the checkpoint as a git stash or commit named after it.
+2. Follow `zeno-stack/zeno-git-workflow`'s Authorization section. Record the checkpoint as a named
+   stash or commit only when that method has explicit user or project authorization. Otherwise
+   record the current HEAD, working-tree status and verification in the active card's Proof.
 3. Append a line to `.claude/checkpoints.log`:
 
 ```bash
 echo "$(date +%Y-%m-%d-%H:%M) | $CHECKPOINT_NAME | $(git rev-parse --short HEAD)" >> .claude/checkpoints.log
 ```
 
-4. Confirm to the user that the checkpoint was created.
+4. Report the checkpoint's storage method and the content it identifies.
 
 ## Verify
 

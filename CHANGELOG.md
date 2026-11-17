@@ -4,6 +4,29 @@ All notable changes to Zenodotus, newest first. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This repository starts from a single squashed commit,
 so earlier history is not listed.
 
+## 2026-11-16
+
+### Added
+- Shared Zeno arbitration and evidence contracts. Existing lane owners resolve disputed claims
+  through comparable observations, one targeted recheck and an explicit disposition. Proof records
+  carry result, revision, environment and owner, with preserved supersession history.
+- A portable, read-only lifecycle card checker in the `zeno` skill. It checks an explicit hierarchy,
+  planning fields, required evidence and review records, returning pass/fail/blocked for card
+  integrity. Unit tests cover malformed records, unsafe links and installed copies.
+
+### Changed
+- Commits, pushes, PR creation and merges each require explicit user or project authorization.
+  Execution, TDD, Review, cleanup and GitHub operations support a verified working-tree handoff.
+- Card templates now carry their required Owner, Scope and Proof fields. Skill authoring uses
+  selective reference triggers and portable assets. Recovery reads current state first and retains
+  evidence, reviewer availability and authorization. Repeated preparation without accepted behavior
+  returns to Scope before expansion.
+- CI exercises lifecycle and git-authorization regressions. SessionStart documentation matches
+  its static mandate, sanitized branch and thread pointer.
+- Architecture and lifecycle diagrams reflect operation-specific git authorization and working-tree handoff.
+- Verified lifecycle tooling on Python 3.8.20 and corrected test harness types so mypy's Python 3.8
+  checks pass for the checker and its tests.
+
 ## 2026-10-24
 
 ### Added

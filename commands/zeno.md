@@ -15,7 +15,7 @@ no second copy of those rules: a duplicate drifts from the skill and contradicts
 ## Resolving the project folder
 
 Resolve the repo root with `git rev-parse --show-toplevel` (fallback: `pwd`) and read/write
-`<root>/.zeno/`. One `.zeno/` folder per repo, at the root, committed with the repo.
+`<root>/.zeno/`. One `.zeno/` folder per repo, at the root; follow the project's tracking policy.
 
 ## Dispatch — on the first token of `$ARGUMENTS`
 

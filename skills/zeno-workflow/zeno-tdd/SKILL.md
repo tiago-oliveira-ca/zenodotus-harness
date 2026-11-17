@@ -132,15 +132,11 @@ gets lucky enough to touch a tracked one.
   at the end.
   This is the memory that stops future sessions re-litigating settled choices, and it mirrors how
   Scope writes the design and Review writes the proof.
-- **One logical change per commit — as checkpoints, not just hygiene.** These commits are yours to
-  make on the working branch; you never need permission for them. The loop gates *integration*
-  (merge, push to trunk, PR), not `git commit` — so "the human decides" is never a reason to end a
-  Task with uncommitted work. Prefer one commit for RED
-  (failing test added and validated), one for GREEN (minimal fix, test passing), one optional
-  commit for REFACTOR. Each checkpoint's message names the stage and the evidence it captured (e.g.
-  `test: add reproducer for <behavior>`, `fix: <behavior>`). Don't squash or rewrite these until the
-  Story's cycle is complete; if they do get squashed later (e.g. into one PR commit), copy the
-  RED/GREEN/refactor summary into the squash message or PR body first so the evidence survives.
+- **Keep each logical change independently verifiable.** Record RED, GREEN and REFACTOR evidence
+  on the card with the tested commit or working-tree snapshot. Commits require explicit user or
+  project authorization under `zeno-stack/zeno-git-workflow`. When authorized, use small commits
+  whose messages name the behavior and preserve the test evidence. A working-tree handoff is
+  valid when commits are unauthorized. Pushes, PR creation and merges need their own authorization.
 - **Log deviations.** When the build departs from the Framed approach, record the deviation and its
   reason in the Decisions log rather than silently absorbing it.
 - **Verify a new dependency is real before adding it.** Confirm the package exists, is the one you
@@ -205,6 +201,6 @@ regression protection.
 - [ ] Full suite is green and output is clean (no new warnings/errors) — impact-selected tests were run first, not instead.
 - [ ] Every test traces to a Scenario on the Story card; each cycle's result is logged to the active Task/SubTask card's Proof section.
 - [ ] Decisions and any deviations from the Framed approach are in the active card's Decisions log.
-- [ ] Commits are atomic (one logical change each); any new dependency was confirmed real.
+- [ ] Commits, when explicitly authorized, are atomic; otherwise Proof identifies the working-tree snapshot. Any new dependency was confirmed real.
 - [ ] No test was weakened or deleted to make the bar go green.
 - [ ] If this cycle added/altered a migration, any repo-wide schema-assertion fixture was found (`grep -rl`) and updated in the same GREEN commit.

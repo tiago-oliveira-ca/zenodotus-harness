@@ -30,7 +30,8 @@ pragmas/features can shift release to release.
   the rendered images back to the repo (necessary for GitHub, since it won't render PlantUML
   itself) or publish them as build artifacts (workable for GitLab, which can render natively).
   A common GitHub Actions pattern installs `graphviz` + the PlantUML jar, runs
-  `plantuml -tsvg`, then auto-commits the rendered output.
+  `plantuml -tsvg`. Automatic commits require explicit project authorization for that CI job;
+  otherwise publish rendered output as a build artifact.
 - **Pre-commit:** run `plantuml -checkonly` (or `--check-syntax`, depending on version) to fail
   fast on a syntax error before it merges, without needing a full render. Community pre-commit
   hooks exist for this; wiring it in catches a broken diagram at commit time instead of at the

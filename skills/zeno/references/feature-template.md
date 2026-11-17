@@ -7,6 +7,7 @@ belongs on a Story card (zeno's sizing ladder, burden of proof).>
 **Implements:** PRD-<NNN>   <!-- optional — only when a requirements doc chain exists; see documentation/references/lifecycle.md -->
 **Goal:** <one sentence — the feature's success condition>
 **Status:** backlog | development | testing | closed
+**Owner:** <individual accountable for this Feature>
 <!-- DDD runs in Gate 1 (Scope); FDD, then every Story's ATDD/BDD/Task breakdown, run in Gate 2
      (Route) — see zeno/SKILL.md. Which stage is active is read off this card's own section
      content (empty Domain & Architecture section → DDD; that filled but Story list empty → FDD),
@@ -19,9 +20,9 @@ belongs on a Story card (zeno's sizing ladder, burden of proof).>
 - **Done looks like:** <observable proof the feature is delivered>
 
 ## Domain & Architecture (DDD)
-<!-- Skip this section entirely for small/ad-hoc work with no parent epic — there's nothing to
-     hang domain notes on. Required whenever a Feature file exists. All five fields below are
-     zeno-ddd's pre-flight checklist, verbatim — filled in before zeno-fdd writes a Story line. -->
+<!-- Required whenever a Feature file exists, including a standalone Feature without an Epic.
+     Small work that needs no domain framing belongs on a Story instead. Fill the four core fields
+     before zeno-fdd writes a Story line; include Context Map when the context has a neighbor. -->
 - **Bounded context:** <what this feature owns, and its boundary with neighboring contexts>
 - **Subdomain classification:** Core | Supporting | Generic
 - **Entities vs. Value Objects:** <which domain nouns need persistent identity vs. are fully defined by their attributes>
@@ -42,6 +43,11 @@ belongs on a Story card (zeno's sizing ladder, burden of proof).>
 ## Decisions
 - <YYYY-MM-DD> <decision + one-line why>   (append-only; newest last)
 
+## Proof
+<!-- Roll up the Feature's Done looks like outcomes and its Stories' evidence. Use the E-id
+     record in zeno/references/evidence-contract.md; preserve leaf RED/GREEN details by reference.
+     A passing child check does not establish an unrelated Feature-level outcome. -->
+
 ## Outcome
-<!-- Optional — written when Status flips to closed. -->
+<!-- Complete when Status flips to closed. -->
 <what shipped, and any follow-ups left open>

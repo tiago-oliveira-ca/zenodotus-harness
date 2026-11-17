@@ -38,6 +38,17 @@ discipline and constrains the machinery to one fixed layout — the entire syste
 
 If in doubt about whether a task is trivial: it isn't. Run the loop.
 
+## Shared contracts — load when the trigger applies
+
+- Specialists dispute a claim or ownership: load `references/arbitration.md`. Existing lane owners
+  decide within their domains; unresolved material decisions return to the human.
+- Record closeout evidence or evaluate a gate: load `references/evidence-contract.md`. Distinguish
+  pass, fail and blocked; preserve card Status and the four-gate order.
+- Classify a rule as an invariant, default or preference before making it blocking. The shared
+  arbitration contract defines the distinction; a severity label alone grants no authority.
+- Git mutations follow `zeno-stack/zeno-git-workflow`'s Authorization section. Commits, pushes,
+  PR creation and merges each require explicit user or project authorization for that operation.
+
 ## Gate 1 — Scope
 
 **Step 0 — the Architecture Council (`zeno-council`).** Every non-trivial Scope opens with it,
@@ -87,8 +98,8 @@ code before this gate closes.
    `git status --short` as this gate's first action, before writing any Scope/card content or
    editing a product file. If the current branch is the repo's trunk (`main`/`master`/its default)
    and the task is non-trivial, create/switch to a working branch now, per
-   `zeno-stack/zeno-git-workflow` — `.zeno/` rides along in the same diff as the rest of the
-   work, so it has to land on the right branch from the start, not be moved there later. This
+   `zeno-stack/zeno-git-workflow`. Keep tracked lifecycle records on the working branch and
+   preserve local records when the project ignores `.zeno/`. This
    closes a gap that recurred three separate times in this repo's own history (a rule stated only
    in Gate 3's prose and Gate 4's pre-flight checklist was skipped through all of Execution each
    time, because nothing forced the check at the point the risk was introduced — see
@@ -106,8 +117,8 @@ code before this gate closes.
 4. **Ensure a repo-root `./.zeno/` folder exists** — create `project.md` from
    `references/project-template.md` if absent — then write Gate 1's Scope into the right card and
    refresh `project.md`'s **Updated** date. Keep **State** and **Next step** live as you work — they
-   make cross-session resume cheap. One `.zeno/` folder per repo, at the root, committed with
-   the repo as durable memory.
+   make cross-session resume cheap. One `.zeno/` folder per repo, at the root. Follow the project's
+   tracking policy for `.zeno/`; respect `.gitignore` and the git authorization boundary.
 5. **Migrate a legacy thread or an old `.project/core.md` layout, if either exists.** If the
    repo's thread predates this layout (a single `THREAD.md` or similar), run
    `references/migration.md`'s THREAD.md recipe to completion — through deleting the legacy file —
@@ -127,6 +138,10 @@ code before this gate closes.
    is no Feature to list — but still run ATDD → BDD → Task breakdown on that one Story. Gate 3
    opens as a pure implementation loop only once every Story reachable from this pass is planned
    this way.
+
+For new or deliberately normalized cards, run `python <zeno-skill>/scripts/check_lifecycle.py
+<card> --gate route` against the explicit card and its children. Resolve the installed skill path;
+do not scan historical cards by default. This checks planning records, never approval or truth.
 
 `.zeno/` is a **SAFe/Lean-governed backlog**, not a single append-only file: `project.md` is the
 portfolio index (Kanban board + Epic/Feature index), and each backlog item gets its own card under
@@ -198,12 +213,13 @@ Every Task shares these duties, in this order:
    wait for authorization.
 5. **Route to `zeno-debug`** when something breaks or a test won't go green — find the root cause
    before attempting any fix.
-6. **Log each decision to the active card as you go, committing one logical change at a time.**
-   **Committing to the working branch is your own duty, not a decision to ask about** — the
-   human's authority begins at *integration* (merging, pushing to trunk, opening a PR), never at
-   `git commit`. Do not read Review's merge-authority rule as a reason to leave work uncommitted:
-   an uncommitted tree has no rollback points, loses the per-change record the loop runs on, and
-   dies with the session. Finish each Task with its commit; arrive at Review with a clean tree.
+   When specialists disagree about that behavior, use `references/arbitration.md` to name the
+   claim, compare evidence and perform one discriminating recheck before escalation.
+6. **Log decisions and verification as each logical change completes.** Before committing,
+   pushing, creating a PR or merging, check explicit authorization for that operation under
+   `zeno-stack/zeno-git-workflow`. A general implementation request grants implementation scope.
+   When git mutations are unauthorized, preserve the working-tree diff and record its tested
+   content snapshot in Proof. Review and a useful handoff can complete with uncommitted changes.
 
 The Kanban board's **WIP limit is 1** item outside Backlog/Closed at a time — the same "no more
 than one `[~]` step" discipline zeno has always had, now expressed as a literal board rule.
@@ -272,10 +288,16 @@ pass) — never spawned ad hoc outside the registry.
 Always resolve the repo root with `git rev-parse --show-toplevel` (fallback: `pwd`) and read/write
 `<root>/.zeno/`. Dispatch on the invocation's first token (`/zeno start`, `/zeno resume`, etc.):
 
+On resume, read current State, Goal, Next step and the active card before historical Proof or
+session transcripts. Follow evidence links needed for the next action. Load
+`zeno-stack/zeno-context-compaction` when reconstructing or handing off a long session. Revisit
+Scope when a material assumption changes or repeated preparation leaves the accepted behavior
+unproven, following `zeno-insight`; reuse existing approval within its scope.
+
 | Token | Behavior |
 |---|---|
 | `start` (or no argument and no `./.zeno/project.md`) | **First, check the repo root for a legacy thread** (`THREAD.md` or a similarly named free-form log) **and for the pre-rename `.project/core.md` layout.** If a legacy thread exists, run the THREAD.md migration recipe in `references/migration.md` to completion — including deleting the legacy file and recording the migration as a `project.md` Decisions entry — before continuing. If the old `.project/core.md` layout exists instead, run that same file's rename recipe (a mechanical `git mv`, recorded as a Decision) before continuing. `start` must never leave a legacy thread file or the old `.project/` layout in place once it returns. Then run **Gate 1 (Scope)** — `zeno-council` first, then `zeno-insight`, which sizes the request (ad hoc Story / Feature / Epic — see the sizing ladder above), enumerates an Epic's Features, and frames a Feature's domain (DDD). Create `./.zeno/project.md` from `references/project-template.md` if absent, and the sized card from the matching `epic-template.md` / `feature-template.md` / `story-template.md`, with the Scope + Goal filled in. Then run **Gate 2 (Route)**, which fully plans the backlog before stopping — a Feature's Story list (FDD) and every Story's Acceptance Criteria/Scenarios/Task breakdown (ATDD/BDD). Stop at Gate 3 and await go-ahead — Gate 3 begins as a pure implementation loop over an already-planned backlog, not a planning session. |
-| `resume` (or no argument and `./.zeno/project.md` exists) | Read `project.md`'s Kanban board and find the item outside Backlog/Closed (WIP limit is 1). Print Goal / State / Next step from `project.md` and that item's card. Re-enter the loop at the pipeline stage the card's content shows it's at. Do **not** re-Scope unless the Goal has changed. **No item in flight?** Reconcile `project.md` against `git log`/the working tree, print status, then offer the Backlog cards (human picks — each re-enters at Scope) or await new work; with an empty Backlog, say so and stop. |
+| `resume` (or no argument and `./.zeno/project.md` exists) | Read `project.md`'s Kanban board and find the item outside Backlog/Closed (WIP limit is 1). Print Goal / State / Next step from `project.md` and that item's card. Re-enter the loop at the pipeline stage the card's content shows it's at, using the recovery and Scope-revisit rules above. **No item in flight?** Reconcile `project.md` against `git log`/the working tree, print status, then offer the Backlog cards (human picks — each re-enters at Scope) or await new work; with an empty Backlog, say so and stop. |
 | `status` | Read-only. Print `project.md`'s Kanban board table, item counts by column, the active item + its stage, its last Decision, and its last Proof entry. Make no edits. |
 | `review` | Jump to **Gate 4 (Review)** via `zeno-verify`: exercise the change, append the command + observed result to the closing card's Proof section (and roll a summary line into `project.md`'s Proof section), and flip that card's Status → `closed` — and `project.md`'s Status too, when the top-level item closes — only if the evidence confirms it. Move the item to the Closed column, archiving per `zeno-verify`'s finish tail. |
 
@@ -374,8 +396,8 @@ user ask, when the file has actually grown large enough to warrant it.
 | Skipping the documentation check because the change "looks internal" | Always run the check; only the resulting edit is doc-worthy-gated |
 | Treating a Story's own documentation Task as Gate 4's documentation check | Gate 4 runs the check again at the closing item's own scope — no single Story's Task owns the system-level picture |
 | Trusting self-review alone for a domain with an Advisor-tier registry match | Also get an independent pass from that specialist |
-| Self-merging when Review passes | Present merge/PR/keep; the human decides integration (merge / push to trunk / PR) — not whether you may commit |
-| Leaving work uncommitted because "the human decides" | Commits on the working branch are yours to make; only integration is gated. Presenting the finish menu over a dirty tree is a Gate 3 miss — commit first, then present |
+| Treating Review success as git authorization | Check explicit user or project authorization separately for commit, push, PR and merge |
+| Committing to satisfy a clean-tree rule | Preserve the verified working-tree diff and hand it off when commits are unauthorized |
 | Writing Scope/card content or a product-file edit before checking the branch | Gate 2 step 1: `git branch --show-current` + `git status --short`, first action, every time |
 | Following a long session's original read of `zeno` without rechecking | Gate 2 step 3: check the installed copy's currency once a session spans several cycles |
 | Archiving a card on the human's word alone that it merged | Verify with a real command (`gh pr view`/`git log`) first — see Gate 4 |
@@ -391,8 +413,8 @@ user ask, when the file has actually grown large enough to warrant it.
 | "I'll just fix it directly" | Undiagnosed fixes multiply bugs; Scope or `zeno-debug` first |
 | "One more file won't hurt" | Ceremony is fixed at five card types — a sixth kind of file is exactly the sprawl this avoids |
 | "This domain probably doesn't have a specialist" | Check `agents/REGISTRY.md` before assuming — most domain work has a row |
-| "I'll just merge it myself, it's obviously fine" | The human is the sole **integration** authority — merging, pushing to trunk, opening a PR — no exceptions, however obvious it looks |
-| "I shouldn't commit without asking either" | That rule is about integration, not `git commit`. Work left uncommitted has no rollback points and vanishes with the session — commit each logical change on the working branch as you go |
+| "The tests passed, so I can commit and open a PR" | Tests establish behavior. Each git operation still needs explicit user or project authorization |
+| "The project allows commits, so it allows merges too" | Authorization is scoped to its named operation and conditions |
 | "I'll create the branch once I'm ready to commit" | Three past incidents (Obs 34/38/41) show this always slips past a full Execution pass — check the branch as Gate 2's first action, not before commit |
 | "I already know this skill, no need to recheck it" | A long session can outlive the copy it loaded — Gate 2 step 3 exists for exactly the session that's run long enough to make that assumption wrong |
 
@@ -410,8 +432,7 @@ user ask, when the file has actually grown large enough to warrant it.
   its own pre-flight checklist before handing the work to Review.
 - You're about to write a Feature or Epic card and can't name the two-plus independently
   verifiable Stories it decomposes into — that's Story-tier work wearing a Feature's card.
-- You're about to present the merge/PR/keep menu and `git status` isn't clean — the work you're
-  asking about isn't committed yet.
+- You're about to commit, push, create a PR or merge without explicit authorization for that operation.
 - You're about to say "done" without a fresh Proof entry.
 - You're about to say "done" on a diff in a registry-covered domain without an independent pass.
 - You're about to say "done" on a code change whose lint/format/typecheck gates never ran.
@@ -426,7 +447,7 @@ user ask, when the file has actually grown large enough to warrant it.
 - [ ] Gate 2 step 3 ran, if the session has spanned multiple cycles: installed skill copy checked for drift.
 - [ ] `./.zeno/project.md` exists at the repo root; Goal + State + Next step filled.
 - [ ] The task was sized correctly (trivial / ad hoc Story / Feature+Story-list / Epic) — smallest tier that fits, climbed only on named evidence, with the chosen tier and its one-line evidence recorded on the card; and a Story too big for one sitting was broken into its own Task list (and a Task list into SubTasks, if still too big).
-- [ ] Gate 1 ran DDD for Feature-tier work (and enumerated Features for Epic-tier work); Gate 2 ran FDD + ATDD + BDD + Task breakdown for every Story before Gate 3 began, each Story's Task list ending in a documentation Task; Gate 3 looped TDD over every Task in order; bugs diagnosed via `zeno-debug`; commits atomic and actually made on the working branch (a clean `git status` at Review — committing is the agent's duty, only integration is the human's).
+- [ ] Gate 1 ran DDD for Feature-tier work (and enumerated Features for Epic-tier work); Gate 2 ran FDD + ATDD + BDD + Task breakdown for every Story before Gate 3 began, each Story's Task list ending in a documentation Task; Gate 3 looped TDD over every Task in order; bugs diagnosed via `zeno-debug`; Proof identifies the tested commit or working-tree snapshot, and every git mutation has explicit authorization.
 - [ ] Product code was written with the matching `code-standards` leaf loaded, and that leaf's own pre-flight checklist was run before Review.
 - [ ] The Kanban board never carried more than 1 item outside Backlog/Closed at once.
 - [ ] Decisions made this session are appended to the active card's Decisions log.

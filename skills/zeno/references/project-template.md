@@ -43,10 +43,11 @@
 
 ## Proof
 - <YYYY-MM-DD> <item id> <what was exercised> → <observed result>   (rollup; append-only; full
-  per-scenario evidence lives on the item's own Story card under `docs/stories/`)
+  per-scenario RED/GREEN evidence lives at Task/SubTask leaves; Story/Feature/Epic Proof rolls up
+  its own accepted outcomes with child references, per `zeno/references/evidence-contract.md`)
 
 ## Open questions / parked
-- <anything deferred, so it isn't lost across sessions>
+- <deferred question or finding> — Owner: <who decides>; Next action: <concrete follow-up>; Revisit: <date or trigger>
 
 ## Outcome
 <!-- Optional — the 2-3 line close-out written at Review when Status flips to closed. -->

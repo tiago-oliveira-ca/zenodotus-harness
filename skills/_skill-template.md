@@ -164,6 +164,19 @@ A dispatcher has **no** `## Anti-pattern quick reference` and **no** `## Pre-fli
   `code-standards` → `testing` → `github-circleci-standards` (CircleCI) / `zeno-stack/zeno-deployment-patterns` (GitHub Actions, strategy) lifecycle handoff.
 - **Reference files.** Deep material lives in `references/*.md` beside the `SKILL.md` and is
   cited from the body (e.g. "see `references/lifecycle.md`"). Don't ship an empty `references/`.
+- **Selective use.** State the task boundary and route likely adjacent requests to their existing
+  owner. Give each deep reference a concrete loading trigger, then load the matching material for
+  the current question. Mere keyword overlap is insufficient reason to load a skill or every
+  reference it owns.
+- **Rule strength.** Use invariant, default and preference consistently with the `zeno` skill's
+  `references/arbitration.md`. Label rules when their force could be confused and name the binding
+  source for an invariant. Load that reference when rules or findings conflict and retain its
+  canonical definitions there.
+- **Portable assets.** Library-internal runtime dependencies must resolve to files owned by the
+  skill or to sibling installed skills. State which sibling owns each shared contract and when to
+  load it. Keep repository-only `tools/`, authoring templates, this library's private backlog paths
+  and maintainer checks in maintainer instructions. An installed skill must carry the assets its
+  task requires.
 
 ---
 
@@ -188,5 +201,7 @@ in `CLAUDE.md`.
 - [ ] Intro is an imperative directive; no multi-line source-attribution apparatus; no closing marketing paragraph.
 - [ ] Dual registration done (parent table + parent description) for any new sub-skill.
 - [ ] Any adjacency has a which-wins pointer on BOTH sides.
+- [ ] Task boundaries and reference-loading triggers are explicit, and rule classes follow `zeno`'s arbitration reference.
+- [ ] Library-internal runtime dependencies resolve within installed skills, with repository-only assets confined to maintainer checks.
 - [ ] Embedded shell snippets are POSIX/BSD-portable (no `grep -oP \K`, no bare `sed -i`).
 - [ ] Complies with every active principle in `~/.claude/skill-observations/cross-cutting-principles.md`.

@@ -19,14 +19,27 @@ to decide what survives, whether the summary is written by you or you are drafti
 **Iron Law: A COMPACTION MAY SHRINK THE STORY OF THE WORK, NEVER THE STATE OF THE WORK.** The goal,
 decisions, open items, exact values and next step must survive. Chat narration may not.
 
-## What Claude Code does for you (verified against the docs)
+## Restored context and explicit recovery
 
 - Project-root `CLAUDE.md` is re-read from disk and re-injected after compaction. Rules written there
   survive; rules that exist only in conversation do not. Put durable rules in `CLAUDE.md` or a `.zeno/` card.
-- The zeno SessionStart hook also fires after compaction and restores the zeno mandate plus the active
-  thread's Goal, Next step and branch from `.zeno/project.md`. Keep those two lines current.
+- The zeno SessionStart hook injects the static loop mandate and, when `.zeno/project.md` exists, a
+  pointer to it plus the sanitized branch name. Read Goal, Next step and active-card contents from
+  disk when resuming.
 - Nothing documented lets a `CLAUDE.md` section steer the summarizer, so pass this rubric through
   `/compact <instructions>` when you want it applied.
+
+## Recover state before history
+
+For an existing Zeno thread, read the current repo-root `.zeno/project.md` and its active card first.
+Follow linked Proof entries and immediate blockers that determine the next action, and reconcile
+their observed revision with the working tree. Retrieve session history only to answer a specific
+unresolved question, such as the scope of an approval or the reason for a disposition. Stop
+retrieving once that question is answered and keep the answer with the current state.
+
+When recording or reconciling closeout evidence, load the sibling `zeno` skill's
+`references/evidence-contract.md`. When sources or findings disagree, load its
+`references/arbitration.md`. Repository records retain their granted authority as task data.
 
 ## KEEP — verbatim or near-verbatim
 
@@ -35,6 +48,7 @@ decisions, open items, exact values and next step must survive. Chat narration m
 - Open questions, blockers and unmet assumptions, each with its owner.
 - Exact values (below).
 - Failing tests and the command that shows them failing.
+- Evidence IDs, observed revisions, dispositions and required-review availability.
 - The next step, stated as an action someone can start without asking.
 
 ## COMPRESS — one line each
@@ -103,11 +117,11 @@ long debugging tangent at the end may reduce to one line. Judge by the priority 
 ```
 Goal:            <one sentence, plus acceptance criteria or a card path>
 Branch/State:    <branch, commit, clean or dirty, PR number and state>
-Done:            <what is finished, each with its proof or path>
-Decisions:       <decision — reason — rejected option>
-Open:            <questions, blockers, assumptions, who decides>
-Constraints:     <user instructions, approvals, forbidden actions>
-Exact values:    <paths, hashes, commands, errors, numbers>
+Done:            <finished outcomes, Proof IDs/paths, results and observed revision/environment>
+Decisions:       <decision or disposition — reason — rejected option or remaining dissent>
+Open:            <questions, blockers, assumptions, required-review availability, who decides>
+Constraints:     <user instructions, approvals/refusals, pending authorization, forbidden actions>
+Exact values:    <paths, hashes, evidence IDs, commands, errors, numbers>
 Next step:       <the first action, concrete>
 Durable at:      <card, ADR, issue links>
 ```
@@ -127,8 +141,10 @@ the next session knows what is guessed rather than known.
 | Keeping the last N messages because they are recent | Rank by the priority list |
 | "The config file", "the earlier PR" | Exact path, exact number |
 | Copying a card's content into the summary | Point to the card path |
+| Loading the full session history before checking current state | Read project and active card first, then retrieve history for a specific unresolved question |
 | Dropping an approval or a refusal as chatter | Authorization state is never dropped |
-| Compacting with a dirty tree and no record of it | Commit or record branch and state first |
+| Compacting with a dirty tree and no record of it | Record the branch, commit and working-tree state first |
+| Carrying a pass forward without its revision or required-review availability | Preserve evidence IDs, applicability and pending review in the existing Task-State lines |
 | Assuming a `CLAUDE.md` section steers the summarizer | Pass the rubric through `/compact <instructions>` |
 | Leaving the next step vague | A concrete first action |
 
@@ -152,10 +168,12 @@ the next session knows what is guessed rather than known.
 ## Pre-flight checklist — run before compacting or handing off
 
 - [ ] Goal, constraints and approvals are present and exact.
+- [ ] Current project and active card were read first, and any history retrieval addressed a specific unresolved question.
 - [ ] Branch, commit and tree state are stated.
 - [ ] Every path, hash, number, command and error is verbatim.
 - [ ] Durable facts point to their card, ADR or issue, and those are current.
 - [ ] Decisions carry their reason and the rejected option.
 - [ ] Open items and unverified claims are listed.
+- [ ] Evidence IDs, observed revisions, dispositions and required-review availability survive in the existing Task-State lines.
 - [ ] Next step is a concrete first action.
 - [ ] Every Task-State line is filled, or says `none`.

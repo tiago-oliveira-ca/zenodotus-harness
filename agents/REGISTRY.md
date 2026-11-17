@@ -16,12 +16,28 @@ At the zeno **Scope** gate (`skills/zeno-insight/SKILL.md`), after the work is s
 3. Select the **minimum sufficient** specialist(s) — not every agent whose domain is tangentially
    related. A one-file Python bugfix needs `zeno-python-reviewer`, not the whole reviewer roster.
 4. Follow the Handoff column if the selected specialist's own boundary points elsewhere.
+5. Supply the assignment's scope and revision, and require the common finding/handoff envelope in
+   `agents/_agent-template.md` §5 for significant findings. Load the shared evidence contract when
+   collecting proof, and the arbitration contract when claims conflict (paths below).
 
 At the zeno **Review** gate (`skills/zeno-verify/SKILL.md`), the matching Advisor-tier reviewer(s)
 provide an **independent** pass on the diff — a second opinion distinct from the same agent that
-wrote the code self-reviewing. This does not change who approves: the human is still the sole
-merge/PR/keep authority, per `zeno-verify`'s "never self-merge" Iron Law. No row in this registry
-carries `Authority` tier — see "Why no Authority tier" below.
+wrote the code self-reviewing. Git operations follow explicit user or project authorization under
+`zeno-stack/zeno-git-workflow`. No row in this registry carries `Authority` tier, as explained below.
+
+### Disagreement and evidence
+
+Routing selects expertise; it does not resolve a disputed claim by itself. The caller applies
+`skills/zeno/references/arbitration.md` to classify the disagreement, identify the existing domain
+owner and, when evidence is contested, request one discriminating recheck. Architecture returns to
+`zeno-council`, evidence to `zeno-verify`, and unresolved substantive or authorization-changing choices
+to the human. Retain the disposition and dissent on the active card; agent voting creates no authority.
+
+Use `skills/zeno/references/evidence-contract.md` for required evidence, unavailable reviewers and
+gate results. Attempted delegation never establishes an independent pass. The caller supplies these
+contracts with the assignment rather than duplicating them in all 24 agent files. On Codex, the
+portable `zeno` references carry the same contract even though this registry and the authoring
+template are not installed. Host instruction hierarchy and permissions remain controlling.
 
 **What Advisor "read-only" covers:** repository and working-tree state, not just
 files. Withholding `Write`/`Edit` is not sufficient on its own — the eight Advisors that hold
@@ -32,7 +48,8 @@ uncommitted work on it (this happened: a reviewer subagent switched the caller's
 to `main` and stashed its in-flight work). Each of those agents now states the observation-only
 limit in its `Constraints` field, and `_agent-template.md` requires it of any new Advisor. Running
 the suite, linters, and `git diff`/`log`/`status` remains expected. Spawning an Advisor against a
-dirty tree? Prefer `isolation: "worktree"`.
+dirty tree? A read-only review may inspect it directly. If using an isolated copy, include its
+actual changes and untracked files, and record the reviewed content snapshot.
 
 ## Registry
 
@@ -74,11 +91,9 @@ dirty tree? Prefer `isolation: "worktree"`.
 ### Why no Authority tier
 
 A specialist architecture commonly includes a 4th tier that can unilaterally approve or reject
-work. Zenodotus doesn't grant it to any agent: `zeno-verify`'s Review gate has a pre-existing,
-deliberate Iron Law — the human always makes the final merge/PR/keep call, never the agent. Adding
-an Authority tier would contradict that constraint rather than extend it. Independent review
-(a specialist's opinion distinct from the builder's self-review) still happens at Review — it just
-feeds the human's decision instead of replacing it.
+work. Zenodotus grants expertise within an assigned domain. Git authorization comes from explicit
+user or project instructions for the particular operation. Independent review supplies evidence
+for the decision. A specialist role or agreement between specialists supplies no additional grant.
 
 ## Known adjacent-domain overlaps (resolved, not merged)
 

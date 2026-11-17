@@ -99,7 +99,9 @@ gh api repos/{owner}/{repo}/secret-scanning/alerts --jq '.[].state'
 gh pr list --label "dependencies" --json number,title
 ```
 
-Review and auto-merge safe dependency bumps; flag critical/high-severity alerts
+Review dependency bumps. Merge or enable auto-merge only with explicit user or project
+authorization under `zeno-stack/zeno-git-workflow`, including the project's required checks.
+Flag critical/high-severity alerts
 immediately rather than batching them into a weekly pass; check for new Dependabot alerts
 at least weekly.
 
@@ -122,7 +124,7 @@ Before calling a GitHub-ops task complete:
 | Letting PRs sit unreviewed past 5-7 days silently | Track staleness explicitly and comment/ping |
 | Auto-closing stale issues immediately | 14-day stale label, then a further 30-day silence before close |
 | Releasing with a hand-typed changelog | Generate from merged PR titles / `--generate-notes` |
-| Treating a Dependabot alert as informational | Triage severity immediately; auto-merge only safe bumps |
+| Treating a Dependabot alert as informational | Triage severity immediately; verify the bump and check merge authorization |
 | Requesting style changes on a community PR before checking it has tests | Confirm tests + conventions first |
 
 ## Pre-flight checklist — run before delivering any GitHub-ops result
@@ -133,3 +135,4 @@ Before calling a GitHub-ops task complete:
 - [ ] Release changelog reflects actual merged PRs since the last tag
 - [ ] Dependabot / secret-scanning alerts were checked and any critical/high items flagged
 - [ ] `gh auth status` confirms the correct repo/account before destructive operations (merge, release, close)
+- [ ] Every commit, push, PR creation and merge has explicit user or project authorization for that operation.

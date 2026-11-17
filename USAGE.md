@@ -54,6 +54,35 @@ Four gates, always on. Only genuinely trivial edits (typo, rename, one-line conf
 | **3. Execution** | A pure TDD implementation loop over the already-planned Task list; check a symbol's blast radius before editing it; diagnose bugs by root cause | `zeno-workflow/zeno-tdd`, `zeno-debug` |
 | **4. Review** | Verify **goal-backward** (does it deliver *Done looks like*?), get an independent specialist pass for a registry-covered domain, exercise the real flow, record evidence, then you decide merge/PR/keep | `zeno-verify` + the matching `agents/REGISTRY.md` specialist |
 
+### Specialist disagreement and gate evidence
+
+When specialists disagree, the caller loads `zeno/references/arbitration.md`: state the disputed
+claim, distinguish an invariant from a default or preference, name the existing owner, and compare
+evidence at the same revision/environment. One targeted recheck resolves the factual question or
+leaves a concrete decision for you. Council still owns architecture; verify still owns completion.
+A passing broad suite cannot dismiss a targeted reproduction of data loss.
+
+`zeno/references/evidence-contract.md` defines closeout Proof and the gate results **pass**, **fail**
+and **blocked**. Card Status still tracks backlog/development/testing/closed. Required checks that
+did not run, stale evidence and an unavailable required reviewer block closure; calling an agent
+does not mean an independent review happened. Ordinary proof can group related claims in one
+record, with its command/observation, observed result, revision, environment and owner. Earlier
+evidence stays in the card when a newer record explicitly supersedes it.
+
+For new or deliberately normalized cards, run the `zeno` skill's
+`scripts/check_lifecycle.py <card> --gate route|review`. Add `--require-review` for a selected item
+requiring an Advisor. It checks the selected hierarchy and records, returning pass/fail/blocked
+(exit 0/1/2). Real execution, freshness, independent review and authorization still need observation.
+
+On resume, read current project State and the active card first. Retrieve history for specific
+unresolved questions. Keep evidence IDs, revisions, dispositions, reviewer availability and approval
+scope in the existing Task-State handoff. If repeated preparation produces no accepted observable
+behavior, revisit Scope before expanding the plan.
+
+Commits, pushes, PR creation and merges each require explicit user or project authorization. A
+verified working-tree diff is a valid handoff. The Authorization section of
+`zeno-stack/zeno-git-workflow` owns the operation-specific rules.
+
 ### The `/zeno` command
 | Command | Does |
 |---|---|
@@ -132,7 +161,7 @@ these own the methods.
 - **PL/SQL** — JavaDoc `/** */` tags → Markdown via `ploc`/`plsql-md-doc`; see
   `references/plsql-docs.md`.
 
-The Review gate runs a documentation check automatically **only** for doc-worthy changes.
+The Review gate always checks documentation. Doc-worthy changes receive the applicable updates.
 
 ---
 
@@ -187,15 +216,17 @@ Not sure what exists? Run **`zeno-stack/zeno-find-skills`**.
 
 ## 8. Maintaining Zenodotus
 
-**The golden rule:** edit in the repo → `./install.sh` → `git push`. Every machine stays identical.
+Edit source in the repository, verify it, then refresh the installed targets.
 
 ```sh
 cd <path-to-your-clone>
 # ...edit skills/agents/commands/CLAUDE.md/AGENTS.md...
 ./install.sh --target all   # sync ~/.claude and ~/.codex (backs up CLAUDE.md/AGENTS.md, re-registers hooks)
-git add -A && git commit -m "..." && git push
 ```
-Before pushing, run the checks in `CONTRIBUTING.md` (`bash tools/test_install.sh` covers both installers).
+Commits, pushes, PR creation and merges each require explicit user or project authorization.
+Project instructions may permit automatic operations within stated conditions. Zeno can finish
+with a verified working-tree diff when those operations are unauthorized. Run the checks in
+`CONTRIBUTING.md` before authorized delivery (`bash tools/test_install.sh` covers both installers).
 `install.sh` flags: `--target claude|codex|all`, `--help`; anything after `--` goes to `install-codex.sh`.
 Override the destinations with `CLAUDE_HOME` and `CODEX_HOME`.
 After changing skills, **restart the session** — Claude Code caches the skill list at session start,

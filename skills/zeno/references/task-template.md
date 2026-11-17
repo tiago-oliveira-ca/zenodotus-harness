@@ -18,14 +18,15 @@ acceptance criteria>
 - [ ] SUBTASK-<slug> — <one-line goal> → `../subtasks/SUBTASK-<slug>.md`
 
 ## Proof
-<!-- Only present when this Task has no SubTask list — otherwise TDD proof lives on each
-     SubTask card instead, since a decomposed Task is not itself the leaf. One red -> green ->
-     refactor line per behavior. -->
+<!-- Always present: a leaf records detailed RED/GREEN proof; a decomposed Task rolls up its
+     SubTasks' accepted outcomes by reference. New closeouts also use the compact E-id record
+     in zeno/references/evidence-contract.md, binding claim/result to revision/environment/owner.
+     Keep required unavailable checks or reviews blocked, not silently passed. -->
 - <YYYY-MM-DD> <behavior> — RED: <failing behavior> → GREEN: <passing command/result> → REFACTOR: <what, if anything>
 
 ## Decisions
 - <YYYY-MM-DD> <decision + one-line why>   (append-only; newest last)
 
 ## Outcome
-<!-- Optional — written when Status flips to closed. -->
+<!-- Complete when Status flips to closed. -->
 <what shipped, and any follow-ups left open>

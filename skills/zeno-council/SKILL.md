@@ -121,6 +121,11 @@ security, dependencies, operational complexity. Do not converge early.
 
 ## Phase 5 — Debate
 
+For disputed facts or cross-domain ownership, load the sibling `zeno` skill's
+`references/arbitration.md`. The Chief Architect moderates this bounded procedure; inline
+personas are not independent reviewers, and a vote cannot establish a disputed fact or expand
+authorization. Evidence/completion disputes return to `zeno-verify`.
+
 Each role reviews the other options from its specialty (Data: transactions, consistency, ownership;
 SRE: availability, deploy, failure, burden; Security: trust boundaries, authn/z, secrets). The
 Challenger attacks every option. **The Chief Architect does not choose before this finishes.**

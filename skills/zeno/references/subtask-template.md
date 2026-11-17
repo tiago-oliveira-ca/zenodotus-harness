@@ -12,12 +12,13 @@ sitting>
 
 ## Proof
 <!-- SubTask is always a leaf — this section is always present. One red -> green -> refactor
-     line per behavior. -->
+     line per behavior, plus a closeout E-id record from zeno/references/evidence-contract.md
+     binding claim/result to actual observation, revision, environment and owner. -->
 - <YYYY-MM-DD> <behavior> — RED: <failing behavior> → GREEN: <passing command/result> → REFACTOR: <what, if anything>
 
 ## Decisions
 - <YYYY-MM-DD> <decision + one-line why>   (append-only; newest last)
 
 ## Outcome
-<!-- Optional — written when Status flips to closed. -->
+<!-- Complete when Status flips to closed. -->
 <what shipped, and any follow-ups left open>

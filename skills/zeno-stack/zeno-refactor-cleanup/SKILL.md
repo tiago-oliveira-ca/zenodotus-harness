@@ -67,8 +67,9 @@ to catch a bad removal; on code you can't yet explain the purpose of.
 ## Discipline
 
 Work one category at a time, verify after every batch. When a candidate's usage is ambiguous,
-leave it — a false negative costs far less than a bad removal. Every batch gets its own
-descriptive commit; "cleanup" is not a commit message that helps future debugging.
+leave it — a false negative costs far less than a bad removal. Record each verified batch in
+Proof. Commits require explicit user or project authorization under `zeno-stack/zeno-git-workflow`.
+When authorized, give each batch a descriptive commit. Otherwise preserve the working-tree diff.
 
 **Agent counterpart:** `agents/zeno-refactor-cleaner.md` (entry point: `/refactor-clean`) — the spawned standalone dead-code pass over this same doctrine (this skill is its Codex fold home).
 
@@ -78,7 +79,7 @@ descriptive commit; "cleanup" is not a commit message that helps future debuggin
 |---|---|
 | Deleting everything a tool flags in one pass | Bucket by risk, verify individually, remove safest-first in small batches |
 | Trusting static analysis alone for dynamic/string-based usage | Grep for those references explicitly before deleting |
-| One giant "cleanup" commit | One descriptive commit per batch, tests run after each |
+| One giant "cleanup" commit | Small verified batches; descriptive commits when authorized |
 | Removing an ambiguous candidate "to be safe" | Leave it — a false negative costs less than a bad removal |
 | Running this mid-feature-work or pre-deploy | Don't — see "When not to run this" |
 
@@ -87,5 +88,5 @@ descriptive commit; "cleanup" is not a commit message that helps future debuggin
 - [ ] Every candidate individually verified (grep sweep including dynamic references, public-API check).
 - [ ] Removed in small batches, safest category first, tests + build run after each.
 - [ ] Ambiguous candidates left in place, not removed.
-- [ ] Each batch has its own descriptive commit stating what was removed and why it's safe.
+- [ ] Each batch has verification evidence and a descriptive commit when authorized; otherwise the working-tree diff is preserved.
 - [ ] Not run during active feature work, immediately pre-deploy, or on untested/not-yet-understood code.

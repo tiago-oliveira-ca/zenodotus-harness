@@ -27,10 +27,18 @@ python3 tools/check_skills.py
 python3 -m unittest discover -s tools/codex -p 'test_build_codex.py'
 bash tools/codex/test_install_codex.sh
 bash tools/test_install.sh
+python3 -m unittest discover -s tools -p 'test_*.py'
 ```
 
 The same checks run in CI on every pull request, on Ubuntu, macOS and Windows. Keep scripts portable:
 no GNU-only flags, no hard-coded `python3`, and LF line endings (`.gitattributes` enforces them).
+
+New lifecycle closeouts use the existing card's `Proof` section and the E-id record documented in
+`skills/zeno/references/evidence-contract.md`. Keep earlier evidence and explicit supersession;
+do not turn a failed required observation into a pass. Check only the cards you are changing with
+`python3 skills/zeno/scripts/check_lifecycle.py <card> --gate route` or `--gate review`.
+Add `--require-review` when the selected item's domain needs an independent Advisor pass.
+This validates record integrity, not actual execution, freshness, independence or human approval.
 
 ## Maintainers: repository settings
 
@@ -39,6 +47,9 @@ tokens, SHA-pinned actions only, Dependabot, secret scanning and push protection
 and rulesets for `main` and `v*` tags. It is idempotent; run it again after any visibility change.
 
 ## Pull requests
+
+Agent-driven commits, pushes, PR creation and merges require explicit user or project authorization
+for each operation. The checked working-tree diff is a valid review handoff.
 
 Keep one logical change per PR, explain why in the description, and say how you verified it. Commit to a
 branch, not to `main`.

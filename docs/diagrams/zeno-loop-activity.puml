@@ -25,7 +25,7 @@ partition "Gate 1 — Scope" #E8F0FE {
 partition "Gate 2 — Route" #FEF6E0 {
   :Check branch before touching anything\n(git branch --show-current, git status);
   if (on trunk (main/master)\nand task is non-trivial?) then (yes)
-    :Create/switch to a working\nbranch — .zeno/ rides the same diff;
+    :Create/switch to a working branch;\nrespect the project's .zeno/ tracking policy;
   else (no)
   endif
   :Reconcile project.md's State/Next step\nagainst git log & the working tree;
@@ -66,7 +66,12 @@ partition "Gate 3 — Execution (pure implementation loop)" #E6F4EA {
       else (no)
       endif
     endif
-    :commit; log decision to the card;
+    :Record decisions and tested\ncontent snapshot on the card;
+    if (explicit commit authorization\nfrom user or project?) then (yes)
+      :Commit the verified logical change;
+    else (no)
+      :Preserve the working-tree diff;
+    endif
   repeat while (more Tasks/SubTasks\nor more Stories in flight?) is (yes)
   ->no;
 }
@@ -89,9 +94,9 @@ partition "Gate 4 — Review" #FCE8E6 {
   else (no)
   endif
   :Record Proof on the card,\nroll up into project.md;
-  :Flip card Status -> done\n(+ project.md, if top-level item closes);
+  :Flip card Status -> closed\n(+ project.md, if top-level item closes);
   :Append a CHANGELOG.md entry;
-  :Present merge / PR / keep\nto the human;
+  :Report verified work and git state;\npush / PR / merge each require\nexplicit user or project authorization;
 }
 
 stop
@@ -118,9 +123,9 @@ note right
 
   One .zeno/ folder per repo,
   fixed layout: project.md + Epic/
-  Feature/Story cards. Kanban WIP
+  Feature/Story/Task/SubTask cards. Kanban WIP
   limit: 1 item outside Backlog/
-  Done at a time. No agent fleet,
+  Closed at a time. No agent fleet,
   no ad hoc files.
 end note
 
