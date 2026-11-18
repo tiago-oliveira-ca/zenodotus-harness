@@ -2,6 +2,7 @@
 
 import importlib.util
 import os
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -126,6 +127,30 @@ class ReportValidationTests(unittest.TestCase):
             build_codex.main()
 
         self.assertEqual(raised.exception.code, 1)
+
+
+class GeneratedGateOneTests(unittest.TestCase):
+    """Generated Codex Gate 1 guidance must be usable without the Claude registry."""
+
+    def test_generated_zeno_insight_routes_codex_through_skills(self):
+        with tempfile.TemporaryDirectory() as temporary_dir:
+            output = Path(temporary_dir) / "generated"
+            result = subprocess.run(
+                [sys.executable, str(MODULE_PATH), "--out", str(output)],
+                capture_output=True,
+                check=False,
+                text=True,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            text = (output / "skills" / "zeno-insight" / "SKILL.md").read_text(
+                encoding="utf-8"
+            )
+        insight = " ".join(text.split())
+
+        self.assertIn("matching domain-owning skill", insight)
+        self.assertIn("provisional card", insight)
+        self.assertIn("No user question remained", insight)
+        self.assertNotIn("look them up in `agents/REGISTRY.md`", insight)
 
 
 if __name__ == "__main__":

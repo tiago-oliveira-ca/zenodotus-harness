@@ -4,6 +4,17 @@ All notable changes to Zenodotus, newest first. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This repository starts from a single squashed commit,
 so earlier history is not listed.
 
+## 2026-11-18
+
+### Changed
+- `zeno-insight` (Gate 1) opens a provisional card through a bounded Gate 2 bootstrap before its first
+  question round, so every round is saved to a card that exists; Gate 2 moves the log if final sizing
+  picks another tier.
+- Specialist routing in Gate 1 is harness-specific: Claude Code uses `agents/REGISTRY.md`; Codex,
+  which does not install the registry, uses the matching domain-owning skill and its folded guidance.
+- A fully researched scope records `No user question remained — <why>` instead of inventing a
+  question; claiming an empty frontier with an unresolved decision is the red flag now.
+
 ## 2026-11-17
 
 ### Added
