@@ -1,6 +1,6 @@
 # Migrating into `.zeno/`
 
-Two distinct migrations land here, both triggered by `zeno`'s Gate 2 step 5 — a legacy free-form
+Two distinct migrations land here, both triggered by `zeno`'s Gate 2 step 2 — a legacy free-form
 thread predating the backlog format entirely, and the pre-rename `.project/core.md` layout that
 already had the backlog format, just under the old folder/file names. `zeno`'s Gate 2 (Route)
 defines the target layout but not how to get either starting point there — these are that recipe,
