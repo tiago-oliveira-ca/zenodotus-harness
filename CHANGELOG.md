@@ -128,6 +128,12 @@ so earlier history is not listed.
   `expectations`; one prompt claimed settled requirements without giving any; one pasted nothing; two assertions were
   too loose.
 
+## 2026-10-03
+
+### Changed
+- `zeno-skill-stocktake` audits either the Claude tree or the generated Codex tree. Claude is the default; select
+  Codex with `--target codex` or `SKILL_STOCKTAKE_TARGET=codex` (it then reads `$CODEX_HOME/skills`).
+
 ## 2026-09-04
 
 ### Fixed
