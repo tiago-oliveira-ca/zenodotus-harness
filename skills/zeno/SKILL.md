@@ -176,6 +176,8 @@ than the Story would have — it just looks more impressive on disk.
 
 ## Gate 3 — Execution
 
+Before the first edit, run `git branch --show-current` and confirm the working branch is outside the repository’s trunk (`main`, `master`, or its configured default). If on trunk, create a working branch per `zeno-stack/zeno-git-workflow` before editing. Repeat this check when resuming Execution.
+
 By the time Gate 3 opens, planning is done. Gate 1 already framed the domain (DDD); Gate 2 already
 wrote the Story list (FDD) and fully detailed every Story's Acceptance Criteria (ATDD), Scenarios
 (BDD), and Task breakdown. **Gate 3 is a pure implementation loop:** pull the next `[ ]` Task (or
