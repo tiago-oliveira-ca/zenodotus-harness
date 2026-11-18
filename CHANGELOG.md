@@ -7,6 +7,13 @@ so earlier history is not listed.
 ## 2026-11-18
 
 ### Changed
+- `zeno` Gate 2 now classifies every uncommitted path before writing (this card, known work isolated
+  elsewhere, or unknown); unknown or other-thread work moves to a clean worktree or stops for the human.
+- Gate 2 migrates a legacy `THREAD.md` or `.project/` layout before it creates any `.zeno/` state
+  (it was step 5, after state creation; it is now step 2).
+- Gate 2 re-reads `project.md` or the card, plus branch and status, immediately before every write.
+- Installed skills are proved current by comparing content with the source (or a scratch-generated
+  Codex tree), not by file modification time.
 - `zeno-insight` (Gate 1) opens a provisional card through a bounded Gate 2 bootstrap before its first
   question round, so every round is saved to a card that exists; Gate 2 moves the log if final sizing
   picks another tier.

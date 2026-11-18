@@ -96,40 +96,51 @@ code before this gate closes.
 **Gate 2 is the sole writer of `.zeno/project.md`.** Do these in order, every time this gate runs
 — not only at session start:
 
-1. **Check the branch before touching anything.** Run `git branch --show-current` and
-   `git status --short` as this gate's first action, before writing any Scope/card content or
-   editing a product file. If the current branch is the repo's trunk (`main`/`master`/its default)
-   and the task is non-trivial, create/switch to a working branch now, per
-   `zeno-stack/zeno-git-workflow`. Keep tracked lifecycle records on the working branch and
-   preserve local records when the project ignores `.zeno/`. This
-   closes a gap that recurred three separate times in this repo's own history (a rule stated only
-   in Gate 3's prose and Gate 4's pre-flight checklist was skipped through all of Execution each
-   time, because nothing forced the check at the point the risk was introduced — see
+1. **Check the branch and classify the worktree before touching anything.** Run
+   `git branch --show-current` and `git status --short` as this gate's first action, before writing
+   any Scope/card content or editing a product file. If the current branch is the repo's trunk
+   (`main`/`master`/its default) and the task is non-trivial, create/switch to a working branch now,
+   per `zeno-stack/zeno-git-workflow`. Then **classify every dirty path**: it belongs to the active
+   card, it is known work already isolated elsewhere (another worktree or branch), or it is unknown.
+   Never write beside unknown or another thread's changes — move this work to a clean worktree or
+   stop for the human to reconcile. A clean branch name does not prove a clean tree. Keep tracked
+   lifecycle records on the working branch and preserve local records when the project ignores
+   `.zeno/`. This closes a gap that recurred three separate times in this repo's own history (a rule
+   stated only in Gate 3's prose and Gate 4's pre-flight checklist was skipped through all of
+   Execution each time, because nothing forced the check at the point the risk was introduced — see
    `~/.claude/skill-observations/log.md` Observations 34/38/41).
-2. **Reconcile against reality.** Check `git log` / the working tree against `project.md`'s State and
-   Next step so a stale line doesn't send you redoing finished work or silently overwriting a
-   change that landed outside this thread (a concurrent session, a merge since `project.md` was last
-   read). Do this whenever Gate 2 is touched, including mid-session — not only when resuming a
-   thread from cold.
-3. **Confirm the installed skill copy is current.** In a session that has already spanned multiple
-   Feature/Story cycles, check whether the installed copy of `zeno` (or any zeno method skill in
-   active use) has changed since it was loaded — its file mtime is enough of a signal. If it has,
-   flag the drift to the human rather than continuing on a stale copy of the methodology; which
-   way to resolve it (re-read now, retrofit in-flight work, or accept the gap) is the human's call.
+2. **Migrate a legacy thread or an old `.project/core.md` layout before creating any new state.**
+   If the repo's thread predates this layout (a single `THREAD.md` or similar), run
+   `references/migration.md`'s THREAD.md recipe to completion — through deleting the legacy file —
+   rather than inventing a mapping or leaving it in place. If the repo instead already has the
+   pre-rename `.project/core.md` layout, run `references/migration.md`'s rename recipe instead — a
+   mechanical `git mv`, not a content migration, since the five-card-type model itself didn't
+   change. Either way, finish before step 4 creates or updates `.zeno/` state: two durable threads
+   for one piece of work is already drift. A `start` that returns with either the legacy thread or
+   the old `.project/` layout still on disk hasn't finished Gate 2.
+3. **Reconcile against reality, then re-read before every write.** Check `git log` / the working
+   tree against `project.md`'s State and Next step so a stale line doesn't send you redoing finished
+   work or silently overwriting a change that landed outside this thread (a concurrent session, a
+   merge since `project.md` was last read). Immediately before every `project.md` or card write,
+   re-read that file plus `git branch --show-current` and `git status --short`. If the branch, the
+   active item or the dirty-path classification changed since your last read, do not overwrite:
+   repeat steps 1-3, and reconcile with the human when the right update is no longer clear.
+   Do this whenever Gate 2 is touched, including mid-session — not only when resuming from cold.
 4. **Ensure a repo-root `./.zeno/` folder exists** — create `project.md` from
    `references/project-template.md` if absent — then write Gate 1's Scope into the right card and
    refresh `project.md`'s **Updated** date. Keep **State** (≤5 lines, overwritten) and **Next step**
    (≤3 lines) live as you work — they make cross-session resume cheap, and only while they stay
    small (see *Board budget* below). One `.zeno/` folder per repo, at the root. Follow the project's
    tracking policy for `.zeno/`; respect `.gitignore` and the git authorization boundary.
-5. **Migrate a legacy thread or an old `.project/core.md` layout, if either exists.** If the
-   repo's thread predates this layout (a single `THREAD.md` or similar), run
-   `references/migration.md`'s THREAD.md recipe to completion — through deleting the legacy file —
-   rather than inventing a mapping or leaving it in place. If the repo instead already has the
-   pre-rename `.project/core.md` layout, run `references/migration.md`'s rename recipe instead — a
-   mechanical `git mv`, not a content migration, since the five-card-type model itself didn't
-   change. A `start` that returns with either the legacy thread or the old `.project/` layout still
-   on disk hasn't finished Gate 2.
+5. **Verify the installed methodology against source, not mtime.** In a session that has already
+   spanned multiple Feature/Story cycles, compare the installed copy of `zeno` (and any zeno method
+   skill in active use) with the source it should match: for Claude Code, diff the installed
+   `~/.claude/skills/` tree against the repo's `skills/`; for Codex, generate a scratch tree with
+   `python tools/codex/build_codex.py --out <scratch>` and diff its `skills/` against
+   `~/.codex/skills/`. A changed mtime may trigger the check, but it is never proof of currency
+   either way. If the content differs, flag the drift to the human rather than continuing on a stale
+   copy of the methodology; which way to resolve it (re-sync and re-read now, retrofit in-flight
+   work, or accept the gap) is the human's call.
 6. **Fully plan the Story/Task backlog before this gate closes — no planning is left for Gate 3.**
    For Feature-tier work: run **`zeno-workflow`**'s `zeno-fdd` to write the Feature's complete
    ordered Story list. Then, for **every** Story on that list — not just the next one — run
@@ -409,7 +420,10 @@ pointer line. Budgets bound only `project.md`; cards keep full upfront planning 
 | Treating Review success as git authorization | Check explicit user or project authorization separately for commit, push, PR and merge |
 | Committing to satisfy a clean-tree rule | Preserve the verified working-tree diff and hand it off when commits are unauthorized |
 | Writing Scope/card content or a product-file edit before checking the branch | Gate 2 step 1: `git branch --show-current` + `git status --short`, first action, every time |
-| Following a long session's original read of `zeno` without rechecking | Gate 2 step 3: check the installed copy's currency once a session spans several cycles |
+| Writing beside dirty paths whose owner is unclear | Gate 2 step 1: classify every dirty path; isolate known work in a clean worktree or stop on unknown work |
+| Creating `.zeno/` state while a legacy thread or `.project/` layout still exists | Gate 2 step 2: migrate first, so one durable thread represents the work |
+| Writing `project.md` or a card from an earlier read | Gate 2 step 3: re-read the file plus branch/status immediately before each write |
+| Following a long session's original read of `zeno` without rechecking | Gate 2 step 5: compare installed content with source (or a scratch-generated Codex tree), not mtime |
 | Archiving a card on the human's word alone that it merged | Verify with a real command (`gh pr view`/`git log`) first — see Gate 4 |
 
 ## Rationalizations — Excuse | Reality-check
@@ -426,7 +440,10 @@ pointer line. Budgets bound only `project.md`; cards keep full upfront planning 
 | "The tests passed, so I can commit and open a PR" | Tests establish behavior. Each git operation still needs explicit user or project authorization |
 | "The project allows commits, so it allows merges too" | Authorization is scoped to its named operation and conditions |
 | "I'll create the branch once I'm ready to commit" | Three past incidents (Obs 34/38/41) show this always slips past a full Execution pass — check the branch as Gate 2's first action, not before commit |
-| "I already know this skill, no need to recheck it" | A long session can outlive the copy it loaded — Gate 2 step 3 exists for exactly the session that's run long enough to make that assumption wrong |
+| "I already know this skill, no need to recheck it" | A long session can outlive the copy it loaded — Gate 2 step 5 exists for exactly the session that's run long enough to make that assumption wrong |
+| "Those dirty files probably belong to this task" | "Probably" is how threads get mixed; classify every path or isolate the worktree before writing |
+| "I read `project.md` earlier, so this write is safe" | A concurrent session or merge can invalidate that read; re-read immediately before every write |
+| "The mtime looks unchanged, so the installed skill is current" | Mtime proves neither source parity nor generated-target parity; compare the content |
 
 ## Red flags — stop, you're bypassing the loop
 
@@ -447,14 +464,18 @@ pointer line. Budgets bound only `project.md`; cards keep full upfront planning 
 - You're about to say "done" on a diff in a registry-covered domain without an independent pass.
 - You're about to say "done" on a code change whose lint/format/typecheck gates never ran.
 - You're about to write Scope/card content or edit a product file and haven't run `git branch --show-current` this gate.
-- A session has spanned several Feature/Story cycles and you haven't rechecked the installed skill copy for drift.
+- `git status --short` lists a path you haven't classified, and you're about to write beside it.
+- A legacy thread or `.project/` layout exists and you're about to create or update `.zeno/` state.
+- You're writing `project.md` or a card without re-reading it (and branch/status) just before.
+- A session has spanned several Feature/Story cycles and you haven't compared the installed skill content with its source.
 
 ## Pre-flight checklist — run before delivering any zeno cycle
 
 - [ ] `zeno-council` ran first at Scope (Lite line or Full rounds logged on the card), then Scope captured via `zeno-insight` (Problem / Approach / Done) before any code, on the right card.
-- [ ] Gate 2 step 1 ran first: `git branch --show-current` + `git status --short` checked before any Scope/card content or file edit; branched off trunk if needed.
-- [ ] Gate 2 step 2 ran: `project.md` reconciled against `git log`/the working tree this gate, not assumed current from an earlier read.
-- [ ] Gate 2 step 3 ran, if the session has spanned multiple cycles: installed skill copy checked for drift.
+- [ ] Gate 2 step 1 ran first: `git branch --show-current` + `git status --short` checked before any Scope/card content or file edit; branched off trunk if needed; every dirty path classified, unknown work isolated or escalated.
+- [ ] Gate 2 step 2 ran: any legacy thread or `.project/` layout migrated before `.zeno/` state was created or updated.
+- [ ] Gate 2 step 3 ran: `project.md` reconciled against `git log`/the working tree this gate, and each `project.md`/card write was preceded by a fresh re-read.
+- [ ] Gate 2 step 5 ran, if the session has spanned multiple cycles: installed skill content compared with source (or a scratch-generated Codex tree), not mtime.
 - [ ] `./.zeno/project.md` exists at the repo root; Goal + State + Next step filled.
 - [ ] The task was sized correctly (trivial / ad hoc Story / Feature+Story-list / Epic) — smallest tier that fits, climbed only on named evidence, with the chosen tier and its one-line evidence recorded on the card; and a Story too big for one sitting was broken into its own Task list (and a Task list into SubTasks, if still too big).
 - [ ] Gate 1 ran DDD for Feature-tier work (and enumerated Features for Epic-tier work); Gate 2 ran FDD + ATDD + BDD + Task breakdown for every Story before Gate 3 began, each Story's Task list ending in a documentation Task; Gate 3 looped TDD over every Task in order; bugs diagnosed via `zeno-debug`; Proof identifies the tested commit or working-tree snapshot, and every git mutation has explicit authorization.
