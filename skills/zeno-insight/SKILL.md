@@ -22,6 +22,11 @@ become expensive rework.
 off on the design and it is captured on the right card under `.zeno/docs/`. "Obviously simple"
 does not exempt a task — simple tasks are where unstated assumptions hide.
 
+**Specialist routing is harness-specific.** Where `agents/REGISTRY.md` is installed (the Claude
+Code target), it is the specialist table. Where it is not installed (Codex), use the matching
+domain-owning skill and the specialist guidance folded into it. Below, *specialist route* means
+whichever of the two the current harness has — never send Codex to a registry it does not install.
+
 ## The gate (do these in order)
 
 0. **The council has already run.** `zeno-council` opens Scope before this gate. Read the active
@@ -32,7 +37,13 @@ does not exempt a task — simple tasks are where unstated assumptions hide.
    before proposing anything — prefer codemaps / `graphify query` to map the affected area over blind
    file-reading when they're available (`zeno/references/impact-analysis.md`). Never design in a
    vacuum when a codebase exists.
-2. **Ask the current frontier, one round at a time — and persist it.** Track clarifying questions
+2. **Open a provisional card, then ask the current frontier one round at a time — and persist it.**
+   Before the first round, pick the smallest card tier that plausibly fits (usually an ad hoc
+   Story) and run a bounded Gate 2 bootstrap: its branch check plus creation of that one
+   provisional card, with its Scope marked provisional. That card's Decisions log receives every
+   round from the first one on. If step 3's sizing lands on a different tier, Gate 2 creates the
+   right card and moves the logged Decisions to it before Execution; the bootstrap is Route setup,
+   not permission to implement. Track clarifying questions
    as a design tree — every decision branches into the decisions that hang off it. A question is
    *frontier* once its prerequisites are settled; a question still blocked on an unsettled
    prerequisite (including a still-running exploration) waits for a later round — it is not asked
@@ -40,7 +51,7 @@ does not exempt a task — simple tasks are where unstated assumptions hide.
    question together (most rounds surface one; a wide tree surfaces several), each formatted as
    `❓ Q<#> - <title>: <body>` with a `➡️ <recommended answer>` line, so the user can accept the
    default instead of composing an answer. Prefer concrete choices over open prompts. As each round
-   closes, append its questions and resolutions to the active card's Decisions log immediately —
+   closes, append its questions and resolutions to the provisional card's Decisions log immediately —
    not batched until gate-exit — so the tree's state survives a compaction or a session break
    mid-gate; the card, not the conversation, is the durable copy of the tree.
 
@@ -60,14 +71,17 @@ does not exempt a task — simple tasks are where unstated assumptions hide.
    noted inline and move on, reserving full rounds for branches whose answer actually changes the
    design.
    **Finding facts is your job, never the user's:** before asking anything the environment could
-   answer, look it up, in this order — a repo read; then, if the domain has one, the matching
-   specialist from **`agents/REGISTRY.md`** (the same table step 4 draws from — check it here too,
-   not only at specialist-selection time); a running exploration (`Explore` or otherwise) for
-   anything with no registry match; and when the frontier question concerns shared/public surface,
+   answer, look it up, in this order — a repo read; then, if the domain has one, the **specialist
+   route** (the same route step 4 draws from — check it here too, not only at specialist-selection
+   time); a running exploration (`Explore` or otherwise) for anything with no specialist-route
+   match; and when the frontier question concerns shared/public surface,
    that self-service research **is** the impact-analysis pass (`zeno/references/impact-analysis.md`),
    not a separate later step. Dispatch this non-blockingly and keep asking the round's other
    unblocked questions while it runs; only the questions downstream of that research wait for the
    next round.
+   **If research settles every decision, do not invent a question.** Record `No user question
+   remained — <facts checked and why they settle the design>` in the card's Decisions log, then
+   continue through the remaining steps. An empty frontier is a recorded outcome, not a skipped step.
 3. **Check the scope, and size the card.** If the request bundles several independent subsystems,
    stop and split it into separate efforts. A root frontier that already spans several independent,
    unrelated branches (step 2) is itself sizing evidence, not just a subsystem count — treat it as a
@@ -83,15 +97,16 @@ does not exempt a task — simple tasks are where unstated assumptions hide.
    **`zeno-workflow`**'s `zeno-ddd` then `zeno-fdd` stages to decompose it into a Story list;
    genuinely epic-sized work spanning multiple Features gets an Epic card first.
    Don't try to design it all at once.
-4. **Identify domains, select specialists.** (A distinct `agents/REGISTRY.md` lookup from step 2's
-   research check — step 2 uses the registry to find facts you'd otherwise have to ask the user;
+4. **Identify domains, select specialists.** (A distinct specialist-route lookup from step 2's
+   research check — step 2 uses the route to find facts you'd otherwise have to ask the user;
    this step uses it to select who implements.) Name the technology/practice domain(s) the work
-   actually touches, look them up in `agents/REGISTRY.md`, and select the **minimum sufficient**
-   specialist(s) — not every agent whose domain is tangentially related. This is bounded,
-   table-driven selection (the registry's sanctioned mechanism), distinct from spawning an ad hoc
-   agent outside it. A one-file bugfix may need none; a cross-cutting change may need two or three.
-   Record the selection on the card alongside the Scope lines so Execution and Review know who to
-   consult without re-deriving it.
+   actually touches and select the **minimum sufficient** guidance through the specialist route:
+   registry specialist(s) where `agents/REGISTRY.md` is installed, or the matching domain-owning
+   skill and its folded guidance where it is not — not everything whose domain is tangentially
+   related. This is bounded, table-driven selection, distinct from spawning an ad hoc agent. A
+   one-file bugfix may need none; a cross-cutting change may need two or three. Record the
+   selection on the card alongside the Scope lines so Execution and Review know who to consult
+   without re-deriving it.
 5. **Propose 2-3 approaches.** For anything non-obvious, lay out options with trade-offs, leading with
    your recommendation and why. One option is not a choice. Architecture-level choices (boundaries,
    data ownership, deployment, integration style) come from the council's Full recommendation on the
@@ -162,6 +177,7 @@ skill or a sibling installed skill. Keep repository-only authoring checks in mai
 | Asking the user something the repo or a research subagent could answer | Self-service research first, dispatched non-blockingly — ask only what the environment can't tell you |
 | Treating impact analysis as a separate step from frontier research | A frontier question on shared/public surface *is* an impact-analysis lookup — run it as the self-service research |
 | Keeping the frontier only in conversation memory | Log each round's questions + resolutions to the card as it closes, not batched until gate-exit |
+| Asking or closing a round before any card exists | Run the bounded Gate 2 bootstrap first, then log each round to that provisional card |
 | Presenting a single approach as the plan | Offer 2-3 options with trade-offs + a recommendation |
 | One giant design wall, take-it-or-leave-it | Section-by-section, approval checkpoint on each |
 | Designing several subsystems at once | Decompose; hand large single efforts to `zeno-workflow`'s `zeno-ddd`/`zeno-fdd` |
@@ -169,7 +185,7 @@ skill or a sibling installed skill. Keep repository-only authoring checks in mai
 | Requesting approval again for an already-authorized design | Reuse the recorded approval within its scope |
 | Adding preparation Tasks while the accepted behavior stays unproven | Return to Scope and compare a smaller proof, deferral or revised approach |
 | Dropping a decision raised in the dialogue | Every decision → Decisions log (resolved or `[deferred]`) |
-| Invoking every agent whose domain sounds relevant | Select the minimum sufficient specialist(s) from `agents/REGISTRY.md` |
+| Invoking every agent whose domain sounds relevant | Select the minimum sufficient guidance through the specialist route |
 | Grinding through 6+ rounds on a Story-tier card | A long frontier is sizing evidence — revisit step 3, consider Feature tier |
 | Opening a Feature/Epic card after a 1-2 round frontier over one or two files | The signal runs both ways — a short frontier is evidence the work is Story-tier; size down, name the tier's evidence on the card |
 
@@ -182,24 +198,25 @@ skill or a sibling installed skill. Keep repository-only authoring checks in mai
 | "The user clearly wants me to just start" | Check the recorded authorization and resolve any remaining design decision before implementation |
 | "One more preparation Task will make the plan ready" | Repeated preparation without accepted behavior needs a Scope decision before further expansion |
 | "I'll remember that open question" | Unwritten decisions vanish on compaction; log it |
-| "I don't need to check the registry, I know which agent fits" | Check `agents/REGISTRY.md` anyway — it's the record of what's minimum-sufficient, not a formality |
+| "I don't need to check the registry, I know which agent fits" | Use the specialist route anyway — it's the record of what's minimum-sufficient, not a formality |
+| "No question means I skipped Scope" | If research resolved every decision, record why the frontier is empty; never invent a ceremonial question |
 | "This paper's finding needs a new skill" | Fit-search existing skills first; extend one over authoring a new skill by default |
 | "I'll just ask instead of checking the code, it's faster" | Finding facts is your job, never the user's — a wrong guess costs a round-trip either way |
 | "I'll ask everything in the tree now so I don't forget" | Later branches are blocked on unsettled prerequisites; asking early just produces guesses — wait for their round |
 | "I'll write the whole tree to the card at the end" | A round can end mid-compaction; log each round as it closes, not only at gate-exit |
-| "I already checked the registry at step 4, no need to re-check for research" | Step 4 selects who *implements*; step 2's research check is separate and comes first, per question |
+| "I already checked the specialist route at step 4, no need to re-check for research" | Step 4 selects who *implements*; step 2's research check is separate and comes first, per question |
 | "I'm almost through the tree, no need to re-size now" | Round count past ~4-5 is itself the signal step 3 asks you to watch for — re-check tier, don't just push through |
 
 ## Red flags — stop before you leave Scope
 
 - You're reaching for the editor before the design is approved.
-- You've asked zero clarifying questions on a non-trivial request.
+- You're claiming the frontier is empty while a user decision is still unresolved, or with no `No user question remained` entry on the card.
 - A "Done looks like" deliverable has no home in your design.
 - A decision came up in the dialogue and isn't written down.
-- You've moved to proposing approaches without naming the domain(s) touched or checking `agents/REGISTRY.md`.
+- You've moved to proposing approaches without naming the domain(s) touched or checking the specialist route.
 - You're asking a question the codebase or a dispatched subagent could answer instead.
 - You're about to ask a question whose prerequisite is still an unsettled, unopened branch.
-- A round just closed and its questions/resolutions aren't on the card yet.
+- A round is starting with no provisional card, or just closed and its questions/resolutions aren't on the card yet.
 - A frontier question touches shared/public surface and you haven't run impact analysis on it.
 - Preparation keeps expanding while no accepted observable behavior has been demonstrated.
 
@@ -208,10 +225,10 @@ skill or a sibling installed skill. Keep repository-only authoring checks in mai
 - [ ] `zeno-council` ran first (Lite line or Full rounds on the card) and its log was read before any question was asked.
 - [ ] Existing code/context explored before any approach was proposed.
 - [ ] Clarifying questions asked by frontier round — never the whole tree at once, never blocked on an unsettled prerequisite — focused on purpose / constraints / success.
-- [ ] No question asked that self-service research (repo read, `agents/REGISTRY.md` specialist, or a dispatched exploration) could have answered instead; shared/public-surface questions had impact analysis run as that research.
-- [ ] Each round's questions and resolutions were appended to the card's Decisions log as the round closed, not held until gate-exit.
+- [ ] No question asked that self-service research (repo read, specialist route, or a dispatched exploration) could have answered instead; shared/public-surface questions had impact analysis run as that research.
+- [ ] A provisional card existed before the first round, and each round's questions and resolutions were appended to its Decisions log as the round closed, not held until gate-exit; an empty frontier was recorded with its reason.
 - [ ] Multi-subsystem requests decomposed; large single efforts handed to `zeno-workflow`'s `zeno-ddd`/`zeno-fdd`.
-- [ ] Domains identified and the minimum sufficient specialist(s) selected from `agents/REGISTRY.md` (or none, if the work needs none).
+- [ ] Domains identified and the minimum sufficient specialist(s) selected through the specialist route (or none, if the work needs none).
 - [ ] 2-3 approaches offered with trade-offs and a clear recommendation.
 - [ ] Design presented in sections, each approved; explicit sign-off obtained before code.
 - [ ] Existing approval was reused within its scope, and any new approval request addresses a material unresolved decision.

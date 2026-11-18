@@ -71,7 +71,9 @@ sign-off before code. When the change touches shared/public surface, **map the a
 (codemaps / `graphify` when present, else grep) so the design accounts for what it touches — see
 `references/impact-analysis.md`. Size the request to a card tier — ad hoc Story, Feature, or Epic
 (see Gate 2's sizing ladder) — then identify which domain(s) the work touches and select the
-minimum sufficient specialist(s) from **`agents/REGISTRY.md`** (often none, for small work).
+minimum sufficient specialist(s) through the harness's specialist route: **`agents/REGISTRY.md`**
+where it is installed, or the matching domain-owning skill and its folded guidance where it is not
+(often none, for small work).
 Capture the outcome as the three Scope lines — **Problem / Approach / Done looks like** — on that
 card.
 
