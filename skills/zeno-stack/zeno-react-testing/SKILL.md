@@ -253,6 +253,8 @@ prop signature, write the simplest test first, confirm it fails for the right re
 implement just enough to pass, add the next case, and refactor once a third similar test
 reveals a pattern worth extracting.
 
+**Pruning existing tests** (deciding which tests guard no behavior and should be rewritten or deleted) belongs to `zeno-stack/zeno-test-prune`; it routes rewrites back here.
+
 ## Anti-pattern quick reference
 
 | Anti-pattern | Instead |

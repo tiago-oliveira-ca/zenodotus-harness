@@ -197,12 +197,12 @@ graph it falls back to grep and costs nothing. See `skills/zeno/references/impac
 - **Stack/domain coverage:** `zeno-stack` — React, Python/FastAPI, Postgres, Redis, Docker, K8s,
   deployment, accessibility, security review, git/GitHub workflow, Jira backlog structure review,
   implementation guardrails (stops new services, destructive migrations and breaking API changes), context
-  compaction (what to keep when you `/compact` or hand off) — 48 `zeno-<name>` leaves, one each.
+  compaction (what to keep when you `/compact` or hand off) — 50 `zeno-<name>` leaves, one each.
 - **Diagrams:** `puml-diagrams`. **Architecture staging:** `software-architecture-progression`.
 - **Harness upkeep:** `zeno-stack/zeno-config-gc`, `zeno-stack/zeno-context-budget`,
   `zeno-stack/zeno-skill-stocktake`, `zeno-stack/zeno-skill-comply`, `zeno-stack/zeno-find-skills`.
-- **Dev commands** (23, all zeno-owned original content): `pr`, `quality-gate`, `python-review`,
-  `react-review`/`react-build`/`react-test`, `fastapi-review`, `refactor-clean`, `test-coverage`,
+- **Dev commands** (25, all zeno-owned original content): `pr`, `quality-gate`, `python-review`,
+  `react-review`/`react-build`/`react-test`, `fastapi-review`, `refactor-clean`, `untangle`, `prune-tests`, `test-coverage`,
   `build-fix`, `security-scan`, `update-docs`/`update-codemaps`, `harness-audit`, `checkpoint`,
   `save-session`/`resume-session`, `sessions`, `cost-report`, `model-route`, …
 - **Dev agents** (24, all `zeno-` prefixed): bounded-domain specialists — reviewers/resolvers/

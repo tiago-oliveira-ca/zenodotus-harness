@@ -62,6 +62,9 @@ src/utils/validation.ts 32%    82%
 Overall:               67%     84%  PASS:
 ```
 
+Coverage counts lines that ran, not behavior that's guarded. If the suite already has tests that
+can't fail, recommend `/prune-tests` for them rather than adding more beside them.
+
 ## Where to focus
 
 - Functions with heavy branching (high cyclomatic complexity)

@@ -116,6 +116,10 @@ Review the actual diff, not your memory of what you intended, severity-gated:
 No performative agreement. "You're absolutely right!" or "Perfect!" before you've actually
 re-checked the code masks whether evaluation happened. Verify against the real code, then speak.
 
+If the diff adds one more special case to code that already has several (an `if` for one id, a
+flag only one caller passes, a sleep), log it as Important and suggest `/untangle` for that area
+to the user. It runs only when they start it; don't open it from Review.
+
 **Independent review, where a specialist applies.** Self-review catches what the same agent that
 wrote the diff can see — which is not nothing, but it is not independent. If the diff falls inside
 a domain covered by `agents/REGISTRY.md` (a language, a framework, security-sensitive surface) with

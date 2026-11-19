@@ -6,6 +6,24 @@ so earlier history is not listed.
 
 ## 2026-11-18
 
+### Added
+- `zeno-stack/zeno-test-prune` and `/prune-tests`: keep a test only if it can fail when intended
+  behavior breaks. Each test is classified by what it depends on (behavior, the past, nothing, the
+  implementation, a duplicate); every delete is preceded by a mutation check; behavior that loses
+  its only guard is re-covered first; production code that existed only for deleted tests goes too.
+- `zeno-stack/zeno-untangle` and `/untangle` (runs only when you call it): a read-only inventory of
+  an area's coupling (hidden links, needless links, surplus) and special cases on a Feature card,
+  then clusters where one change removes several findings, one Story per cluster through the zeno
+  gates with behavior pinned by tests first, and an independent re-inventory against a written stop
+  rubric. `zeno-refactor-cleanup` and the testing leaves point to the new leaves.
+- Both leaves fit the zeno gates. `zeno-tdd` has a behavior-preserving Task variant (a pin test's
+  RED is a deliberate break, then a revert) and treats a mutation-checked `zeno-test-prune` delete as
+  pruning, not weakening. The Feature template has an optional `## Findings` table for the untangle
+  inventory. `zeno-untangle` states WIP 1, Feature or Epic sizing, when the council goes Full, the
+  `BREAKING API CHANGE` tripwire, and how re-inventory findings reopen Gate 2. Both commands open
+  the zeno loop first. `zeno-debug` and `zeno-verify` suggest `/untangle`; `zeno-pr-test-analyzer`
+  and `/test-coverage` suggest `/prune-tests`.
+
 ### Changed
 - `zeno` Gate 2 now classifies every uncommitted path before writing (this card, known work isolated
   elsewhere, or unknown); unknown or other-thread work moves to a clean worktree or stops for the human.

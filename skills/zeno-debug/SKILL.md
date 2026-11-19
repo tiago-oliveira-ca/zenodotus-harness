@@ -67,6 +67,9 @@ If every fix reveals a new failure somewhere else — you fix A and B breaks, yo
 **stop patching.** That cascade means the design is wrong, not that you have many small bugs. Escalate
 to Scope (`zeno-insight`): the structure needs rethinking, not another patch.
 
+If the root cause is a pile of special cases, or a hidden link between pieces that must change
+together, suggest `/untangle` for that area to the user. It runs only when they start it.
+
 ## Anti-pattern quick reference
 
 | Anti-pattern | Instead |

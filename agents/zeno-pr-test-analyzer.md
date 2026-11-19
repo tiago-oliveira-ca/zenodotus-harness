@@ -41,7 +41,8 @@ touches (external service, database, queue, another module).
 **Watch for tests that will lie under refactor.** Shared mutable fixtures, order-dependent
 assertions, sleeps or timing hacks, and mocks so broad they'd pass even if the real
 implementation were deleted — these erode trust in the suite even when they're green today.
-Flag them alongside the coverage gaps.
+Flag them alongside the coverage gaps. Tests that guard nothing or restate the implementation go
+in the report as candidates for `/prune-tests` (`zeno-stack/zeno-test-prune`), not as gaps.
 
 `zeno-tdd-guide` watches for this same taxonomy — the difference is timing, not the list: this
 agent audits it review-time, against tests already sitting in an open PR; that agent enforces it
