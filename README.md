@@ -95,7 +95,7 @@ live in `skills/zeno/references/arbitration.md` and `evidence-contract.md`.
 
 - **The zeno spine and methods** — `zeno`, `zeno-council`, `zeno-insight`, `zeno-workflow` (DDD → FDD → ATDD → BDD →
   TDD across gates), `zeno-debug`, `zeno-verify`.
-- **`zeno-stack`** — 48 leaves, one per technology or domain: React, Postgres, Redis, Docker, Kubernetes, deployment,
+- **`zeno-stack`** — 50 leaves, one per technology or domain: React, Postgres, Redis, Docker, Kubernetes, deployment,
   testing execution, accessibility, security review, git and GitHub workflow, Jira backlog structure review,
   implementation guardrails, context compaction, and the harness's own maintenance skills.
 - **Other dispatchers** — `code-standards` (per-language), `documentation` (BRD → PRD → … → ADR), `testing`
@@ -104,7 +104,7 @@ live in `skills/zeno/references/arbitration.md` and `evidence-contract.md`.
   `graphify`, `documenting-code` (+ `/docs-drift`).
 - **24 agents** — bounded-domain specialists with explicit contracts, selected through `agents/REGISTRY.md` at
   Scope and Review.
-- **23 commands** — `/zeno`, `/docs-drift`, `/skill-evals`, plus dev and session tooling.
+- **25 commands** — `/zeno`, `/docs-drift`, `/skill-evals`, plus dev and session tooling.
 - **Hooks** — `zeno-session-start.sh` keeps the loop always-on and notes when a `.zeno/` thread exists
   (it injects no file text); `zeno-cost-tracker.sh` (Claude Code only) logs session cost to
   `~/.claude/metrics/costs.jsonl` for `/cost-report`.

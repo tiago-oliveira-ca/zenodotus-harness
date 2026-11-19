@@ -253,6 +253,8 @@ jobs:
 Run E2E against a staging URL, upload the HTML report `if: always()` (failures are exactly
 when you need it), and keep retention short — these reports are for triage, not audit.
 
+**Pruning existing tests** (deciding which tests guard no behavior and should be rewritten or deleted) belongs to `zeno-stack/zeno-test-prune`; it routes rewrites back here.
+
 ## Anti-pattern quick reference
 
 | Anti-pattern | Instead |

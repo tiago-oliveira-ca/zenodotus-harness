@@ -19,7 +19,7 @@ closer.
 |---|---|---|
 | `~/.claude/skills/` | re-derive via `find` | top-level dirs + `_skill-template.md` |
 | `~/.claude/agents/` | 24 | + `_agent-template.md` and `REGISTRY.md` (reference files, not agents) |
-| `~/.claude/commands/` | 23 | |
+| `~/.claude/commands/` | 25 | |
 | `~/.claude/hooks/` | 2 | `zeno-session-start.sh` (SessionStart), `zeno-cost-tracker.sh` (Stop) |
 | plugins | re-derive via `claude plugin list` | the author runs about 25; enable state is app-held and drifts — don't trust a hand-typed split |
 

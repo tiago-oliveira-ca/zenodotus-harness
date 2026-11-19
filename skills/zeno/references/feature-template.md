@@ -29,6 +29,14 @@ belongs on a Story card (zeno's sizing ladder, burden of proof).>
 - **Aggregate(s) and root(s):** <where transactional consistency sits; cross-aggregate refs by ID only>
 - **Context Map relationship:** <pattern to a neighboring context, if this one talks to another — omit if none>
 
+## Findings
+<!-- Optional — only for an inventory-first Feature (zeno-stack/zeno-untangle). Delete otherwise.
+     One row per finding; Cluster is filled in at redesign and names the Story that removes it.
+     Open findings stay here with their reason and owner. Table rows, not checkboxes. -->
+| ID | Kind | Location | Evidence | Suspected requirement | Cluster |
+|---|---|---|---|---|---|
+| F1 | <hidden link / needless link / surplus / special case> | <path:line> | <graph, co-change, blame, grep> | <special cases only> | <STORY-slug, open, or —> |
+
 ## Story list (FDD)
 <!-- Ordered, each step sized to one Story (one ATDD -> BDD pass, then broken into its own Task
      list for TDD) — written by FDD, then every Story on this list gets its own full ATDD/BDD/Task

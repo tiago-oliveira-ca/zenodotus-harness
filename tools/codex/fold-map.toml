@@ -281,6 +281,18 @@ target = "skills/zeno-stack/zeno-react-testing/SKILL.md"
 section_title = "TDD workflow invocation (folded from commands/react-test.md)"
 
 [[commands]]
+name = "prune-tests"
+kind = "fold"
+target = "skills/zeno-stack/zeno-test-prune/SKILL.md"
+section_title = "Invocation (folded from commands/prune-tests.md)"
+
+[[commands]]
+name = "untangle"
+kind = "fold"
+target = "skills/zeno-stack/zeno-untangle/SKILL.md"
+section_title = "Invocation (folded from commands/untangle.md)"
+
+[[commands]]
 name = "refactor-clean"
 kind = "fold"
 target = "skills/zeno-stack/zeno-refactor-cleanup/SKILL.md"

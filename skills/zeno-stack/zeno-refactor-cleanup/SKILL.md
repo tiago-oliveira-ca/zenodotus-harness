@@ -73,6 +73,8 @@ When authorized, give each batch a descriptive commit. Otherwise preserve the wo
 
 **Agent counterpart:** `agents/zeno-refactor-cleaner.md` (entry point: `/refactor-clean`) — the spawned standalone dead-code pass over this same doctrine (this skill is its Codex fold home).
 
+**Structural coupling and special cases** (hidden or needless links between modules, one-off `if`s, flags and workarounds) are `zeno-stack/zeno-untangle`'s job; it hands its dead-code surplus findings here.
+
 ## Anti-pattern quick reference
 
 | Anti-pattern | Instead |

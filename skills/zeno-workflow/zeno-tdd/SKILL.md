@@ -97,6 +97,21 @@ see `references/tdd-concepts.md`.
    behavior and staying green throughout.
 6. **Repeat** for the next behavior.
 
+### Behavior-preserving Tasks (refactors, untangle clusters)
+
+When a Task must change structure without changing behavior (a `zeno-stack/zeno-untangle`
+cluster, or any refactor Story), the behavior already exists, so the pin test passes on first
+run. That's expected here, but it doesn't count as RED yet:
+
+1. **RED** — write the pin test against current behavior, then make a deliberate break in the
+   code it pins (invert a condition, return a constant) and watch the test fail for that reason.
+   Revert the break. A pin that stays green under the break pins nothing; fix the test.
+2. **GREEN** — the pin passes on the unchanged code.
+3. **REFACTOR** — make the structural change in small steps, staying green after each.
+
+Log the break, the red run and the revert as the cycle's RED line in Proof. Changing what the
+pinned behavior is would need the normal cycle and a Scenario, not this variant.
+
 ## Impact-aware test selection (speed, not a substitute)
 
 Before editing a public/shared symbol, know its blast radius (see `zeno/references/impact-analysis.md`
@@ -185,6 +200,7 @@ regression protection.
 
 - You've written production code and there's no failing test for it.
 - You're about to edit a test to make it pass.
+- You're deleting a test that still guards wanted behavior, or pruning one without a recorded mutation check (`zeno-stack/zeno-test-prune`).
 - You skipped running the test in its failing state.
 - You're adding a package you haven't confirmed exists.
 - A new Story is resuming work on an already-active repo and lint/tests haven't been run fresh yet.
@@ -202,5 +218,6 @@ regression protection.
 - [ ] Every test traces to a Scenario on the Story card; each cycle's result is logged to the active Task/SubTask card's Proof section.
 - [ ] Decisions and any deviations from the Framed approach are in the active card's Decisions log.
 - [ ] Commits, when explicitly authorized, are atomic; otherwise Proof identifies the working-tree snapshot. Any new dependency was confirmed real.
-- [ ] No test was weakened or deleted to make the bar go green.
+- [ ] No test was weakened or deleted to make the bar go green. (A delete through `zeno-stack/zeno-test-prune`, on a green baseline with a recorded mutation check, is pruning, not weakening.)
+- [ ] A behavior-preserving Task's pin tests were each seen to fail under a deliberate break before the structural change.
 - [ ] If this cycle added/altered a migration, any repo-wide schema-assertion fixture was found (`grep -rl`) and updated in the same GREEN commit.

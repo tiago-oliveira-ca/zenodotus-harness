@@ -78,6 +78,7 @@ and versioning rules are owned by `zeno-stack/zeno-api-design`.
 The rule "fix the code, never weaken the test" is owned by `zeno-workflow/zeno-tdd`. Additionally:
 
 - Do not delete a failing test, loosen an assertion, or mock the behavior under test to get green.
+  (Removing green tests that guard nothing is `zeno-test-prune`'s job, done with a recorded mutation check.)
 - If a test looks wrong, explain why *before* changing it, and say what it was asserting.
 - Report flaky tests; do not ignore them or retry them into passing.
 

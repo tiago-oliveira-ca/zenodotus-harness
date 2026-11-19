@@ -237,6 +237,8 @@ pytest -k "test_user"       # pattern match by name
 pytest --pdb                # drop into debugger on failure
 ```
 
+**Pruning existing tests** (deciding which tests guard no behavior and should be rewritten or deleted) belongs to `zeno-stack/zeno-test-prune`; it routes rewrites back here.
+
 ## Anti-pattern quick reference
 
 | Anti-pattern | Instead |

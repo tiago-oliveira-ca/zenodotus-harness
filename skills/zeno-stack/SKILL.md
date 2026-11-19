@@ -1,17 +1,15 @@
 ---
 name: zeno-stack
 description: >
-  Stack-and-domain coverage dispatcher for the zeno loop. Routes to the correct
-  infra/tooling/domain leaf for the technology in use; how code is written per language
-  belongs to `code-standards`. Use whenever a task needs React, Postgres
-  operations, Redis, Docker, Kubernetes, deployment (cloud or self-hosted),
-  testing-execution, accessibility, security review, git workflow, or harness-maintenance
-  guidance. Trigger on: any mention of React, Next.js, Angular, Postgres, Redis, Docker,
-  Kubernetes, Playwright, pytest, accessibility/a11y, API design, error handling, rate limiting,
-  security review, git branching, GitHub PR/issue automation, Jira backlog structure, destructive migrations, /compact, design systems, motion/animation,
-  codebase onboarding, or Claude Code harness maintenance (skill audits, context budget, config
-  cleanup). Also routes build-error resolution, comment-rot audits, performance profiling,
-  implementation planning, dead-code cleanup, cost reporting, and model-tier routing.
+  Stack-and-domain coverage dispatcher for the zeno loop: routes to the infra/tooling/domain leaf
+  for the technology in use (per-language code style belongs to `code-standards`). Trigger on:
+  React, Next.js, Angular, Postgres, Redis, Docker, Kubernetes, Playwright, pytest, deployment,
+  accessibility/a11y, API design, error handling, rate limiting, security review, git branching,
+  GitHub PR/issue automation, Jira backlog structure, destructive migrations, /compact, design
+  systems, motion/animation, codebase onboarding, or harness maintenance (skill audits, context
+  budget, config cleanup). Also routes build-error resolution, comment-rot audits, performance
+  profiling, implementation planning, dead-code cleanup, prune tests that guard no behavior,
+  untangle coupling and special cases (/untangle), cost reporting, and model-tier routing.
 ---
 
 # Zeno Stack Dispatcher — stack & domain coverage
@@ -71,6 +69,8 @@ starts with `zeno-`, per the zeno-family naming rule.
 | Cross-layer, profiling-driven performance work | `zeno-performance-profiling/SKILL.md` |
 | File-level implementation planning | `zeno-planning/SKILL.md` |
 | Dead-code/duplication cleanup | `zeno-refactor-cleanup/SKILL.md` |
+| Pruning tests that guard no behavior (classify, mutation-check, rewrite or delete) | `zeno-test-prune/SKILL.md` |
+| Untangling coupling and special cases across an area — only when the user runs `/untangle` or explicitly asks | `zeno-untangle/SKILL.md` |
 | Local cost-tracking report | `zeno-cost-report/SKILL.md` |
 | Model-tier recommendation | `/model-route` command owns the heuristic; `zeno-model-route/SKILL.md` is a thin router (and the Codex fold home) |
 | Session save/resume/list/alias (repos with no tracked `.zeno/`) | `zeno-sessions/SKILL.md` |
